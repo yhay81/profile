@@ -1,0 +1,83 @@
+@import "mixins";
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.heroSection {
+  @include flex-center;
+
+  @media (max-width: 480px) and (min-height: 700px) {
+    padding-bottom: 10vh;
+  }
+
+  min-height: 100vh;
+  padding: 0;
+  flex-direction: column;
+  align-items: flex-start;
+
+  h2 {
+    @media (max-width: 480px) {
+      margin: 0 0 20px 2px;
+    }
+
+    margin: 0 0 30px 4px;
+    font-family: var(--font-mono);
+    font-size: clamp(var(--fz-sm), 5vw, var(--fz-md));
+    font-weight: 400;
+    line-height: 1.6em;
+    color: var(--green);
+  }
+}
+
+.arrow {
+  @media screen and (prefers-reduced-motion: reduce) {
+    position: absolute;
+    right: 0;
+    bottom: 40px;
+    left: 0;
+    width: 24px;
+    height: 24px;
+    margin: auto;
+    margin-top: -6px;
+    font-size: 0;
+    border-right: solid 2px var(--lightest-slate);
+    border-bottom: solid 2px var(--lightest-slate);
+    opacity: 0;
+    transform: rotate(45deg);
+    animation: none;
+    animation-delay: 2.5s;
+
+    &:hover,
+    &:focus {
+      transform: translateY(-6px) rotate(45deg);
+    }
+  }
+
+  position: absolute;
+  right: 0;
+  bottom: 40px;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  margin: auto;
+  margin-top: -6px;
+  font-size: 0;
+  border-right: solid 2px var(--lightest-slate);
+  border-bottom: solid 2px var(--lightest-slate);
+  opacity: 0;
+  transform: rotate(45deg);
+  animation: fade-in 0.5s ease forwards;
+  animation-delay: 2.5s;
+
+  &:hover,
+  &:focus {
+    transform: translateY(-6px) rotate(45deg);
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "name": "09090",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "export": "next export",
+    "start": "next start",
+    "lint": "prettier --write --check --ignore-unknown \"**/*\" && stylelint --fix \"**/*.scss\" && next lint --fix && tsc --noEmit"
+  },
+  "browserslist": [
+    "defaults",
+    "not IE 11",
+    "not op_mini all"
+  ],
+  "dependencies": {
+    "clsx": "^1.2.1",
+    "next": "12.3.1",
+    "next-reveal": "^1.0.6",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-type-animation": "^2.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "18.7.18",
+    "@types/react": "18.0.21",
+    "@types/react-dom": "18.0.6",
+    "@types/react-type-animation": "^1.1.1",
+    "@typescript-eslint/eslint-plugin": "^5.38.0",
+    "@typescript-eslint/parser": "^5.38.0",
+    "eslint": "8.23.1",
+    "eslint-config-next": "12.3.1",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsx-a11y": "^6.6.1",
+    "eslint-plugin-promise": "^6.0.1",
+    "eslint-plugin-react": "^7.31.8",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-simple-import-sort": "^8.0.0",
+    "eslint-plugin-sonarjs": "^0.15.0",
+    "postcss": "^8.4.16",
+    "prettier": "^2.7.1",
+    "prop-types": "^15.8.1",
+    "sass": "^1.55.0",
+    "stylelint": "^14.12.1",
+    "stylelint-a11y": "^1.2.3",
+    "stylelint-config-prettier": "^9.0.3",
+    "stylelint-config-sass-guidelines": "^9.0.1",
+    "stylelint-config-standard": "^28.0.0",
+    "stylelint-css-modules": "^1.2.2",
+    "stylelint-csstree-validator": "^2.0.0",
+    "stylelint-declaration-block-no-ignored-properties": "^2.5.0",
+    "stylelint-declaration-strict-value": "^1.9.0",
+    "stylelint-high-performance-animation": "^1.6.0",
+    "stylelint-no-unsupported-browser-features": "^5.0.4",
+    "stylelint-use-nesting": "^4.0.0",
+    "typescript": "4.8.3"
+  }
+}

@@ -1,0 +1,34 @@
+@import "mixins";
+
+.contactSection {
+  @media (max-width: 768px) {
+    margin: 0 auto 50px;
+  }
+
+  max-width: 600px;
+  margin: 0 auto 100px;
+  text-align: center;
+
+  .title {
+    margin-bottom: 40px;
+    font-family: var(--font-mono);
+  }
+
+  .text {
+    margin-bottom: 40px;
+  }
+
+  .link {
+    @include button;
+
+    font-size: var(--fz-md);
+    margin: 12px 10px 0;
+    width: 160px;
+  }
+
+  svg {
+    width: var(--fz-md);
+    height: var(--fz-md);
+    margin: 0 8px 0 0;
+  }
+}
