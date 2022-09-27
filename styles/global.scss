@@ -39,7 +39,7 @@ main {
     padding: 0 50px;
   }
   @media (max-width: 480px) {
-    padding: 0 25px;
+    padding: 0 36px 0 25px;
   }
 
   width: 100%;
@@ -52,10 +52,6 @@ main {
 section {
   @media (max-width: 768px) {
     padding: 80px 0;
-  }
-
-  @media (max-width: 1080px) {
-    margin-right: 20px;
   }
 
   max-width: 1000px;
@@ -94,20 +90,6 @@ svg {
 }
 
 a {
-  @media screen and (prefers-reduced-motion: reduce) {
-    position: relative;
-    display: inline-block;
-    color: inherit;
-    text-decoration: none;
-    transition: none;
-    text-decoration-skip-ink: auto;
-
-    &:hover,
-    &:focus {
-      color: var(--green);
-    }
-  }
-
   position: relative;
   display: inline-block;
   color: inherit;
