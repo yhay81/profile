@@ -1,8 +1,8 @@
 import Document, { Head, Html, Main, NextScript } from "next/document";
 
 const seo = {
-  title: "Next.js + TypeScript Example",
-  description: "A simple project starter to work with Next.js and TypeScript",
+  title: "Yusuke Hayashi",
+  description: "Yusuke Hayashi's Profile Page",
   image: "https://yusuke-hayashi.com/me.webp",
   url: "https://yusuke-hayashi.com",
 };
