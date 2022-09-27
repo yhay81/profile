@@ -10,7 +10,7 @@ const seo = {
 export default class MyDocument extends Document {
   public render(): JSX.Element {
     return (
-      <Html>
+      <Html lang="en">
         <Head>
           <link
             href="https://fonts.googleapis.com/css2?family=Fira+Code&display=optional"
@@ -42,6 +42,7 @@ export default class MyDocument extends Document {
           <meta content="#042444" name="msapplication-TileColor" />
           <meta content="#04ffaa" name="theme-color" />
 
+          <meta content={seo.title} name="title" />
           <meta content={seo.description} name="description" />
           <meta content={seo.image} name="image" />
 
