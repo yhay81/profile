@@ -1,11 +1,8 @@
+import { GTM_ID, HEAD_KEYS, MAIN_COLOR } from "@lib";
 import Document, { Head, Html, Main, NextScript } from "next/document";
+import Script from "next/script";
 
-const seo = {
-  title: "Yusuke Hayashi",
-  description: "Yusuke Hayashi's Profile Page",
-  image: "https://yusuke-hayashi.com/me.webp",
-  url: "https://yusuke-hayashi.com",
-};
+const GTM_SCRIPT = `function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","${GTM_ID}");`;
 
 export default class MyDocument extends Document {
   public render(): JSX.Element {
@@ -20,43 +17,76 @@ export default class MyDocument extends Document {
             href="https://fonts.googleapis.com/css2?family=Heebo&display=optional"
             rel="stylesheet"
           />
+
+          <link
+            href="/favicon.ico"
+            key={HEAD_KEYS.linkIcon + ".ico"}
+            rel={HEAD_KEYS.linkIcon}
+            sizes="any"
+          />
+          <link
+            href="/favicon.svg"
+            key={HEAD_KEYS.linkIcon + ".svg"}
+            rel={HEAD_KEYS.linkIcon}
+            type="image/svg+xml"
+          />
+
           <link
             href="/apple-touch-icon.png"
-            rel="apple-touch-icon"
+            key={HEAD_KEYS.linkAppleTouchIcon}
+            rel={HEAD_KEYS.linkAppleTouchIcon}
             sizes="180x180"
           />
+
           <link
-            href="/favicon-32x32.png"
-            rel="icon"
-            sizes="32x32"
-            type="image/png"
+            color={MAIN_COLOR}
+            href="/safari-pinned-tab.svg"
+            key={HEAD_KEYS.linkMaskIcon}
+            rel={HEAD_KEYS.linkMaskIcon}
           />
+
           <link
-            href="/favicon-16x16.png"
-            rel="icon"
-            sizes="16x16"
-            type="image/png"
+            crossOrigin="use-credentials"
+            href="/site.webmanifest"
+            key={HEAD_KEYS.linkManifest}
+            rel={HEAD_KEYS.linkManifest}
           />
-          <link href="/site.webmanifest" rel="manifest" />
-          <link color="#04ffaa" href="/safari-pinned-tab.svg" rel="mask-icon" />
-          <meta content="#042444" name="msapplication-TileColor" />
-          <meta content="#04ffaa" name="theme-color" />
 
-          <meta content={seo.title} name="title" />
-          <meta content={seo.description} name="description" />
-          <meta content={seo.image} name="image" />
+          <meta
+            content="telephone=no,address=no,email=no"
+            key={HEAD_KEYS.metaFormatDetection}
+            name={HEAD_KEYS.metaFormatDetection}
+          />
 
-          <meta content={seo.title} property="og:title" />
-          <meta content={seo.description} property="og:description" />
-          <meta content={seo.image} property="og:image" />
-          <meta content={seo.url} property="og:url" />
-          <meta content="website" property="og:type" />
+          <meta
+            content={MAIN_COLOR}
+            key={HEAD_KEYS.metaThemeColor}
+            name={HEAD_KEYS.metaThemeColor}
+          />
+          <meta
+            content="#042444"
+            key={HEAD_KEYS.metaMsapplicationTilecolor}
+            name={HEAD_KEYS.metaMsapplicationTilecolor}
+          />
 
-          <meta content="summary_large_image" name="twitter:card" />
-          <meta content="yhay81" name="twitter:creator" />
-          <meta content={seo.title} name="twitter:title" />
-          <meta content={seo.description} name="twitter:description" />
-          <meta content={seo.image} name="twitter:image" />
+          <meta
+            content="general"
+            key={HEAD_KEYS.metaRating}
+            name={HEAD_KEYS.metaRating}
+          />
+
+          <meta
+            content="width=device-width,initial-scale=1,minimum-scale=1"
+            key={HEAD_KEYS.metaViewport}
+            name={HEAD_KEYS.metaViewport}
+          />
+
+          <Script
+            dangerouslySetInnerHTML={{ __html: GTM_SCRIPT }}
+            id="google-analytics"
+            key={HEAD_KEYS.scriptGtagConfig}
+            strategy="afterInteractive"
+          />
         </Head>
         <body>
           <Main />

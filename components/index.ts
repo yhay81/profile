@@ -2,6 +2,7 @@ export { About } from "./About";
 export { Contact } from "./Contact";
 export { Footer } from "./Footer";
 export { Hero } from "./Hero";
+export { HtmlHead } from "./HtmlHead";
 export { Icon } from "./Icon";
 export { Layout } from "./Layout";
 export { Nav } from "./Nav";
