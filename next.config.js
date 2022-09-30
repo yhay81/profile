@@ -1,7 +1,14 @@
 /** @type {import('next').NextConfig} */
 const path = require("path");
+const runtimeCaching = require("next-pwa/cache");
 
 const IS_PROD = process.env.NODE_ENV === "production";
+
+const withPwa = require("next-pwa")({
+  dest: "public",
+  runtimeCaching,
+  disable: !IS_PROD,
+});
 
 const CSP = {
   "connect-src": ["'self'", "https:"],
@@ -141,4 +148,4 @@ const nextConfig = {
   ],
 };
 
-module.exports = nextConfig;
+module.exports = withPwa(nextConfig);

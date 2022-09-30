@@ -22,7 +22,6 @@ export default class MyDocument extends Document {
             href="/favicon.ico"
             key={HEAD_KEYS.linkIcon + ".ico"}
             rel={HEAD_KEYS.linkIcon}
-            sizes="any"
           />
           <link
             href="/favicon.svg"
