@@ -1,5 +1,5 @@
 module.exports = {
-  env: { browser: true, node: true, es2021: true },
+  env: { browser: true, node: true, es2022: true },
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/all",
@@ -36,10 +36,7 @@ module.exports = {
         format: ["camelCase", "PascalCase", "UPPER_CASE"],
       },
     ],
-    "@typescript-eslint/prefer-readonly-parameter-types": [
-      "warn",
-      { ignoreInferredTypes: true },
-    ],
+    "@typescript-eslint/prefer-readonly-parameter-types": "off",
     "eslint-comments/no-unused-disable": "warn",
     "import/exports-last": "warn",
     "import/newline-after-import": "warn",
@@ -51,6 +48,7 @@ module.exports = {
     "react/jsx-filename-extension": ["error", { extensions: [".tsx"] }],
     "react/jsx-max-depth": ["warn", { max: 6 }],
     "react/jsx-no-literals": "off",
+    "react/require-default-props": "off",
     "simple-import-sort/exports": "warn",
     "simple-import-sort/imports": "warn",
   },

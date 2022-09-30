@@ -14,22 +14,27 @@
     "not IE 11",
     "not op_mini all"
   ],
+  "eslintIgnore": [
+    ".eslintrc.js",
+    "next.config.js"
+  ],
   "dependencies": {
     "clsx": "^1.2.1",
     "next": "12.3.1",
     "next-reveal": "^1.0.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-type-animation": "^2.1.1"
+    "react-type-animation": "^2.1.1",
+    "schema-dts": "^1.1.0"
   },
   "devDependencies": {
-    "@types/node": "18.7.18",
+    "@types/node": "18.7.23",
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",
     "@types/react-type-animation": "^1.1.1",
-    "@typescript-eslint/eslint-plugin": "^5.38.0",
-    "@typescript-eslint/parser": "^5.38.0",
-    "eslint": "8.23.1",
+    "@typescript-eslint/eslint-plugin": "^5.38.1",
+    "@typescript-eslint/parser": "^5.38.1",
+    "eslint": "8.24.0",
     "eslint-config-next": "12.3.1",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-eslint-comments": "^3.2.0",
@@ -44,7 +49,7 @@
     "prettier": "^2.7.1",
     "prop-types": "^15.8.1",
     "sass": "^1.55.0",
-    "stylelint": "^14.12.1",
+    "stylelint": "^14.13.0",
     "stylelint-a11y": "^1.2.3",
     "stylelint-config-prettier": "^9.0.3",
     "stylelint-config-sass-guidelines": "^9.0.1",
@@ -56,6 +61,6 @@
     "stylelint-high-performance-animation": "^1.6.0",
     "stylelint-no-unsupported-browser-features": "^5.0.4",
     "stylelint-use-nesting": "^4.0.0",
-    "typescript": "4.8.3"
+    "typescript": "4.8.4"
   }
 }

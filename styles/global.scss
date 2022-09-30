@@ -82,14 +82,23 @@ svg {
   width: 100%;
   height: 100%;
   vertical-align: middle;
-  fill: currentcolor;
-
-  .feather {
-    fill: none;
-  }
 }
 
 a {
+  @media screen and (prefers-reduced-motion: reduce) {
+    position: relative;
+    display: inline-block;
+    color: inherit;
+    text-decoration: none;
+    transition: none;
+    text-decoration-skip-ink: auto;
+
+    &:hover,
+    &:focus {
+      color: var(--green);
+    }
+  }
+
   position: relative;
   display: inline-block;
   color: inherit;
