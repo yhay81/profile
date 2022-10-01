@@ -13,7 +13,7 @@ const Hero: React.FC = () => (
         "Hello, this is Yusuke Hayashi's profile page.",
       ]}
       speed={70}
-      wrapper="h2"
+      wrapper="p"
     />
     <a className={styles.arrow} href="#about">
       arrow

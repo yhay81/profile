@@ -3,7 +3,7 @@ interface HeadMeta {
   readonly ogType?: string;
   readonly title: string;
   readonly twitterCard?: "app" | "player" | "summary_large_image" | "summary";
-  readonly canonicalUrl?: string;
+  readonly canonicalUrl: string;
 }
 
 interface OgImage {

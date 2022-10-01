@@ -2,9 +2,11 @@ import { About, Contact, Hero, HtmlHead, Layout } from "@components";
 import type { ProfilePage, WithContext } from "schema-dts";
 
 const INDEX_HEAD_META: HeadMeta = {
-  description: "Yusuke Hayashi's personal website",
+  description:
+    "Yusuke Hayashi's personal profile page. I'm a software engineer in Tokyo, Japan.",
   ogType: "website",
   title: "Yusuke Hayashi",
+  canonicalUrl: "https://yusuke-hayashi.com",
 };
 
 const INDEX_STRUCTURED_DATA: WithContext<ProfilePage> = {

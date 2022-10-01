@@ -2,7 +2,7 @@ import { GTM_ID, HEAD_KEYS, MAIN_COLOR } from "@lib";
 import Document, { Head, Html, Main, NextScript } from "next/document";
 import Script from "next/script";
 
-const GTM_SCRIPT = `function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","${GTM_ID}");`;
+const GTM_SCRIPT = `!function(e,t,a,r,g){e[r]=e[r]||[],e[r].push({"gtm.start":new Date().getTime(),event:"gtm.js"});var n=t.getElementsByTagName(a)[0],s=t.createElement(a);s.async=!0,s.src="https://www.googletagmanager.com/gtm.js?id="+g+("dataLayer"!=r?"&l="+r:""),n.parentNode.insertBefore(s,n)}(window,document,"script","dataLayer","${GTM_ID}");`;
 
 export default class MyDocument extends Document {
   public render(): JSX.Element {
@@ -11,10 +11,6 @@ export default class MyDocument extends Document {
         <Head>
           <link
             href="https://fonts.googleapis.com/css2?family=Fira+Code&display=optional"
-            rel="stylesheet"
-          />
-          <link
-            href="https://fonts.googleapis.com/css2?family=Heebo&display=optional"
             rel="stylesheet"
           />
 
@@ -29,14 +25,12 @@ export default class MyDocument extends Document {
             rel={HEAD_KEYS.linkIcon}
             type="image/svg+xml"
           />
-
           <link
             href="/apple-touch-icon.png"
             key={HEAD_KEYS.linkAppleTouchIcon}
             rel={HEAD_KEYS.linkAppleTouchIcon}
             sizes="180x180"
           />
-
           <link
             color={MAIN_COLOR}
             href="/safari-pinned-tab.svg"

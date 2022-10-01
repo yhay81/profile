@@ -11,8 +11,8 @@ interface Props {
 
 const DEFAULT_OG_IMAGE: OgImage = {
   alt: "Yusuke Hayashi",
-  width: 160,
-  height: 160,
+  width: 420,
+  height: 420,
   type: "image/webp",
   url: "/me.webp",
 };
