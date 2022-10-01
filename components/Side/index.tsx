@@ -18,7 +18,7 @@ const SOCIAL_MEDIA: Readonly<
     url: "https://www.linkedin.com/in/yhay81",
   },
   {
-    name: "Book",
+    name: "Zenn",
     url: "https://zenn.dev/yhay81",
   },
 ];

@@ -1,6 +1,7 @@
-import Image from "next/image";
+import Image from "next/future/image";
 import { RevealWrapper } from "next-reveal";
 
+import Me from "../../public/me.webp";
 import styles from "./About.module.scss";
 
 const About: React.FC = () => (
@@ -12,13 +13,7 @@ const About: React.FC = () => (
         <div className={styles.pic}>
           <div className={styles.wrapper}>
             <div className={styles.img}>
-              <Image
-                alt="Yusuke Hayashi"
-                height={420}
-                loading="lazy"
-                src="/me.webp"
-                width={420}
-              />
+              <Image alt="Yusuke Hayashi" loading="lazy" src={Me} />
             </div>
           </div>
         </div>

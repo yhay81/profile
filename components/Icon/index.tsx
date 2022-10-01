@@ -14,6 +14,7 @@ const Icon: React.FC<Readonly<{ readonly name: string }>> = ({ name }) => {
       return <IconTwitter />;
     case "Mail":
       return <IconMail />;
+    case "Zenn":
     case "Book":
     default:
       return <IconBook />;

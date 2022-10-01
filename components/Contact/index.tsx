@@ -13,17 +13,29 @@ const Contact: React.FC = () => (
         get back to you!
       </p>
 
-      <a className={styles.link} href="mailto:yusuke8h@gmail.com">
+      <a
+        aria-label="Mail"
+        className={styles.link}
+        href="mailto:yusuke8h@gmail.com"
+      >
         <Icon name="Mail" />
         Email
       </a>
 
-      <a className={styles.link} href="https://www.linkedin.com/in/yhay81/">
+      <a
+        aria-label="Linkedin"
+        className={styles.link}
+        href="https://www.linkedin.com/in/yhay81/"
+      >
         <Icon name="Linkedin" />
         LinkedIn
       </a>
 
-      <a className={styles.link} href="https://twitter.com/yhay81">
+      <a
+        aria-label="Twitter"
+        className={styles.link}
+        href="https://twitter.com/yhay81"
+      >
         <Icon name="Twitter" />
         Twitter
       </a>
