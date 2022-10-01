@@ -2,7 +2,7 @@ import { GTM_ID, HEAD_KEYS, MAIN_COLOR } from "@lib";
 import Document, { Head, Html, Main, NextScript } from "next/document";
 import Script from "next/script";
 
-const GTM_SCRIPT = `!function(e,t,a,r,g){e[r]=e[r]||[],e[r].push({"gtm.start":new Date().getTime(),event:"gtm.js"});var n=t.getElementsByTagName(a)[0],s=t.createElement(a);s.async=!0,s.src="https://www.googletagmanager.com/gtm.js?id="+g+("dataLayer"!=r?"&l="+r:""),n.parentNode.insertBefore(s,n)}(window,document,"script","dataLayer","${GTM_ID}");`;
+const GTM_SCRIPT = `function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","${GTM_ID}");`;
 
 export default class MyDocument extends Document {
   public render(): JSX.Element {
@@ -10,7 +10,7 @@ export default class MyDocument extends Document {
       <Html lang="en">
         <Head>
           <link
-            href="https://fonts.googleapis.com/css2?family=Fira+Code&display=optional"
+            href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap"
             rel="stylesheet"
           />
 
@@ -68,12 +68,11 @@ export default class MyDocument extends Document {
             name={HEAD_KEYS.metaRating}
           />
 
-          <meta
-            content="width=device-width,initial-scale=1,minimum-scale=1"
-            key={HEAD_KEYS.metaViewport}
-            name={HEAD_KEYS.metaViewport}
+          <Script
+            async
+            src={`https://www.googletagmanager.com/gtag/js?id=${GTM_ID}`}
+            strategy="afterInteractive"
           />
-
           <Script
             dangerouslySetInnerHTML={{ __html: GTM_SCRIPT }}
             id="google-analytics"

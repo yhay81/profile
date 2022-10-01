@@ -15,6 +15,7 @@ const About: React.FC = () => (
               <Image
                 alt="Yusuke Hayashi"
                 height={420}
+                loading="lazy"
                 src="/me.webp"
                 width={420}
               />

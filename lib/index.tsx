@@ -28,7 +28,7 @@ const HEAD_KEYS = {
   metaMsapplicationTilecolor: "msapplication-TileColor",
   metaRating: "rating",
   metaThemeColor: "theme-color",
-  metaViewport: "metaViewport",
+  metaViewport: "viewport",
   scriptGtag: "gtag",
   scriptGtagConfig: "gtag-config",
 } as const;
