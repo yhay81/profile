@@ -9,8 +9,8 @@ const Contact: React.FC = () => (
       <h2 className={styles.title}>Contact</h2>
 
       <p className={styles.text}>
-        Whether you have a question or just want to say hi, I’ll try my best to
-        get back to you!
+        Whether you have a question or just want to say hi, I&apos;ll try my
+        best to get back to you!
       </p>
 
       <a

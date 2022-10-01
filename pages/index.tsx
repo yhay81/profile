@@ -3,7 +3,7 @@ import type { ProfilePage, WithContext } from "schema-dts";
 
 const INDEX_HEAD_META: HeadMeta = {
   description:
-    "Yusuke Hayashi's personal profile page. I'm a software engineer in Tokyo, Japan.",
+    "This is a profile page of Yusuke Hayashi. I am a software engineer in Tokyo, Japan.",
   ogType: "website",
   title: "Yusuke Hayashi",
   canonicalUrl: "https://yusuke-hayashi.com",

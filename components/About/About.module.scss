@@ -63,25 +63,21 @@
 
 .pic {
   @media (max-width: 768px) {
-    width: 70%;
     margin: 0 auto 30px;
   }
 
-  margin: 50px 0;
-  position: relative;
-  max-width: 160px;
+  margin: 50px auto;
+  max-width: 140px;
 
   .wrapper {
     position: relative;
-    width: 100%;
     font-size: 0;
 
     .img {
       position: relative;
-      filter: grayscale(100%) contrast(1);
       border-radius: 50%;
+      height: auto;
       mix-blend-mode: multiply;
-      overflow: hidden;
     }
 
     &:hover,
@@ -95,7 +91,6 @@
     &::before,
     &::after {
       position: absolute;
-      display: block;
       width: 100%;
       height: 100%;
       content: "";
@@ -114,7 +109,6 @@
       left: -3%;
       width: 106%;
       height: 106%;
-      z-index: -1;
       border: 2px solid var(--green);
     }
   }

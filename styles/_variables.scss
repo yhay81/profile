@@ -1,8 +1,5 @@
 :root {
   --navy: #042444;
-  --lightest-navy: #233554;
-  --navy-shadow: rgb(2 12 27 / 70%);
-  --dark-slate: #495670;
   --slate: #8892b0;
   --light-slate: #a8b2d1;
   --lightest-slate: #ccd6f6;
@@ -18,12 +15,7 @@
   --fz-lg: 18px;
   --fz-xl: 20px;
   --fz-xxl: 22px;
-  --fz-heading: 32px;
   --border-radius: 4px;
   --nav-height: 60px;
-  --nav-scroll-height: 70px;
-  --tab-height: 42px;
-  --tab-width: 120px;
-  --easing: cubic-bezier(0.645, 0.045, 0.355, 1);
   --transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
 }

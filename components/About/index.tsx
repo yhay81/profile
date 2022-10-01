@@ -12,9 +12,7 @@ const About: React.FC = () => (
       <div className={styles.inner}>
         <div className={styles.pic}>
           <div className={styles.wrapper}>
-            <div className={styles.img}>
-              <Image alt="Yusuke Hayashi" loading="lazy" src={Me} />
-            </div>
+            <Image alt="Yusuke Hayashi" className={styles.img} src={Me} />
           </div>
         </div>
 

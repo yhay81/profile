@@ -44,6 +44,7 @@ module.exports = {
     "import/no-extraneous-dependencies": "warn",
     "jsx-a11y/anchor-is-valid": "off",
     "no-console": ["warn", { allow: ["warn", "error"] }],
+    "react/forbid-component-props": "off",
     "react/function-component-definition": "off",
     "react/jsx-filename-extension": ["error", { extensions: [".tsx"] }],
     "react/jsx-max-depth": ["warn", { max: 6 }],
