@@ -4,20 +4,22 @@ import { IconLinkedin } from "./linkedin";
 import { IconMail } from "./mail";
 import { IconTwitter } from "./twitter";
 
-const Icon: React.FC<Readonly<{ readonly name: string }>> = ({ name }) => {
+const Icon: React.FC<
+  Readonly<{ readonly name: string; readonly ariaId?: string }>
+> = ({ name, ariaId }) => {
   switch (name) {
     case "GitHub":
-      return <IconGitHub />;
+      return <IconGitHub ariaId={ariaId} />;
     case "Linkedin":
-      return <IconLinkedin />;
+      return <IconLinkedin ariaId={ariaId} />;
     case "Twitter":
-      return <IconTwitter />;
+      return <IconTwitter ariaId={ariaId} />;
     case "Mail":
-      return <IconMail />;
+      return <IconMail ariaId={ariaId} />;
     case "Zenn":
     case "Book":
     default:
-      return <IconBook />;
+      return <IconBook ariaId={ariaId} />;
   }
 };
 

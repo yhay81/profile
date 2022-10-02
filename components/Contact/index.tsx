@@ -14,17 +14,17 @@ const Contact: React.FC = () => (
       </p>
 
       <a className={styles.link} href="mailto:yusuke8h@gmail.com">
-        <Icon name="Mail" />
+        <Icon ariaId="contact-mail" name="Mail" />
         Email
       </a>
 
       <a className={styles.link} href="https://www.linkedin.com/in/yhay81/">
-        <Icon name="Linkedin" />
+        <Icon ariaId="contact-linkedin" name="Linkedin" />
         LinkedIn
       </a>
 
       <a className={styles.link} href="https://twitter.com/yhay81">
-        <Icon name="Twitter" />
+        <Icon ariaId="contact-twitter" name="Twitter" />
         Twitter
       </a>
     </section>
