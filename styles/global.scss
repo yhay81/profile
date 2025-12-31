@@ -1,5 +1,5 @@
-@import "variables";
-@import "mixins";
+@use "variables";
+@use "mixins" as *;
 
 html {
   width: 100%;
@@ -14,7 +14,7 @@ html {
 }
 
 body {
-  @media (max-width: 480px) {
+  @media (width <= 480px) {
     font-size: var(--fz-lg);
   }
 
@@ -32,13 +32,15 @@ body {
 }
 
 main {
-  @media (max-width: 1080px) {
+  @media (width <= 1080px) {
     padding: 0 100px;
   }
-  @media (max-width: 768px) {
+
+  @media (width <= 768px) {
     padding: 0 50px;
   }
-  @media (max-width: 480px) {
+
+  @media (width <= 480px) {
     padding: 0 36px 0 25px;
   }
 
@@ -50,7 +52,7 @@ main {
 }
 
 section {
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     padding: 80px 0;
   }
 

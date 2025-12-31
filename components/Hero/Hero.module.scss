@@ -1,4 +1,4 @@
-@import "../../styles/mixins";
+@use "../../styles/mixins" as *;
 
 @keyframes fade-in {
   0% {
@@ -13,7 +13,7 @@
 .heroSection {
   @include flex-center;
 
-  @media (max-width: 480px) and (min-height: 700px) {
+  @media (width <= 480px) and (height >= 700px) {
     padding-bottom: 10vh;
   }
 
@@ -23,7 +23,7 @@
   align-items: flex-start;
 
   p {
-    @media (max-width: 480px) {
+    @media (width <= 480px) {
       margin: 0 0 20px 2px;
     }
 

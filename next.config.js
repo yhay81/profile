@@ -11,15 +11,16 @@ const withPwa = require("next-pwa")({
 });
 
 const nextConfig = {
+  output: "export",
   images: {
     unoptimized: true,
   },
   poweredByHeader: false,
-  swcMinify: true,
   reactStrictMode: true,
   sassOptions: {
     includePaths: [path.join(__dirname, "styles")],
   },
+  turbopack: {},
 };
 
 module.exports = withPwa(nextConfig);

@@ -2,9 +2,11 @@ import { Icon } from "@components";
 
 import styles from "./Side.module.scss";
 
-const SOCIAL_MEDIA: Readonly<
-  { readonly id: string; readonly url: string; readonly name: string }[]
-> = [
+const SOCIAL_MEDIA: readonly {
+  readonly id: string;
+  readonly url: string;
+  readonly name: string;
+}[] = [
   {
     id: "social-github",
     name: "GitHub",
@@ -40,6 +42,7 @@ const Side: React.FC = () => (
         </li>
       ))}
     </ul>
+
     <div className={styles.linkWrapper}>
       <a className={styles.emailLink} href={`mailto:${EMAIL}`}>
         {EMAIL}

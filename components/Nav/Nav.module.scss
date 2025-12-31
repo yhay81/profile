@@ -1,4 +1,4 @@
-@import "../../styles/mixins";
+@use "../../styles/mixins" as *;
 
 @keyframes fade-in {
   0% {
@@ -15,19 +15,22 @@
 .header {
   @include flex-between;
 
-  @media (max-width: 1080px) {
+  @media (width <= 1080px) {
     padding: 0 40px;
   }
-  @media (max-width: 768px) {
+
+  @media (width <= 768px) {
     padding: 0 25px;
   }
+
   @media screen and (prefers-reduced-motion: reduce) {
     @include flex-between;
 
-    @media (max-width: 1080px) {
+    @media (width <= 1080px) {
       padding: 0 40px;
     }
-    @media (max-width: 768px) {
+
+    @media (width <= 768px) {
       padding: 0 25px;
     }
 

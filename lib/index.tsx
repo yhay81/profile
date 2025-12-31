@@ -1,5 +1,4 @@
 const HEAD_KEYS = {
-  // In components/head.tsx
   title: "title",
   metaDescription: "description",
   metaNoIndex: "noindex",
@@ -17,7 +16,6 @@ const HEAD_KEYS = {
   metaTwitterCard: "twitter:card",
   linkCanonical: "canonical",
   scriptStructuredData: "application/ld+json",
-  // In pages/_document.tsx
   linkAppleTouchIcon: "apple-touch-icon",
   linkIcon: "icon",
   linkManifest: "manifest",

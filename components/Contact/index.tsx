@@ -1,3 +1,5 @@
+"use client";
+
 import { Icon } from "@components";
 import { RevealWrapper } from "next-reveal";
 

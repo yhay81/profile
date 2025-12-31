@@ -6,9 +6,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "export": "next export",
     "start": "next start",
-    "lint": "prettier --write --check --ignore-unknown \"**/*\" && stylelint --fix \"**/*.scss\" && next lint --fix && tsc --noEmit"
+    "lint": "stylelint --fix \"**/*.scss\" && eslint . --ext .js,.ts,.tsx --fix && prettier --write --ignore-unknown \"**/*\" && tsc --noEmit"
   },
   "browserslist": [
     "defaults",
@@ -46,22 +45,19 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-simple-import-sort": "^12.1.1",
-    "eslint-plugin-sonarjs": "^3.0.5",
     "postcss": "^8.5.6",
     "prettier": "^3.7.4",
     "prop-types": "^15.8.1",
     "sass": "^1.97.1",
     "stylelint": "^16.26.1",
-    "stylelint-a11y": "^1.2.3",
-    "stylelint-config-prettier": "^9.0.5",
     "stylelint-config-sass-guidelines": "^12.1.0",
     "stylelint-config-standard": "^39.0.1",
     "stylelint-css-modules": "^1.2.2",
-    "stylelint-csstree-validator": "^3.0.0",
     "stylelint-declaration-block-no-ignored-properties": "^2.8.0",
     "stylelint-declaration-strict-value": "^1.10.11",
     "stylelint-high-performance-animation": "^1.11.0",
     "stylelint-no-unsupported-browser-features": "^8.0.5",
+    "stylelint-order": "^7.0.1",
     "stylelint-use-nesting": "^6.0.1",
     "typescript": "5.9.3"
   }

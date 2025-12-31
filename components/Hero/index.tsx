@@ -1,3 +1,5 @@
+"use client";
+
 import { TypeAnimation } from "react-type-animation";
 
 import styles from "./Hero.module.scss";
@@ -15,6 +17,7 @@ const Hero: React.FC = () => (
       speed={70}
       wrapper="p"
     />
+
     <a className={styles.arrow} href="#about">
       arrow
     </a>
