@@ -21,19 +21,24 @@
 
   position: relative;
   min-height: 100vh;
-  padding: calc(var(--nav-height) + 40px) 0 110px;
+  padding: calc(var(--nav-height) + 40px) 0 clamp(64px, 12vh, 110px);
   flex-direction: column;
   align-items: flex-start;
   gap: 16px;
 }
 
 .kicker {
+  @media (width <= 768px) {
+    letter-spacing: 0.12em;
+  }
+
   margin: 0;
   font-family: var(--font-mono);
   font-size: clamp(var(--fz-xxs), 2.2vw, var(--fz-sm));
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--green);
+  text-wrap: balance;
 }
 
 .title {
@@ -74,7 +79,7 @@
   box-shadow: 0 12px 28px rgb(4 255 170 / 22%);
 
   &:hover,
-  &:focus,
+  &:focus-visible,
   &:active {
     background-color: var(--green);
     box-shadow: 0 16px 32px rgb(4 255 170 / 30%);
@@ -89,15 +94,19 @@
   text-transform: uppercase;
   border-bottom: 1px solid rgb(204 214 246 / 40%);
   padding-bottom: 2px;
-}
 
-.secondary:hover,
-.secondary:focus {
-  color: var(--green);
-  border-color: var(--green);
+  &:hover,
+  &:focus-visible {
+    color: var(--green);
+    border-color: var(--green);
+  }
 }
 
 .arrow {
+  @media (height <= 720px) {
+    display: none;
+  }
+
   @media screen and (prefers-reduced-motion: reduce) {
     animation: none;
     opacity: 1;
@@ -122,9 +131,7 @@
   right: 0;
   bottom: 28px;
   left: 0;
-  width: fit-content;
-  margin: 0 auto;
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
@@ -148,7 +155,7 @@
   }
 
   &:hover,
-  &:focus {
+  &:focus-visible {
     &::after {
       transform: translateY(-6px) rotate(45deg);
     }

@@ -5,13 +5,20 @@ Yusuke Hayashi のプロフィールページ。
 ## デザイン
 
 主要フォントは Work Sans / Space Grotesk / Fira Code。
-モーションは prefers-reduced-motion に合わせて抑制し、見出しは左揃えとラインで区切る。
+モーションは Hero/Nav/Side のみに絞り、prefers-reduced-motion では抑制しつつスムーススクロールも無効化する。
+背景に薄いグリッドを重ね、Skills はチップ表示で情報の粒度を揃える。
+About と Contact は同じ幅で揃える。
+ヘッダーと本文の左右余白は `--page-padding` で統一する。
+フォーカスは `:focus-visible` のアウトラインで見やすくする。
+ヒーローのキッカーは小画面で字間を詰め、スクロール矢印は低い画面高で隠す。
 
 ## 開発
 
 依存関係の管理は pnpm を使います。`pnpm install` の後に `pnpm dev` で起動できます。
 整形は `pnpm lint` で実行します（stylelint/eslint の修正後に prettier の `--write` を走らせます）。
+対象ブラウザは `package.json` の browserslist に合わせ、KaiOS/UC/QQ は対象外にしています。
 Next.js 16 の dev は Turbopack になるため、webpack 系プラグインがあっても `turbopack: {}` を明示しています。
+PWA は使わない方針のため、Service Worker や manifest は用意しません。
 
 ## デプロイ
 

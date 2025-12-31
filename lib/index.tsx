@@ -18,7 +18,6 @@ const HEAD_KEYS = {
   scriptStructuredData: "application/ld+json",
   linkAppleTouchIcon: "apple-touch-icon",
   linkIcon: "icon",
-  linkManifest: "manifest",
   linkMaskIcon: "mask-icon",
   linkPreconnect: "preconnect",
   linkPreload: "preload",

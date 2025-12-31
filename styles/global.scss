@@ -2,6 +2,10 @@
 @use "mixins" as *;
 
 html {
+  @media (prefers-reduced-motion: reduce) {
+    scroll-behavior: auto;
+  }
+
   width: 100%;
   box-sizing: border-box;
   scroll-behavior: smooth;
@@ -30,7 +34,22 @@ body {
   line-height: 1.6;
   color: var(--slate);
   background-color: var(--navy);
-  background-image: radial-gradient(
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgb(204 214 246 / 3%) 0,
+      rgb(204 214 246 / 3%) 1px,
+      transparent 1px,
+      transparent 160px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgb(204 214 246 / 3%) 0,
+      rgb(204 214 246 / 3%) 1px,
+      transparent 1px,
+      transparent 160px
+    ),
+    radial-gradient(
       600px circle at 15% 5%,
       rgb(4 255 170 / 10%),
       transparent 60%
@@ -54,7 +73,7 @@ main {
   width: 100%;
   max-width: 1600px;
   min-height: 100vh;
-  padding: 0 clamp(24px, 8vw, 150px);
+  padding: 0 var(--page-padding);
   margin: 0 auto;
 }
 
@@ -64,22 +83,6 @@ section {
   padding: clamp(80px, 12vh, 120px) 0;
   margin: 0 auto;
   scroll-margin-top: calc(var(--nav-height) + 24px);
-}
-
-section + section::before {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  max-width: 720px;
-  height: 1px;
-  content: "";
-  background: linear-gradient(
-    90deg,
-    rgb(4 255 170 / 45%),
-    rgb(204 214 246 / 18%),
-    transparent
-  );
 }
 
 h1,
@@ -119,7 +122,7 @@ a {
     text-decoration-skip-ink: auto;
 
     &:hover,
-    &:focus {
+    &:focus-visible {
       color: var(--green);
     }
   }
@@ -132,9 +135,14 @@ a {
   text-decoration-skip-ink: auto;
 
   &:hover,
-  &:focus {
+  &:focus-visible {
     color: var(--green);
   }
+}
+
+:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 4px;
 }
 
 p {
@@ -144,9 +152,4 @@ p {
   &:last-of-type {
     margin: 0;
   }
-}
-
-::selection {
-  color: var(--lightest-slate);
-  background-color: var(--green-tint);
 }

@@ -40,7 +40,6 @@ export const metadata: Metadata = {
       { rel: "mask-icon", url: "/safari-pinned-tab.svg", color: MAIN_COLOR },
     ],
   },
-  manifest: "/site.webmanifest",
   formatDetection: {
     telephone: false,
     address: false,

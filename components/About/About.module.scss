@@ -1,20 +1,6 @@
-@keyframes fade-in {
-  0% {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .aboutSection {
   @media screen and (prefers-reduced-motion: reduce) {
     max-width: 900px;
-    min-height: 80vh;
-    animation: none;
 
     .inner {
       @media (width <= 768px) {
@@ -28,8 +14,6 @@
   }
 
   max-width: 900px;
-  min-height: 80vh;
-  animation: fade-in 1s ease forwards;
 
   .inner {
     @media (width <= 768px) {
@@ -105,6 +89,28 @@
   }
 }
 
+.chipList {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  li {
+    padding: 6px 12px;
+    border: 1px solid rgb(204 214 246 / 22%);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: var(--fz-xs);
+    line-height: 1.4;
+    color: var(--lightest-slate);
+    background-color: rgb(4 255 170 / 6%);
+
+    &::before {
+      content: none;
+    }
+  }
+}
+
 .pic {
   @media (width <= 768px) {
     margin: 0 auto 30px;
@@ -118,6 +124,11 @@
     font-size: 0;
 
     .img {
+      @media (hover: none) {
+        filter: none;
+        mix-blend-mode: normal;
+      }
+
       position: relative;
       border-radius: 50%;
       height: auto;
@@ -126,7 +137,7 @@
     }
 
     &:hover,
-    &:focus {
+    &:focus-visible {
       .img {
         filter: none;
         mix-blend-mode: normal;

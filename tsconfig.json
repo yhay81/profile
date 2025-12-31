@@ -2,12 +2,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@components": [
-        "./components"
-      ],
-      "@lib": [
-        "./lib"
-      ]
+      "@components": ["./components"],
+      "@lib": ["./lib"]
     },
     /* Visit https://aka.ms/tsconfig to read more about this file */
     /* Projects */
@@ -117,7 +113,5 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

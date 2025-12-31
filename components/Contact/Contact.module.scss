@@ -5,7 +5,7 @@
     margin: 0 auto 50px;
   }
 
-  max-width: 640px;
+  max-width: 900px;
   margin: 0 auto 100px;
   text-align: left;
   display: flex;
@@ -42,24 +42,21 @@
   }
 
   .links {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 12px;
+    width: 100%;
   }
 
   .link {
     @include button;
 
-    @media (width <= 480px) {
-      width: 100%;
-    }
-
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 8px;
     font-size: var(--fz-md);
-    width: 180px;
+    width: 100%;
   }
 
   svg {

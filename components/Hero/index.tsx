@@ -6,8 +6,7 @@ import { useReducedMotion } from "../hooks/useReducedMotion";
 import styles from "./Hero.module.scss";
 
 const WAIT_TIME = 500;
-const HERO_KICKER_TEXT =
-  "Hello, I'm Yusuke — a software engineer in Tokyo.";
+const HERO_KICKER_TEXT = "Hello, I'm Yusuke — a software engineer in Tokyo.";
 
 const Hero: React.FC = () => {
   const shouldAnimate = !useReducedMotion();
@@ -16,10 +15,10 @@ const Hero: React.FC = () => {
     <section className={styles.heroSection}>
       {shouldAnimate ? (
         <TypeAnimation
+          className={styles.kicker}
           sequence={["Hello, ", WAIT_TIME, HERO_KICKER_TEXT]}
           speed={70}
           wrapper="p"
-          className={styles.kicker}
         />
       ) : (
         <p className={styles.kicker}>{HERO_KICKER_TEXT}</p>
@@ -44,7 +43,7 @@ const Hero: React.FC = () => {
         </a>
       </div>
 
-      <a className={styles.arrow} href="#about" aria-label="Scroll to About">
+      <a aria-label="Scroll to About" className={styles.arrow} href="#about">
         <span className={styles.arrowLabel}>Scroll</span>
       </a>
     </section>
