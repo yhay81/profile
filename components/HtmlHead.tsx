@@ -14,7 +14,7 @@ const DEFAULT_OG_IMAGE: OgImage = {
   width: 420,
   height: 420,
   type: "image/webp",
-  url: "/me.webp",
+  url: "https://yusuke-hayashi.com/me.webp",
 };
 
 const HtmlHead: React.FC<Props> = ({

@@ -1,8 +1,5 @@
-import { GTM_ID, HEAD_KEYS, MAIN_COLOR } from "@lib";
+import { HEAD_KEYS, MAIN_COLOR } from "@lib";
 import Document, { Head, Html, Main, NextScript } from "next/document";
-import Script from "next/script";
-
-const GTM_SCRIPT = `function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","${GTM_ID}");`;
 
 export default class MyDocument extends Document {
   public render(): JSX.Element {
@@ -66,18 +63,6 @@ export default class MyDocument extends Document {
             content="general"
             key={HEAD_KEYS.metaRating}
             name={HEAD_KEYS.metaRating}
-          />
-
-          <Script
-            async
-            src={`https://www.googletagmanager.com/gtag/js?id=${GTM_ID}`}
-            strategy="afterInteractive"
-          />
-          <Script
-            dangerouslySetInnerHTML={{ __html: GTM_SCRIPT }}
-            id="google-analytics"
-            key={HEAD_KEYS.scriptGtagConfig}
-            strategy="afterInteractive"
           />
         </Head>
         <body>
