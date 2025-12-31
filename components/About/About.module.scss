@@ -145,27 +145,11 @@
     font-size: 0;
 
     .img {
-      @media (hover: none) {
-        filter: none;
-        mix-blend-mode: normal;
-      }
-
       position: relative;
       border-radius: 50%;
       height: auto;
-      filter: grayscale(100%) contrast(1.05);
-      mix-blend-mode: luminosity;
     }
 
-    &:hover,
-    &:focus-visible {
-      .img {
-        filter: none;
-        mix-blend-mode: normal;
-      }
-    }
-
-    &::before,
     &::after {
       position: absolute;
       width: 100%;
@@ -174,19 +158,12 @@
       border-radius: 50%;
     }
 
-    &::before {
-      top: 0;
-      left: 0;
-      background-color: var(--green);
-      mix-blend-mode: screen;
-    }
-
     &::after {
       top: -3%;
       left: -3%;
       width: 106%;
       height: 106%;
-      border: 2px solid var(--green);
+      border: 2px solid rgb(var(--neon-blue) / 35%);
     }
   }
 }
