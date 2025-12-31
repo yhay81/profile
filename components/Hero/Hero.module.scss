@@ -2,82 +2,159 @@
 
 @keyframes fade-in {
   0% {
-    opacity: 1;
+    opacity: 0;
+    transform: translateY(6px);
   }
 
   100% {
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
 .heroSection {
   @include flex-center;
 
-  @media (width <= 480px) and (height >= 700px) {
-    padding-bottom: 10vh;
+  @media (width <= 768px) {
+    padding-top: calc(var(--nav-height) + 24px);
   }
 
+  position: relative;
   min-height: 100vh;
-  padding: 0;
+  padding: calc(var(--nav-height) + 40px) 0 110px;
   flex-direction: column;
   align-items: flex-start;
+  gap: 16px;
+}
 
-  p {
-    @media (width <= 480px) {
-      margin: 0 0 20px 2px;
-    }
+.kicker {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: clamp(var(--fz-xxs), 2.2vw, var(--fz-sm));
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--green);
+}
 
-    margin: 0 0 30px 4px;
-    font-family: var(--font-mono);
-    font-size: clamp(var(--fz-sm), 5vw, var(--fz-md));
-    font-weight: 400;
-    line-height: 1.6em;
-    color: var(--green);
+.title {
+  font-size: clamp(2.4rem, 6vw, 4.5rem);
+  line-height: 1.05;
+}
+
+.subtitle {
+  font-size: clamp(1.2rem, 3.2vw, 2rem);
+  font-weight: 500;
+  color: var(--light-slate);
+}
+
+.summary {
+  max-width: 55ch;
+  font-size: clamp(var(--fz-md), calc(1.2vw + 10px), var(--fz-lg));
+  line-height: 1.7;
+  color: var(--slate);
+  margin-top: 8px;
+}
+
+.cta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.primary {
+  @include button;
+
+  font-size: var(--fz-sm);
+  padding: 1rem 1.6rem;
+  color: var(--navy-dark);
+  background-color: var(--green);
+  border-color: transparent;
+  box-shadow: 0 12px 28px rgb(4 255 170 / 22%);
+
+  &:hover,
+  &:focus,
+  &:active {
+    background-color: var(--green);
+    box-shadow: 0 16px 32px rgb(4 255 170 / 30%);
   }
+}
+
+.secondary {
+  font-family: var(--font-mono);
+  font-size: var(--fz-sm);
+  color: var(--lightest-slate);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgb(204 214 246 / 40%);
+  padding-bottom: 2px;
+}
+
+.secondary:hover,
+.secondary:focus {
+  color: var(--green);
+  border-color: var(--green);
 }
 
 .arrow {
   @media screen and (prefers-reduced-motion: reduce) {
-    position: absolute;
-    right: 0;
-    bottom: 40px;
-    left: 0;
-    width: 24px;
-    height: 24px;
-    margin: auto;
-    margin-top: -6px;
-    font-size: 0;
-    border-right: solid 2px var(--lightest-slate);
-    border-bottom: solid 2px var(--lightest-slate);
-    opacity: 0;
-    transform: rotate(45deg);
     animation: none;
-    animation-delay: 2.5s;
+    opacity: 1;
 
-    &:hover,
-    &:focus {
-      transform: translateY(-6px) rotate(45deg);
+    &::after {
+      transition: none;
+    }
+  }
+
+  @media (width <= 768px) {
+    font-size: var(--fz-xs);
+    gap: 10px;
+    bottom: 16px;
+
+    &::after {
+      width: 22px;
+      height: 22px;
     }
   }
 
   position: absolute;
   right: 0;
-  bottom: 40px;
+  bottom: 28px;
   left: 0;
-  width: 24px;
-  height: 24px;
-  margin: auto;
-  margin-top: -6px;
-  font-size: 0;
-  border-right: solid 2px var(--lightest-slate);
-  border-bottom: solid 2px var(--lightest-slate);
+  width: fit-content;
+  margin: 0 auto;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: var(--fz-xxs);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--light-slate);
   opacity: 0;
-  transform: rotate(45deg);
-  animation: fade-in 0.5s ease forwards;
-  animation-delay: 2.5s;
+  animation: fade-in 0.6s ease forwards;
+  animation-delay: 2s;
+
+  &::after {
+    content: "";
+    width: 18px;
+    height: 18px;
+    border-right: solid 2px var(--lightest-slate);
+    border-bottom: solid 2px var(--lightest-slate);
+    transform: rotate(45deg);
+    transition: transform 0.2s ease;
+  }
 
   &:hover,
   &:focus {
-    transform: translateY(-6px) rotate(45deg);
+    &::after {
+      transform: translateY(-6px) rotate(45deg);
+    }
   }
+}
+
+.arrowLabel {
+  line-height: 1;
 }

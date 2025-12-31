@@ -2,13 +2,26 @@ import "../styles/global.scss";
 
 import { GTM_ID, HEAD_KEYS, MAIN_COLOR } from "@lib";
 import type { Metadata, Viewport } from "next";
-import { Fira_Code } from "next/font/google";
+import { Fira_Code, Space_Grotesk, Work_Sans } from "next/font/google";
 import Script from "next/script";
 import type { ReactNode } from "react";
 
 const firaCode = Fira_Code({
   subsets: ["latin"],
   variable: "--font-mono",
+  display: "swap",
+});
+
+const workSans = Work_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-display",
+  display: "swap",
 });
 
 const SITE_URL = "https://yusuke-hayashi.com";
@@ -49,7 +62,10 @@ export const viewport: Viewport = {
 const GTM_SCRIPT = `function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","${GTM_ID}");`;
 
 const RootLayout = ({ children }: { readonly children: ReactNode }) => (
-  <html className={firaCode.variable} lang="en">
+  <html
+    className={`${firaCode.variable} ${workSans.variable} ${spaceGrotesk.variable}`}
+    lang="en"
+  >
     <body>
       {children}
 

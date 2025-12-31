@@ -1,7 +1,12 @@
 @mixin button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   padding: 1.25rem 1.75rem;
   font-family: var(--font-mono);
   font-size: var(--fz-xs);
+  font-weight: 600;
   line-height: 1;
   color: var(--green);
   text-decoration: none;

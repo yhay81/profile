@@ -10,7 +10,7 @@ const withPwa = require("next-pwa")({
   disable: !IS_PROD,
 });
 
-const nextConfig = {
+const nextConfig = withPwa({
   output: "export",
   images: {
     unoptimized: true,
@@ -21,6 +21,8 @@ const nextConfig = {
     includePaths: [path.join(__dirname, "styles")],
   },
   turbopack: {},
-};
+});
 
-module.exports = withPwa(nextConfig);
+module.exports = {
+  ...nextConfig,
+};

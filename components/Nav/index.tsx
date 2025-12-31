@@ -8,7 +8,7 @@ const Nav: React.FC = () => (
       <Link className={styles.title} href="/">
         <span className={styles.prompt}>❯</span>
 
-        <h1>Yusuke Hayashi</h1>
+        <span className={styles.name}>Yusuke Hayashi</span>
       </Link>
     </nav>
   </header>

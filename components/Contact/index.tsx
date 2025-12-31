@@ -3,10 +3,13 @@
 import { Icon } from "@components";
 import { RevealWrapper } from "next-reveal";
 
+import { useReducedMotion } from "../hooks/useReducedMotion";
 import styles from "./Contact.module.scss";
 
-const Contact: React.FC = () => (
-  <RevealWrapper>
+const Contact: React.FC = () => {
+  const shouldAnimate = !useReducedMotion();
+
+  const content = (
     <section className={styles.contactSection} id="contact">
       <h2 className={styles.title}>Contact</h2>
 
@@ -15,22 +18,36 @@ const Contact: React.FC = () => (
         best to get back to you!
       </p>
 
-      <a className={styles.link} href="mailto:yusuke8h@gmail.com">
-        <Icon ariaId="contact-mail" name="Mail" />
-        Email
-      </a>
+      <div className={styles.links}>
+        <a className={styles.link} href="mailto:yusuke8h@gmail.com">
+          <Icon ariaId="contact-mail" name="Mail" />
+          Email
+        </a>
 
-      <a className={styles.link} href="https://www.linkedin.com/in/yhay81/">
-        <Icon ariaId="contact-linkedin" name="Linkedin" />
-        LinkedIn
-      </a>
+        <a className={styles.link} href="https://github.com/yhay81">
+          <Icon ariaId="contact-github" name="GitHub" />
+          GitHub
+        </a>
 
-      <a className={styles.link} href="https://twitter.com/yhay81">
-        <Icon ariaId="contact-twitter" name="Twitter" />
-        Twitter
-      </a>
+        <a className={styles.link} href="https://www.linkedin.com/in/yhay81/">
+          <Icon ariaId="contact-linkedin" name="Linkedin" />
+          LinkedIn
+        </a>
+
+        <a className={styles.link} href="https://zenn.dev/yhay81">
+          <Icon ariaId="contact-zenn" name="Zenn" />
+          Zenn
+        </a>
+
+        <a className={styles.link} href="https://twitter.com/yhay81">
+          <Icon ariaId="contact-twitter" name="Twitter" />
+          Twitter
+        </a>
+      </div>
     </section>
-  </RevealWrapper>
-);
+  );
+
+  return shouldAnimate ? <RevealWrapper>{content}</RevealWrapper> : content;
+};
 
 export { Contact };

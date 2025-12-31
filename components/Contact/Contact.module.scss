@@ -5,30 +5,66 @@
     margin: 0 auto 50px;
   }
 
-  max-width: 600px;
+  max-width: 640px;
   margin: 0 auto 100px;
-  text-align: center;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 
   .title {
     margin-bottom: 40px;
     font-family: var(--font-mono);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+
+    &::after {
+      display: inline-block;
+      width: clamp(120px, 22vw, 220px);
+      height: 1px;
+      content: "";
+      background: linear-gradient(
+        90deg,
+        rgb(4 255 170 / 55%),
+        rgb(204 214 246 / 12%),
+        transparent
+      );
+    }
   }
 
   .text {
-    margin-bottom: 40px;
+    max-width: 50ch;
+    margin: 0 0 32px;
+    color: var(--light-slate);
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
   }
 
   .link {
     @include button;
 
+    @media (width <= 480px) {
+      width: 100%;
+    }
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     font-size: var(--fz-md);
-    margin: 12px 10px 0;
-    width: 160px;
+    width: 180px;
   }
 
   svg {
     width: var(--fz-md);
     height: var(--fz-md);
-    margin: 0 8px 0 0;
+    margin: 0;
   }
 }

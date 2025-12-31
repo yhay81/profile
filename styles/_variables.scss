@@ -1,12 +1,13 @@
 :root {
   --navy: #042444;
+  --navy-dark: #031a32;
+  --navy-light: #0b355c;
   --slate: #8892b0;
   --light-slate: #a8b2d1;
   --lightest-slate: #ccd6f6;
   --white: #efffff;
   --green: #04ffaa;
-  --green-tint: rgb(100 255 218 / 10%);
-  --font-sans: "Helvetica Neue", helvetica, arial, sans-serif;
+  --green-tint: rgb(4 255 170 / 12%);
   --fz-xxs: 12px;
   --fz-xs: 13px;
   --fz-sm: 14px;
@@ -14,7 +15,7 @@
   --fz-lg: 18px;
   --fz-xl: 20px;
   --fz-xxl: 22px;
-  --border-radius: 4px;
+  --border-radius: 6px;
   --nav-height: 60px;
   --transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
