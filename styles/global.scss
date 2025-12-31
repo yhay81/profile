@@ -50,6 +50,11 @@ body {
       transparent 160px
     ),
     radial-gradient(
+      700px circle at 18% 10%,
+      rgb(var(--neon-blue) / 18%),
+      transparent 60%
+    ),
+    radial-gradient(
       600px circle at 15% 5%,
       rgb(4 255 170 / 10%),
       transparent 60%

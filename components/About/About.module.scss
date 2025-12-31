@@ -40,26 +40,47 @@
 }
 
 .title {
+  margin: 0 0 40px;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--lightest-slate);
+  text-shadow: 0 10px 30px rgb(var(--neon-blue) / 10%);
+}
+
+.sectionLabel {
   display: inline-flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 48px;
+  gap: 14px;
+  margin: 0 0 16px;
   font-family: var(--font-mono);
-  letter-spacing: 0.2em;
+  font-size: var(--fz-xxs);
+  letter-spacing: 0.24em;
   text-transform: uppercase;
+  color: var(--light-slate);
 
   &::after {
     display: inline-block;
-    width: clamp(120px, 22vw, 220px);
+    width: clamp(120px, 22vw, 260px);
     height: 1px;
     content: "";
     background: linear-gradient(
       90deg,
-      rgb(4 255 170 / 55%),
+      rgb(var(--neon-blue) / 55%),
       rgb(204 214 246 / 12%),
       transparent
     );
   }
+}
+
+.sectionNo {
+  font-size: var(--fz-xs);
+  letter-spacing: 0.2em;
+  color: var(--green);
+}
+
+.sectionText {
+  letter-spacing: 0.28em;
 }
 
 .hello {

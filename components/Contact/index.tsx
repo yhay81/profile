@@ -6,6 +6,11 @@ import styles from "./Contact.module.scss";
 
 const Contact: React.FC = () => (
   <section className={styles.contactSection} id="contact">
+    <p className={styles.sectionLabel}>
+      <span className={styles.sectionNo}>02</span>
+      <span className={styles.sectionText}>Contact</span>
+    </p>
+
     <h2 className={styles.title}>Contact</h2>
 
     <p className={styles.text}>

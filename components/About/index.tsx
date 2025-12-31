@@ -7,6 +7,11 @@ import styles from "./About.module.scss";
 
 const About: React.FC = () => (
   <section className={styles.aboutSection} id="about">
+    <p className={styles.sectionLabel}>
+      <span className={styles.sectionNo}>01</span>
+      <span className={styles.sectionText}>About</span>
+    </p>
+
     <h2 className={styles.title}>About Me</h2>
 
     <div className={styles.inner}>
