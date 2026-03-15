@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 
-import Me from "../../public/me.webp";
 import styles from "./About.module.scss";
 
 const EXPERIENCE = [
@@ -92,7 +91,13 @@ const About: React.FC = () => (
     <div className={styles.inner}>
       <div className={styles.pic}>
         <div className={styles.wrapper}>
-          <Image alt="Yusuke Hayashi" className={styles.img} src={Me} />
+          <Image
+            alt="Yusuke Hayashi"
+            className={styles.img}
+            height={280}
+            src="/me.webp"
+            width={280}
+          />
         </div>
       </div>
 
