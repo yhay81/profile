@@ -1,6 +1,8 @@
 import { PROFILE_URL } from "@lib";
 import type { MetadataRoute } from "next";
 
+export const dynamic = "force-static";
+
 const sitemap = (): MetadataRoute.Sitemap => [
   {
     url: PROFILE_URL,
