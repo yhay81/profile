@@ -74,6 +74,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* stylelint-disable-next-line plugin/no-unsupported-browser-features */
+::selection {
+  color: var(--lightest-slate);
+  background-color: rgb(4 255 170 / 18%);
+}
+
 main {
   width: 100%;
   max-width: 1600px;
@@ -85,7 +91,7 @@ main {
 section {
   position: relative;
   max-width: 1000px;
-  padding: clamp(80px, 12vh, 120px) 0;
+  padding: clamp(88px, 11vh, 130px) 0;
   margin: 0 auto;
   scroll-margin-top: calc(var(--nav-height) + 24px);
 }

@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
+
 const js = require("@eslint/js");
 const nextCoreWebVitals = require("eslint-config-next/core-web-vitals");
-const tsPlugin = require("@typescript-eslint/eslint-plugin");
+const nextTypeScript = require("eslint-config-next/typescript");
 const tsParser = require("@typescript-eslint/parser");
 const reactPlugin = require("eslint-plugin-react");
 const reactHooksPlugin = require("eslint-plugin-react-hooks");
@@ -10,12 +12,6 @@ const promisePlugin = require("eslint-plugin-promise");
 const eslintCommentsPlugin = require("eslint-plugin-eslint-comments");
 const simpleImportSortPlugin = require("eslint-plugin-simple-import-sort");
 const prettierConfig = require("eslint-config-prettier");
-
-const tsAllConfigs = tsPlugin.configs["flat/all"].map((config) => {
-  const rest = { ...config };
-  delete rest.plugins;
-  return rest.files ? rest : { ...rest, files: ["**/*.{ts,tsx,mts,cts}"] };
-});
 
 const importRecommendedRules = importPlugin.flatConfigs.recommended.rules;
 const reactHooksRecommendedRules =
@@ -27,7 +23,7 @@ const promiseRecommendedRules = promisePlugin.configs["flat/recommended"].rules;
 module.exports = [
   js.configs.recommended,
   ...nextCoreWebVitals,
-  ...tsAllConfigs,
+  ...nextTypeScript,
   {
     files: ["**/*.{ts,tsx,mts,cts}"],
     languageOptions: {
@@ -111,3 +107,5 @@ module.exports = [
     ignores: ["public"],
   },
 ];
+
+/* eslint-enable @typescript-eslint/no-require-imports */

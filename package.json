@@ -2,12 +2,35 @@
   "name": "09090",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@10.26.2",
+  "packageManager": "pnpm@10.32.1",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "stylelint --fix \"**/*.scss\" && eslint . --ext .js,.ts,.tsx --fix && prettier --write --ignore-unknown \"**/*\" && tsc --noEmit"
+    "check": "pnpm lint:style && pnpm lint:eslint && pnpm lint:prettier && pnpm lint:tsc",
+    "lint": "pnpm check",
+    "lint:style": "stylelint \"app/**/*.{css,scss}\" \"components/**/*.{css,scss}\" \"styles/**/*.{css,scss}\" \"styled-system/**/*.{css,scss}\"",
+    "lint:style:fix": "stylelint --fix \"app/**/*.{css,scss}\" \"components/**/*.{css,scss}\" \"styles/**/*.{css,scss}\" \"styled-system/**/*.{css,scss}\"",
+    "lint:eslint": "eslint . --ext .js,.jsx,.ts,.tsx,.mts,.cts,.mjs,.cjs --max-warnings 0",
+    "lint:eslint:fix": "eslint . --ext .js,.jsx,.ts,.tsx,.mts,.cts,.mjs,.cjs --fix",
+    "lint:prettier": "prettier --check .",
+    "lint:prettier:fix": "prettier --write .",
+    "lint:tsc": "tsc --noEmit",
+    "lint-staged": "lint-staged",
+    "security:audit": "pnpm audit --audit-level=high",
+    "fix": "pnpm lint:style:fix && pnpm lint:eslint:fix && pnpm lint:prettier:fix",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs,mts,cts}": [
+      "eslint --fix --max-warnings 0"
+    ],
+    "*.{css,scss}": [
+      "stylelint --fix"
+    ],
+    "*.{json,yml,yaml,md,mdx,html}": [
+      "prettier --write"
+    ]
   },
   "browserslist": [
     "defaults",
@@ -23,21 +46,22 @@
   ],
   "dependencies": {
     "clsx": "^2.1.1",
-    "next": "16.1.1",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
+    "next": "16.1.6",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
     "react-type-animation": "^3.2.0",
     "schema-dts": "^1.1.5"
   },
   "devDependencies": {
-    "@types/node": "25.0.3",
-    "@types/react": "19.2.7",
+    "@eslint/js": "^9.38.0",
+    "@types/node": "25.5.0",
+    "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@types/react-type-animation": "^2.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.51.0",
-    "@typescript-eslint/parser": "^8.51.0",
-    "eslint": "9.39.2",
-    "eslint-config-next": "16.1.1",
+    "@typescript-eslint/eslint-plugin": "^8.57.0",
+    "@typescript-eslint/parser": "^8.57.0",
+    "eslint": "9.38.0",
+    "eslint-config-next": "16.1.6",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-eslint-comments": "^3.2.0",
     "eslint-plugin-import": "^2.32.0",
@@ -46,20 +70,22 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-simple-import-sort": "^12.1.1",
-    "postcss": "^8.5.6",
-    "prettier": "^3.7.4",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "postcss": "^8.5.8",
+    "prettier": "^3.8.1",
     "prop-types": "^15.8.1",
-    "sass": "^1.97.1",
-    "stylelint": "^16.26.1",
-    "stylelint-config-sass-guidelines": "^12.1.0",
-    "stylelint-config-standard": "^39.0.1",
+    "sass": "^1.98.0",
+    "stylelint": "^17.4.0",
+    "stylelint-config-sass-guidelines": "^13.0.0",
+    "stylelint-config-standard": "^40.0.0",
     "stylelint-css-modules": "^1.2.2",
-    "stylelint-declaration-block-no-ignored-properties": "^2.8.0",
-    "stylelint-declaration-strict-value": "^1.10.11",
-    "stylelint-high-performance-animation": "^1.11.0",
-    "stylelint-no-unsupported-browser-features": "^8.0.5",
-    "stylelint-order": "^7.0.1",
-    "stylelint-use-nesting": "^6.0.1",
+    "stylelint-declaration-block-no-ignored-properties": "^3.0.0",
+    "stylelint-declaration-strict-value": "^1.11.1",
+    "stylelint-high-performance-animation": "^2.0.0",
+    "stylelint-no-unsupported-browser-features": "^8.1.1",
+    "stylelint-order": "^8.1.1",
+    "stylelint-use-nesting": "^6.0.2",
     "typescript": "5.9.3"
   }
 }

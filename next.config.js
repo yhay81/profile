@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+/* eslint-disable @typescript-eslint/no-require-imports */
 const path = require("path");
 
 const nextConfig = {
@@ -15,3 +16,5 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
+
+/* eslint-enable @typescript-eslint/no-require-imports */

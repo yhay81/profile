@@ -1,8 +1,9 @@
 import { About, Contact, Hero, Layout } from "@components";
+import { PROFILE_EMAIL, PROFILE_NAME, PROFILE_URL } from "@lib";
 import type { Metadata } from "next";
 import type { ProfilePage, WithContext } from "schema-dts";
 
-const SITE_TITLE = "Yusuke Hayashi";
+const SITE_TITLE = PROFILE_NAME;
 const SITE_DESCRIPTION =
   "This is a profile page of Yusuke Hayashi. I am a software engineer in Tokyo, Japan.";
 
@@ -40,9 +41,9 @@ const INDEX_STRUCTURED_DATA: WithContext<ProfilePage> = {
   "@type": "ProfilePage",
   author: {
     "@type": "Person",
-    email: "yusuke8h@gmail.com",
+    email: PROFILE_EMAIL,
     name: SITE_TITLE,
-    url: "https://yusuke-hayashi.com",
+    url: PROFILE_URL,
     givenName: "Yusuke",
     familyName: "Hayashi",
   },

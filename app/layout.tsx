@@ -1,6 +1,6 @@
 import "../styles/global.scss";
 
-import { GTM_ID, HEAD_KEYS, MAIN_COLOR } from "@lib";
+import { GTM_ID, HEAD_KEYS, MAIN_COLOR, PROFILE_URL } from "@lib";
 import type { Metadata, Viewport } from "next";
 import { Fira_Code, Space_Grotesk, Work_Sans } from "next/font/google";
 import Script from "next/script";
@@ -24,10 +24,8 @@ const spaceGrotesk = Space_Grotesk({
   display: "swap",
 });
 
-const SITE_URL = "https://yusuke-hayashi.com";
-
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
+  metadataBase: new URL(PROFILE_URL),
   icons: {
     icon: [
       { url: "/favicon.ico" },
