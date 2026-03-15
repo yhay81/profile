@@ -14,30 +14,30 @@ const EXPERIENCE = [
     description:
       "Leading AI adoption consulting for teams and founders by planning, piloting, and scaling GenAI solutions.",
   },
-	  {
-	    period: "2025~2026",
-	    periodStartIso: "2025-01-01",
-	    periodEndIso: "2026-12-31",
-	    role: "Contract Engineer",
-	    company: "GenerativeX",
-	    description:
-	      "Supported consulting initiatives by providing engineering execution support for AI adoption and practical rollout planning.",
-	  },
-	  {
-	    period: "2024~2025",
-	    periodStartIso: "2024-01-01",
-	    periodEndIso: "2025-12-31",
-	    role: "Contract Engineer",
-	    company: "LayerX",
+  {
+    period: "2025~2026",
+    periodStartIso: "2025-01-01",
+    periodEndIso: "2026-12-31",
+    role: "Contract Engineer",
+    company: "GenerativeX",
+    description:
+      "Supported consulting initiatives by providing engineering execution support for AI adoption and practical rollout planning.",
+  },
+  {
+    period: "2024~2025",
+    periodStartIso: "2024-01-01",
+    periodEndIso: "2025-12-31",
+    role: "Contract Engineer",
+    company: "LayerX",
     description:
       "Delivered GenAI features with production-safe rollout practices and measurable quality metrics.",
   },
-	  {
-	    period: "2021~2022",
-	    periodStartIso: "2021-01-01",
-	    periodEndIso: "2022-12-31",
-	    role: "Executive Dev Manager",
-	    company: "QuickWork",
+  {
+    period: "2021~2022",
+    periodStartIso: "2021-01-01",
+    periodEndIso: "2022-12-31",
+    role: "Executive Dev Manager",
+    company: "QuickWork",
     description:
       "Led feature prioritization, delivery quality, and cloud-native architecture alignment.",
   },
