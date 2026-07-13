@@ -16,6 +16,12 @@ const sitemap = (): MetadataRoute.Sitemap => [
     changeFrequency: "yearly",
     priority: 0.5,
   },
+  {
+    url: `${PROFILE_URL}/siwe`,
+    lastModified: new Date("2026-07-14"),
+    changeFrequency: "yearly",
+    priority: 0.5,
+  },
 ];
 
 export default sitemap;

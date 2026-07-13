@@ -50,7 +50,8 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-type-animation": "^3.2.0",
-    "schema-dts": "^1.1.5"
+    "schema-dts": "^1.1.5",
+    "viem": "^2.55.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",

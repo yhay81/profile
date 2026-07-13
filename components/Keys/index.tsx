@@ -103,7 +103,8 @@ const Keys: React.FC = () => (
     <p className={styles.text}>
       This key is bidirectionally linked to github.com/yhay81 and my domains
       (haya-inc.co.jp, yusuke-hayashi.com) through proofs verifiable on
-      Keyoxide.
+      Keyoxide. The same identity extends on-chain — see the{" "}
+      <a href="/siwe">Sign-In with Ethereum demo</a>.
     </p>
 
     <h2 className={styles.heading}>Previous key</h2>
