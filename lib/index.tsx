@@ -37,6 +37,22 @@ const PROFILE_SOCIAL_LINKS = [
     description: "Articles and notes",
     external: true,
   },
+  {
+    id: "social-pgp",
+    name: "PGP",
+    icon: "Key",
+    url: "/pgp-key.asc",
+    description: "B22B 98AB B2D5 0330 7AB6 A316 0718 EFA6 506B B669",
+    external: false,
+  },
+  {
+    id: "social-keyoxide",
+    name: "Keyoxide",
+    icon: "Key",
+    url: "https://keyoxide.org/b22b98abb2d503307ab6a3160718efa6506bb669",
+    description: "Verified identity proofs",
+    external: true,
+  },
 ] as const;
 
 type ProfileSocialIconName = (typeof PROFILE_SOCIAL_LINKS)[number]["icon"];

@@ -1,0 +1,17 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Contact: mailto:yusuke8h@gmail.com
+Contact: mailto:yusuke@haya.company
+Expires: 2027-07-13T00:00:00.000Z
+Encryption: https://yusuke-hayashi.com/pgp-key.asc
+Preferred-Languages: ja, en
+Canonical: https://yusuke-hayashi.com/.well-known/security.txt
+-----BEGIN PGP SIGNATURE-----
+
+iJEEARYKADkWIQQMFT/+KwJ0NlrLG/Gu+ob6goxSxQUCalRkHxsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMiwwLDMACgkQrvqG+oKMUsU66wEA02abQkMqLFNaWA+7domn
+TEEqy6ZXlXIUFAmQJJxIWhEBAN+VjaSA+8+azAMxLtQCgUXcPQoo5WAby9GJpt7W
+tIEI
+=vvbS
+-----END PGP SIGNATURE-----

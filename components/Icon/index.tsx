@@ -2,6 +2,7 @@ import type { ProfileIconName } from "@lib";
 
 import { IconBook } from "./book";
 import { IconGitHub } from "./github";
+import { IconKey } from "./key";
 import { IconLinkedin } from "./linkedin";
 import { IconMail } from "./mail";
 import { IconTwitter } from "./twitter";
@@ -10,6 +11,7 @@ const ICON_COMPONENTS: Readonly<
   Record<ProfileIconName, React.FC<{ readonly ariaId?: string }>>
 > = {
   GitHub: IconGitHub,
+  Key: IconKey,
   Linkedin: IconLinkedin,
   Twitter: IconTwitter,
   Mail: IconMail,
