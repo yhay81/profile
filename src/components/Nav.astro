@@ -45,12 +45,6 @@ const { currentPath } = Astro.props;
   }
 
   .header {
-    @media (prefers-reduced-motion: reduce) {
-      opacity: 1;
-      animation: none;
-      transform: none;
-    }
-
     /* ページ遷移中もヘッダーを連続した要素としてモーフィングさせる */
     view-transition-name: site-header;
     position: fixed;
@@ -63,12 +57,22 @@ const { currentPath } = Astro.props;
     padding: 0 var(--page-padding);
     border-bottom: 1px solid var(--border-subtle);
     background-color: var(--scrim);
-    opacity: 0;
-    animation: nav-in 1s var(--ease-out) 0.4s forwards;
-    transform: translateY(-16px);
 
     /* stylelint-disable-next-line plugin/no-unsupported-browser-features */
     backdrop-filter: blur(12px);
+  }
+
+  /* 登場演出はセッション初回のみ(Base.astro が data-first-visit を付与) */
+  :global(html[data-first-visit]) .header {
+    @media (prefers-reduced-motion: reduce) {
+      opacity: 1;
+      animation: none;
+      transform: none;
+    }
+
+    opacity: 0;
+    animation: nav-in 1s var(--ease-out) 0.4s forwards;
+    transform: translateY(-16px);
   }
 
   .nav {

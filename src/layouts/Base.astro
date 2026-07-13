@@ -36,6 +36,14 @@ const speculationRules = JSON.stringify({
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <script is:inline>
+      // 登場アニメーションはセッション初回のみ(遷移・リロードごとの再生は UX を損なう)。
+      // 描画前に同期実行するため head 内に置く(FOUC なし)。
+      if (!sessionStorage.getItem("visited")) {
+        document.documentElement.dataset.firstVisit = "";
+        sessionStorage.setItem("visited", "1");
+      }
+    </script>
     <title>{title}</title>
     <meta content={description} name="description" />
     <link href={canonical} rel="canonical" />

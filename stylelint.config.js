@@ -11,6 +11,13 @@ export default {
     {
       files: ["**/*.astro"],
       customSyntax: "postcss-html",
+      rules: {
+        // :global() は Astro の scoped style がサポートする固有セレクタ
+        "selector-pseudo-class-no-unknown": [
+          true,
+          { ignorePseudoClasses: ["global"] },
+        ],
+      },
     },
   ],
   rules: {

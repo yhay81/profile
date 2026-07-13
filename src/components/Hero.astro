@@ -372,11 +372,6 @@ const totalSeconds = TYPED_LINES.length * SECONDS_PER_LINE;
       display: none;
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      opacity: 1;
-      animation: none;
-    }
-
     position: absolute;
     right: 0;
     bottom: 28px;
@@ -390,8 +385,6 @@ const totalSeconds = TYPED_LINES.length * SECONDS_PER_LINE;
     color: var(--color-text-soft);
     text-transform: uppercase;
     letter-spacing: 0.3em;
-    opacity: 0;
-    animation: hero-fade-in 0.6s var(--ease-out) 2s forwards;
 
     &::after {
       width: 18px;
@@ -407,5 +400,16 @@ const totalSeconds = TYPED_LINES.length * SECONDS_PER_LINE;
     &:focus-visible::after {
       transform: rotate(45deg) translate(3px, 3px);
     }
+  }
+
+  /* 登場演出はセッション初回のみ */
+  :global(html[data-first-visit]) .arrow {
+    @media (prefers-reduced-motion: reduce) {
+      opacity: 1;
+      animation: none;
+    }
+
+    opacity: 0;
+    animation: hero-fade-in 0.6s var(--ease-out) 2s forwards;
   }
 </style>
