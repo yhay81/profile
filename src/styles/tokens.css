@@ -1,0 +1,88 @@
+/*
+ * Design tokens — single source of truth.
+ * Colors are authored in OKLCH; every translucent variation is derived
+ * with color-mix() so no raw rgb()/hex literals appear in components.
+ */
+
+@property --gradient-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 170deg;
+}
+
+:root {
+  /* ---- Color primitives (oklch) ---- */
+  --color-bg: oklch(25.78% 0.0704 252.05deg); /* deep navy */
+  --color-bg-deep: oklch(21.47% 0.0559 251.35deg);
+  --color-accent: oklch(88.26% 0.199 160.1deg); /* neon green */
+  --color-info: oklch(79.15% 0.1258 233.72deg); /* neon blue */
+  --color-violet: oklch(67.42% 0.1885 291.71deg);
+  --color-danger: oklch(71.16% 0.1812 22.84deg);
+  --color-text: oklch(66.24% 0.0461 270.63deg); /* slate */
+  --color-text-soft: oklch(76.6% 0.0458 271.2deg);
+  --color-text-strong: oklch(87.86% 0.0455 271.71deg);
+
+  /* ---- Derived surfaces & lines (color-mix) ---- */
+  --surface-raised: color-mix(
+    in oklab,
+    var(--color-text-strong) 4%,
+    transparent
+  );
+  --surface-subtle: color-mix(
+    in oklab,
+    var(--color-text-strong) 2%,
+    transparent
+  );
+  --border-subtle: color-mix(
+    in oklab,
+    var(--color-text-strong) 14%,
+    transparent
+  );
+  --border-accent: color-mix(in oklab, var(--color-accent) 30%, transparent);
+  --accent-tint: color-mix(in oklab, var(--color-accent) 12%, transparent);
+  --accent-glow: color-mix(in oklab, var(--color-accent) 8%, transparent);
+  --info-glow: color-mix(in oklab, var(--color-info) 35%, transparent);
+  --scrim: color-mix(in oklab, var(--color-bg-deep) 85%, transparent);
+
+  /* ---- Typography ---- */
+  --font-sans: "Work Sans Variable", system-ui, sans-serif;
+  --font-mono: "Fira Code Variable", ui-monospace, monospace;
+  --font-display: "Space Grotesk Variable", var(--font-sans);
+
+  /* Fluid type scale (minor third-ish, clamped) */
+  --text-2xs: clamp(0.72rem, 0.7rem + 0.1vw, 0.78rem);
+  --text-xs: clamp(0.79rem, 0.77rem + 0.12vw, 0.86rem);
+  --text-sm: clamp(0.88rem, 0.85rem + 0.15vw, 0.95rem);
+  --text-base: clamp(1rem, 0.96rem + 0.2vw, 1.09rem);
+  --text-lg: clamp(1.13rem, 1.07rem + 0.28vw, 1.27rem);
+  --text-xl: clamp(1.44rem, 1.33rem + 0.55vw, 1.72rem);
+  --text-2xl: clamp(1.8rem, 1.55rem + 1.25vw, 2.5rem);
+  --text-display: clamp(2.4rem, 1.8rem + 3vw, 4.2rem);
+
+  /* ---- Spacing scale ---- */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2.5rem;
+  --space-xl: 4rem;
+  --space-2xl: 6rem;
+
+  /* ---- Radii ---- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-full: 999px;
+
+  /* ---- Layout ---- */
+  --page-padding: clamp(24px, 8vw, 150px);
+  --content-max: 900px;
+  --nav-height: 60px;
+
+  /* ---- Motion ---- */
+  --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-swift: cubic-bezier(0.645, 0.045, 0.355, 1);
+  --dur-fast: 150ms;
+  --dur-base: 250ms;
+  --dur-slow: 500ms;
+}

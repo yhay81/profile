@@ -1,0 +1,259 @@
+---
+import Icon from "@/components/Icon.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import { PROFILE_EMAIL, SOCIAL_LINKS } from "@/lib/site";
+---
+
+<section class="contact" id="contact">
+  <SectionHeader
+    accent="violet"
+    label="Contact"
+    level={2}
+    no="02"
+    title="Contact"
+  />
+
+  <p class="text">
+    Whether you have a question or just want to say hi, I'll try my best to get
+    back to you.
+  </p>
+
+  <div class="emailBlock">
+    <a class="emailCard" href={`mailto:${PROFILE_EMAIL}`}>
+      <Icon name="mail" title="Email" />
+      <span class="emailText">
+        <span class="emailAddress">{PROFILE_EMAIL}</span>
+        <span class="emailLabel">Preferred: first contact by email</span>
+      </span>
+    </a>
+
+    <button class="copyButton" data-email={PROFILE_EMAIL} type="button">
+      Copy
+    </button>
+  </div>
+
+  <p aria-atomic="true" aria-live="polite" class="copyStatus" role="status"></p>
+
+  <div class="links">
+    {
+      SOCIAL_LINKS.map((link) => (
+        <a
+          class="link"
+          href={link.url}
+          rel={link.external ? "noopener noreferrer" : undefined}
+          target={link.external ? "_blank" : undefined}
+        >
+          <Icon name={link.icon} title={link.name} />
+          <span class="linkText">
+            <span class="linkName">{link.name}</span>
+            <span class="linkDescription">{link.description}</span>
+          </span>
+        </a>
+      ))
+    }
+  </div>
+</section>
+
+<script>
+  // メールコピー: サイト内で SIWE デモ以外の唯一のクライアント JS
+  const button = document.querySelector<HTMLButtonElement>(".copyButton");
+  const status = document.querySelector<HTMLParagraphElement>(".copyStatus");
+  const RESET_DELAY_MS = 1600;
+  let resetTimer: ReturnType<typeof setTimeout> | undefined;
+
+  const setState = (text: string, isError: boolean) => {
+    if (!button || !status) return;
+    button.textContent = text === "" ? "Copy" : text;
+    status.textContent = text;
+    button.classList.toggle("copyButtonError", isError);
+    clearTimeout(resetTimer);
+    if (text !== "") {
+      resetTimer = setTimeout(() => {
+        setState("", false);
+      }, RESET_DELAY_MS);
+    }
+  };
+
+  button?.addEventListener("click", () => {
+    const email = button.dataset.email ?? "";
+    navigator.clipboard
+      .writeText(email)
+      .then(() => {
+        setState("Copied", false);
+      })
+      .catch(() => {
+        setState("Copy failed", true);
+      });
+  });
+</script>
+
+<style>
+  .contact {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 900px;
+    margin: 0 auto 100px;
+    text-align: left;
+
+    @media (width <= 768px) {
+      margin: 0 auto 50px;
+    }
+  }
+
+  .text {
+    max-width: 50ch;
+    margin: 0 0 32px;
+    color: var(--color-text-soft);
+  }
+
+  .emailBlock {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: stretch;
+    width: 100%;
+    margin: 8px 0 16px;
+
+    @media (width <= 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .emailCard {
+    display: inline-flex;
+    gap: 12px;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    text-align: left;
+    color: var(--color-text-strong);
+    background: linear-gradient(
+      165deg,
+      var(--surface-raised),
+      color-mix(in oklab, var(--color-bg-deep) 30%, transparent)
+    );
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+
+    & svg {
+      flex-shrink: 0;
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+
+  .emailText {
+    display: grid;
+    gap: 4px;
+  }
+
+  .emailAddress {
+    font-size: var(--text-sm);
+  }
+
+  .emailLabel {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    line-height: 1.4;
+    color: var(--color-text-soft);
+  }
+
+  .copyButton {
+    width: 150px;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-text-strong);
+    cursor: pointer;
+    background: linear-gradient(
+      165deg,
+      var(--surface-raised),
+      var(--accent-glow)
+    );
+    border: 1px solid var(--border-accent);
+    border-radius: var(--radius-sm);
+    transition:
+      color var(--dur-base) var(--ease-swift),
+      background-color var(--dur-base) var(--ease-swift);
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-bg-deep);
+      background-color: var(--color-accent);
+    }
+
+    @media (width <= 768px) {
+      width: 100%;
+      padding: 0.8rem;
+    }
+  }
+
+  .copyButtonError {
+    border-color: color-mix(in oklab, var(--color-danger) 60%, transparent);
+  }
+
+  .copyStatus {
+    min-height: 1em;
+    margin: 0 0 14px;
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    line-height: 1.4;
+    color: var(--color-text);
+  }
+
+  .links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+    gap: 10px;
+    width: 100%;
+  }
+
+  .link {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 0.9rem 1rem;
+    text-align: left;
+    color: var(--color-text-strong);
+    background: linear-gradient(
+      165deg,
+      var(--surface-subtle),
+      color-mix(in oklab, var(--color-bg-deep) 18%, transparent)
+    );
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    transition:
+      color var(--dur-base) var(--ease-swift),
+      border-color var(--dur-base) var(--ease-swift);
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-accent);
+      border-color: var(--border-accent);
+    }
+
+    & svg {
+      flex-shrink: 0;
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+
+  .linkText {
+    display: grid;
+    gap: 4px;
+  }
+
+  .linkName {
+    font-size: var(--text-sm);
+    color: var(--color-text-strong);
+  }
+
+  .linkDescription {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    line-height: 1.4;
+    color: var(--color-text-soft);
+  }
+</style>

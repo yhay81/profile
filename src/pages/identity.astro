@@ -1,0 +1,177 @@
+---
+import "@/styles/article.css";
+
+import CodeBlock from "@/components/CodeBlock.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import TrustGraph from "@/components/TrustGraph.astro";
+import Base from "@/layouts/Base.astro";
+import { ETH_ADDRESS, KEYOXIDE_URL, PROFILE_NAME } from "@/lib/site";
+
+const title = `Verifiable Identity | ${PROFILE_NAME}`;
+const description =
+  "How my GitHub, domains, email, OpenPGP key, and Ethereum account are cryptographically linked — and how to verify it yourself.";
+
+interface ProofCard {
+  pair: string;
+  method: string;
+  href: string;
+  linkText: string;
+  external: boolean;
+}
+
+const PROOF_CARDS: ProofCard[] = [
+  {
+    pair: "GitHub ⇄ PGP",
+    method: "Keyoxide proof (gist) + every commit signed",
+    href: KEYOXIDE_URL,
+    linkText: "keyoxide.org",
+    external: true,
+  },
+  {
+    pair: "Domains ⇄ PGP",
+    method: "DNS TXT records (openpgp4fpr) on both domains",
+    href: KEYOXIDE_URL,
+    linkText: "verify via Keyoxide",
+    external: true,
+  },
+  {
+    pair: "Email ⇄ PGP",
+    method: "WKD on haya.company + verified on keys.openpgp.org",
+    href: "/keys",
+    linkText: "key policy",
+    external: false,
+  },
+  {
+    pair: "PGP ⇄ Ethereum",
+    method: "Bidirectional offline signatures (clearsign + EIP-191)",
+    href: "/proofs",
+    linkText: "cross-attestation",
+    external: false,
+  },
+  {
+    pair: "This site ⇄ me",
+    method: "PGP-signed security.txt, timestamped on Bitcoin (OTS)",
+    href: "/.well-known/security.txt",
+    linkText: "security.txt",
+    external: false,
+  },
+  {
+    pair: "Nostr ⇄ this domain",
+    method: "NIP-05 mapping served from .well-known",
+    href: "/.well-known/nostr.json",
+    linkText: "nostr.json",
+    external: false,
+  },
+];
+
+const VERIFY_QUICKSTART = `# 1. Fetch my key via WKD and check the Keyoxide proofs
+gpg --locate-keys yusuke@haya.company
+open ${KEYOXIDE_URL}
+
+# 2. Verify the PGP ⇄ Ethereum cross-attestation
+curl -sO https://yusuke-hayashi.com/proofs/statement.txt.asc
+gpg --verify statement.txt.asc
+cast wallet verify --address ${ETH_ADDRESS} "<message>" "<signature>"`;
+---
+
+<Base description={description} path="/identity" title={title}>
+  <main>
+    <section>
+      <SectionHeader label="Identity" no="00" title="Verifiable Identity" />
+
+      <p class="lead">
+        Anyone can claim a name. This page shows the cryptographic links — DNS
+        records, signed statements, and key notations — that let you verify this
+        site, my code, and my on-chain account all belong to the same person.
+      </p>
+
+      <TrustGraph />
+
+      <h2 class="heading">The proofs</h2>
+
+      <div class="cards">
+        {
+          PROOF_CARDS.map((card) => (
+            <article class="card reveal">
+              <h3 class="cardPair">{card.pair}</h3>
+              <p class="cardMethod">{card.method}</p>
+              <a
+                class="cardLink"
+                href={card.href}
+                rel={card.external ? "noreferrer" : undefined}
+                target={card.external ? "_blank" : undefined}
+              >
+                {card.linkText} ↗
+              </a>
+            </article>
+          ))
+        }
+      </div>
+
+      <h2 class="heading">Verify it yourself</h2>
+
+      <p class="bodyText">
+        Two minutes, no trust required. Details live on{" "}
+        <a href="/keys">/keys</a> and <a href="/proofs">/proofs</a>; the{" "}
+        <a href="/siwe">SIWE demo</a> shows the same Ethereum signature scheme working
+        live in your browser.
+      </p>
+
+      <CodeBlock code={VERIFY_QUICKSTART} />
+
+      <p class="updated">
+        ENS integration is planned once yhay81.eth is registered.
+      </p>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .card {
+    display: grid;
+    gap: 8px;
+    align-content: start;
+    padding: 16px 18px;
+    background: linear-gradient(
+      170deg,
+      var(--surface-raised),
+      color-mix(in oklab, var(--color-bg-deep) 22%, transparent) 65%,
+      color-mix(in oklab, var(--color-accent) 4%, transparent)
+    );
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+  }
+
+  .cardPair {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-accent);
+    letter-spacing: 0.04em;
+  }
+
+  .cardMethod {
+    margin: 0;
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    color: var(--color-text);
+  }
+
+  .cardLink {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-strong);
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-accent);
+    }
+  }
+</style>

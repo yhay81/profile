@@ -1,0 +1,116 @@
+---
+import "@fontsource-variable/work-sans";
+import "@fontsource-variable/fira-code";
+import "@fontsource-variable/space-grotesk";
+import "@/styles/tokens.css";
+import "@/styles/global.css";
+
+import firaCodeWoff2 from "@fontsource-variable/fira-code/files/fira-code-latin-wght-normal.woff2?url";
+import spaceGroteskWoff2 from "@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url";
+import workSansWoff2 from "@fontsource-variable/work-sans/files/work-sans-latin-wght-normal.woff2?url";
+
+import Footer from "@/components/Footer.astro";
+import Nav from "@/components/Nav.astro";
+import Side from "@/components/Side.astro";
+import { GA_ID, MAIN_COLOR, PROFILE_URL } from "@/lib/site";
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  ogImage?: string;
+}
+
+const { title, description, path, ogImage = "/og.png" } = Astro.props;
+const canonical = new URL(path, PROFILE_URL).href;
+const ogImageAbs = new URL(ogImage, PROFILE_URL).href;
+
+// Speculation Rules: 内部リンクをホバー時に prerender(未対応ブラウザは無視)
+const speculationRules = JSON.stringify({
+  prerender: [{ where: { href_matches: "/*" }, eagerness: "moderate" }],
+});
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <script is:inline>
+      // 登場アニメーションはセッション初回のみ(遷移・リロードごとの再生は UX を損なう)。
+      // 描画前に同期実行するため head 内に置く(FOUC なし)。
+      if (!sessionStorage.getItem("visited")) {
+        document.documentElement.dataset.firstVisit = "";
+        sessionStorage.setItem("visited", "1");
+      }
+    </script>
+    <title>{title}</title>
+    <meta content={description} name="description" />
+    <link href={canonical} rel="canonical" />
+    <meta content={MAIN_COLOR} name="theme-color" />
+    <meta content={Astro.generator} name="generator" />
+
+    <link href="/favicon.ico" rel="icon" sizes="32x32" />
+    <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+    <link href="/apple-touch-icon.png" rel="apple-touch-icon" />
+
+    <link
+      as="font"
+      crossorigin="anonymous"
+      href={workSansWoff2}
+      rel="preload"
+      type="font/woff2"
+    />
+    <link
+      as="font"
+      crossorigin="anonymous"
+      href={spaceGroteskWoff2}
+      rel="preload"
+      type="font/woff2"
+    />
+    <link
+      as="font"
+      crossorigin="anonymous"
+      href={firaCodeWoff2}
+      rel="preload"
+      type="font/woff2"
+    />
+
+    <meta content={title} property="og:title" />
+    <meta content={description} property="og:description" />
+    <meta content={canonical} property="og:url" />
+    <meta content="website" property="og:type" />
+    <meta content="en_US" property="og:locale" />
+    <meta content={ogImageAbs} property="og:image" />
+    <meta content="summary_large_image" name="twitter:card" />
+    <meta content={title} name="twitter:title" />
+    <meta content={description} name="twitter:description" />
+    <meta content={ogImageAbs} name="twitter:image" />
+
+    <script is:inline set:html={speculationRules} type="speculationrules" />
+
+    <slot name="head" />
+  </head>
+  <body>
+    <Nav currentPath={path} />
+    <Side />
+    <div id="content">
+      <slot />
+      <Footer />
+    </div>
+
+    <script
+      async
+      is:inline
+      src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
+    <script define:vars={{ gaId: GA_ID }} is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        // eslint-disable-next-line prefer-rest-params
+        window.dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", gaId);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,172 @@
+---
+import Icon from "@/components/Icon.astro";
+import { PROFILE_EMAIL, SOCIAL_LINKS } from "@/lib/site";
+---
+
+<aside class="side">
+  <ul class="socialList">
+    {
+      SOCIAL_LINKS.map((link) => (
+        <li>
+          <a
+            class="socialLink"
+            href={link.url}
+            rel={link.external ? "noopener noreferrer" : undefined}
+            target={link.external ? "_blank" : undefined}
+          >
+            <Icon name={link.icon} title={link.name} />
+            <span class="socialLabel">{link.name}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  <div class="linkWrapper">
+    <a class="emailLink" href={`mailto:${PROFILE_EMAIL}`}>
+      {PROFILE_EMAIL}
+    </a>
+  </div>
+</aside>
+
+<style>
+  @keyframes side-in {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .side {
+    position: fixed;
+    right: 32px;
+    bottom: 0;
+    left: auto;
+    z-index: 10;
+    width: 40px;
+    color: var(--color-text-soft);
+
+    @media (width <= 1080px) {
+      right: 16px;
+    }
+
+    @media (width <= 768px) {
+      display: none;
+    }
+  }
+
+  /* 登場演出はセッション初回のみ */
+  :global(html[data-first-visit]) .side {
+    opacity: 0;
+    animation: side-in 0.8s var(--ease-out) 0.6s forwards;
+    transform: translateY(24px);
+
+    @media (prefers-reduced-motion: reduce) {
+      opacity: 1;
+      animation: none;
+      transform: none;
+    }
+  }
+
+  .socialList {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+
+    li:last-of-type {
+      margin-bottom: 10px;
+    }
+  }
+
+  .socialLabel {
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    right: 42px;
+    display: inline-block;
+    padding: 4px 10px;
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--color-text-strong);
+    white-space: nowrap;
+    background: var(--scrim);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    opacity: 0;
+    transition:
+      opacity var(--dur-base) var(--ease-swift),
+      transform var(--dur-base) var(--ease-swift);
+    transform: translate(8px, -50%);
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+
+  .socialLink {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 12px;
+    color: inherit;
+    border-radius: var(--radius-full);
+    transition:
+      transform var(--dur-base) var(--ease-swift),
+      background-color var(--dur-base) var(--ease-swift);
+
+    &:hover,
+    &:focus-visible {
+      background: var(--surface-raised);
+      transform: translateY(-6px);
+    }
+
+    &:hover .socialLabel,
+    &:focus-visible .socialLabel {
+      opacity: 1;
+      transform: translate(0, -50%);
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+
+  .linkWrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .emailLink {
+    padding: 10px;
+    margin: 0 auto 20px;
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: 0.1em;
+    writing-mode: vertical-rl;
+    transition: transform var(--dur-base) var(--ease-swift);
+
+    &:hover,
+    &:focus-visible {
+      transform: translateY(-6px);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+</style>

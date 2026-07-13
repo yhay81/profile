@@ -1,0 +1,240 @@
+---
+import "@/styles/article.css";
+
+import SectionHeader from "@/components/SectionHeader.astro";
+import Base from "@/layouts/Base.astro";
+import { ETH_ADDRESS, PROFILE_NAME } from "@/lib/site";
+
+const title = `Sign-In with Ethereum Demo | ${PROFILE_NAME}`;
+const description =
+  "An EIP-4361 (Sign-In with Ethereum) demo verified entirely client-side.";
+---
+
+<Base description={description} path="/siwe" title={title}>
+  <main>
+    <section>
+      <SectionHeader
+        label="Sign-In with Ethereum"
+        no="EIP-4361"
+        title="SIWE Demo"
+      />
+
+      <p class="lead">
+        Connects a wallet, constructs an EIP-4361 message, requests a{" "}
+        <code class="inlineCode">personal_sign</code>, and verifies the
+        signature entirely client-side — this site is static; there is no
+        backend to trust. Nothing is sent anywhere. This page is also the only
+        one on this site that ships JavaScript beyond analytics.
+      </p>
+
+      <button
+        class="signButton"
+        data-known-address={ETH_ADDRESS}
+        id="siwe-button"
+        type="button"
+      >
+        Sign in with Ethereum
+      </button>
+
+      <p class="error" hidden id="siwe-error"></p>
+
+      <pre class="messageBlock" hidden id="siwe-message"></pre>
+
+      <div hidden id="siwe-result">
+        <p class="verified">✓ Signature verified</p>
+        <ul class="itemList">
+          <li>
+            Address: <code class="inlineCode" id="siwe-address"></code>
+            <span class="badge" hidden id="siwe-badge">
+              same address as the GPG cross-attestation
+            </span>
+          </li>
+          <li>Chain ID: <span id="siwe-chain"></span></li>
+          <li>Issued at: <span id="siwe-issued"></span></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+</Base>
+
+<script>
+  import { recoverMessageAddress, stringToHex } from "viem";
+
+  const DOMAIN = "yusuke-hayashi.com";
+  const STATEMENT = "Sign in to verify you control this Ethereum account.";
+
+  interface EthereumProvider {
+    request: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
+  }
+
+  const button = document.querySelector<HTMLButtonElement>("#siwe-button");
+  const errorEl = document.querySelector<HTMLParagraphElement>("#siwe-error");
+  const messageEl = document.querySelector<HTMLPreElement>("#siwe-message");
+  const resultEl = document.querySelector<HTMLDivElement>("#siwe-result");
+  const addressEl = document.querySelector<HTMLElement>("#siwe-address");
+  const badgeEl = document.querySelector<HTMLElement>("#siwe-badge");
+  const chainEl = document.querySelector<HTMLElement>("#siwe-chain");
+  const issuedEl = document.querySelector<HTMLElement>("#siwe-issued");
+
+  const getProvider = (): EthereumProvider | null =>
+    (window as { ethereum?: EthereumProvider }).ethereum ?? null;
+
+  const buildSiweMessage = (
+    address: string,
+    chainId: number,
+    nonce: string,
+    issuedAt: string,
+  ): string =>
+    [
+      `${DOMAIN} wants you to sign in with your Ethereum account:`,
+      address,
+      "",
+      STATEMENT,
+      "",
+      `URI: https://${DOMAIN}`,
+      "Version: 1",
+      `Chain ID: ${chainId}`,
+      `Nonce: ${nonce}`,
+      `Issued At: ${issuedAt}`,
+    ].join("\n");
+
+  const showError = (text: string) => {
+    if (!errorEl) return;
+    errorEl.textContent = text;
+    errorEl.hidden = false;
+  };
+
+  button?.addEventListener("click", () => {
+    void (async () => {
+      if (!button) return;
+      if (errorEl) errorEl.hidden = true;
+      if (resultEl) resultEl.hidden = true;
+
+      const provider = getProvider();
+      if (provider === null) {
+        showError(
+          "No browser wallet found. Install MetaMask (or any EIP-1193 wallet) to try this demo.",
+        );
+        return;
+      }
+
+      try {
+        button.disabled = true;
+        button.textContent = "Connecting…";
+        const accounts = (await provider.request({
+          method: "eth_requestAccounts",
+        })) as string[];
+        const address = accounts[0];
+        if (address === undefined) {
+          throw new Error("No account returned by the wallet.");
+        }
+
+        const chainIdHex = (await provider.request({
+          method: "eth_chainId",
+        })) as string;
+        const chainId = Number.parseInt(chainIdHex, 16);
+        const nonce = crypto.randomUUID().replaceAll("-", "");
+        const issuedAt = new Date().toISOString();
+        const siweMessage = buildSiweMessage(address, chainId, nonce, issuedAt);
+        if (messageEl) {
+          messageEl.textContent = siweMessage;
+          messageEl.hidden = false;
+        }
+
+        button.textContent = "Awaiting signature…";
+        const signature = (await provider.request({
+          method: "personal_sign",
+          params: [stringToHex(siweMessage), address],
+        })) as `0x${string}`;
+
+        const recovered = await recoverMessageAddress({
+          message: siweMessage,
+          signature,
+        });
+        if (recovered.toLowerCase() !== address.toLowerCase()) {
+          throw new Error("Signature verification failed: address mismatch.");
+        }
+
+        if (addressEl) addressEl.textContent = recovered;
+        if (badgeEl) {
+          badgeEl.hidden =
+            recovered.toLowerCase() !==
+            (button.dataset.knownAddress ?? "").toLowerCase();
+        }
+        if (chainEl) chainEl.textContent = String(chainId);
+        if (issuedEl) issuedEl.textContent = issuedAt;
+        if (resultEl) resultEl.hidden = false;
+      } catch (error) {
+        showError(error instanceof Error ? error.message : "Sign-in failed.");
+      } finally {
+        button.disabled = false;
+        button.textContent = "Sign in with Ethereum";
+      }
+    })();
+  });
+</script>
+
+<style>
+  .signButton {
+    padding: 12px 22px;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-accent);
+    cursor: pointer;
+    background-color: var(--accent-glow);
+    border: 1px solid var(--border-accent);
+    border-radius: var(--radius-sm);
+    transition: background-color var(--dur-base) var(--ease-swift);
+
+    &:disabled {
+      opacity: 0.6;
+    }
+
+    &:hover:not(:disabled),
+    &:focus-visible:not(:disabled) {
+      background-color: var(--accent-tint);
+    }
+  }
+
+  .error {
+    margin: 16px 0 0;
+    font-size: var(--text-sm);
+    color: var(--color-danger);
+  }
+
+  .messageBlock {
+    margin: 20px 0 0;
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    line-height: 1.7;
+    color: var(--color-text-soft);
+    white-space: pre-wrap;
+    background-color: var(--surface-subtle);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+  }
+
+  #siwe-result {
+    margin-top: 20px;
+  }
+
+  .verified {
+    margin: 0 0 10px;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-accent);
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 10px;
+    margin-left: 10px;
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--color-accent);
+    border: 1px solid var(--border-accent);
+    border-radius: var(--radius-sm);
+  }
+</style>

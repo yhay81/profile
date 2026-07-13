@@ -1,0 +1,138 @@
+---
+import { NAV_LINKS, PROFILE_NAME } from "@/lib/site";
+
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+---
+
+<header class="header">
+  <nav class="nav" aria-label="Primary">
+    <a aria-label={`${PROFILE_NAME} — home`} class="brand" href="/">
+      <span aria-hidden="true" class="prompt">❯</span>
+      <span class="name">{PROFILE_NAME}</span>
+    </a>
+    <ul class="links">
+      {
+        NAV_LINKS.map((link) => (
+          <li>
+            <a
+              aria-current={currentPath === link.href ? "page" : undefined}
+              href={link.href}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>
+
+<style>
+  @keyframes nav-in {
+    from {
+      opacity: 0;
+      transform: translateY(-16px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .header {
+    /* ページ遷移中もヘッダーを連続した要素としてモーフィングさせる */
+    view-transition-name: site-header;
+    position: fixed;
+    top: 0;
+    z-index: 11;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: var(--nav-height);
+    padding: 0 var(--page-padding);
+    border-bottom: 1px solid var(--border-subtle);
+    background-color: var(--scrim);
+
+    /* stylelint-disable-next-line plugin/no-unsupported-browser-features */
+    backdrop-filter: blur(12px);
+  }
+
+  /* 登場演出はセッション初回のみ(Base.astro が data-first-visit を付与) */
+  :global(html[data-first-visit]) .header {
+    opacity: 0;
+    animation: nav-in 1s var(--ease-out) 0.4s forwards;
+    transform: translateY(-16px);
+
+    @media (prefers-reduced-motion: reduce) {
+      opacity: 1;
+      animation: none;
+      transform: none;
+    }
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    font-family: var(--font-mono);
+    color: var(--color-text-strong);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+
+    .prompt {
+      margin-right: 12px;
+      margin-bottom: 1px;
+      font-size: 32px;
+      color: var(--color-accent);
+    }
+
+    .name {
+      font-size: var(--text-lg);
+      letter-spacing: 0.02em;
+    }
+  }
+
+  .links {
+    display: flex;
+    gap: clamp(2px, 2vw, 20px);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+
+    a {
+      padding: 8px clamp(5px, 1.5vw, 10px);
+      font-size: var(--text-xs);
+      letter-spacing: 0.08em;
+      color: var(--color-text-soft);
+
+      &:hover,
+      &:focus-visible {
+        color: var(--color-accent);
+      }
+
+      &[aria-current="page"] {
+        color: var(--color-accent);
+      }
+    }
+  }
+
+  @media (width <= 640px) {
+    .brand .name {
+      display: none;
+    }
+
+    .links a {
+      font-size: var(--text-2xs);
+      letter-spacing: 0.04em;
+    }
+  }
+</style>

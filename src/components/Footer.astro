@@ -1,0 +1,45 @@
+---
+import {
+  COPYRIGHT_START_YEAR,
+  PROFILE_NAME,
+  PROFILE_REPOSITORY,
+} from "@/lib/site";
+
+const currentYear = new Date().getFullYear();
+const range =
+  currentYear > COPYRIGHT_START_YEAR
+    ? `${COPYRIGHT_START_YEAR}–${currentYear}`
+    : `${COPYRIGHT_START_YEAR}`;
+---
+
+<footer class="footer">
+  <p class="credit">
+    © {range}{" "}
+    <a href={PROFILE_REPOSITORY} rel="noopener noreferrer" target="_blank">
+      {PROFILE_NAME}
+    </a>
+  </p>
+</footer>
+
+<style>
+  .footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 70px;
+    padding: 15px;
+    text-align: center;
+  }
+
+  .credit {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    line-height: 1;
+    color: var(--color-text-soft);
+
+    a {
+      padding: 10px;
+    }
+  }
+</style>

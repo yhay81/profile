@@ -1,0 +1,76 @@
+---
+import "@/styles/article.css";
+
+import CodeBlock from "@/components/CodeBlock.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import Base from "@/layouts/Base.astro";
+import { ETH_ADDRESS, PGP_FINGERPRINT_SPACED, PROFILE_NAME } from "@/lib/site";
+
+const title = `Cross-attestation | ${PROFILE_NAME}`;
+const description =
+  "Bidirectional signatures binding my OpenPGP key and Ethereum account.";
+
+const VERIFY_GPG = `# Obtain my key (WKD), then verify the statement
+gpg --locate-keys yusuke@haya.company
+curl -sO https://yusuke-hayashi.com/proofs/statement.txt.asc
+gpg --verify statement.txt.asc`;
+
+const VERIFY_ETH = `# Recover the signer address from the signature (Foundry)
+curl -s https://yusuke-hayashi.com/proofs/eth-attestation.json | jq -r '.message, .signature'
+cast wallet verify --address ${ETH_ADDRESS} "<message>" "<signature>"`;
+---
+
+<Base description={description} path="/proofs" title={title}>
+  <main>
+    <section>
+      <SectionHeader
+        label="Cross-attestation"
+        no="PGP ⇄ ETH"
+        title="Cross-attestation"
+      />
+
+      <p class="lead">
+        Two signatures, one in each direction, binding my{" "}
+        <a href="/keys">OpenPGP key</a> and my Ethereum account to the same person.
+        Neither is an on-chain transaction — both are offline signatures you can verify
+        yourself.
+      </p>
+
+      <ul class="itemList">
+        <li>
+          OpenPGP key: <code class="inlineCode">{PGP_FINGERPRINT_SPACED}</code>
+        </li>
+        <li>
+          Ethereum account: <code class="inlineCode">{ETH_ADDRESS}</code>
+        </li>
+      </ul>
+
+      <h2 class="heading">1. GPG → Ethereum</h2>
+
+      <p class="bodyText">
+        A statement attesting control of the Ethereum account, clearsigned with
+        my OpenPGP signing subkey:{" "}
+        <a href="/proofs/statement.txt.asc">statement.txt.asc</a>
+      </p>
+
+      <CodeBlock code={VERIFY_GPG} />
+
+      <h2 class="heading">2. Ethereum → GPG</h2>
+
+      <p class="bodyText">
+        A message naming the OpenPGP key fingerprint, signed by the Ethereum
+        account (EIP-191 personal_sign):{" "}
+        <a href="/proofs/eth-attestation.json">eth-attestation.json</a>
+      </p>
+
+      <CodeBlock code={VERIFY_ETH} />
+
+      <p class="bodyText">
+        Or verify in the browser: the <a href="/siwe">SIWE demo</a> uses the same
+        signature scheme and recovers addresses client-side.
+      </p>
+
+      <p class="updated">Signed: 2026-07-14</p>
+    </section>
+  </main>
+</Base>

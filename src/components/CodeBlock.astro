@@ -1,0 +1,48 @@
+---
+/**
+ * コードブロック。Astro 組み込みの Code(Shiki)でビルド時にハイライトする。
+ * 出力は静的 HTML のみ(クライアント JS なし)。
+ */
+import type { ComponentProps } from "astro/types";
+import { Code } from "astro:components";
+
+interface Props {
+  code: string;
+  lang?: ComponentProps<typeof Code>["lang"];
+  wrap?: boolean;
+}
+
+const { code, lang = "sh", wrap = false } = Astro.props;
+---
+
+<Code
+  class:list={["codeBlock", { wrap }]}
+  code={code}
+  lang={lang}
+  theme="poimandres"
+  wrap={wrap}
+/>
+
+<style is:global>
+  pre.codeBlock {
+    margin: 0 0 14px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    line-height: 1.8;
+
+    /* テーマの背景ではなくサイトのサーフェスに揃える */
+    background-color: var(--surface-subtle) !important;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+
+    &.wrap {
+      white-space: pre-wrap;
+    }
+
+    & code {
+      font-family: inherit;
+    }
+  }
+</style>
