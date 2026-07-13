@@ -1,18 +1,124 @@
 ---
+import "@/styles/article.css";
+
+import CodeBlock from "@/components/CodeBlock.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 import Base from "@/layouts/Base.astro";
-import { PROFILE_NAME } from "@/lib/site";
+import { KEYOXIDE_URL, PGP_FINGERPRINT_HEX, PROFILE_NAME } from "@/lib/site";
 
 const title = `OpenPGP Key Policy | ${PROFILE_NAME}`;
 const description =
   "How my OpenPGP key is structured and operated, and where to obtain it.";
+
+const KEY_STRUCTURE = `Primary  ed25519  B22B 98AB B2D5 0330 7AB6 A316 0718 EFA6 506B B669  [C] certify-only
+Subkey   ed25519  0C15 3FFE 2B02 7436 5ACB 1BF1 AEFA 86FA 828C 52C5  [S] signing (git, documents)
+Subkey   cv25519  B7D6 4271 182C BBA3 054C 52CF CAA5 0DCD 0443 2C4F  [E] encryption
+Subkey   ed25519  1378 A9E1 4459 222D 12C3 D2EB 424E 58B7 A453 07FE  [S] signing (secondary machine)
+Subkey   ed25519  BFDB 1F43 3932 B67B D108 9817 3416 6963 D548 6096  [A] authentication (SSH)`;
+
+const POLICY_ITEMS = [
+  "The primary (certify-only) key is kept offline and is used solely to manage subkeys and identities. Day-to-day operations use subkeys only.",
+  "Signing subkeys are machine-scoped — no private subkey is shared across machines.",
+  "Keys have no expiry; compromise response relies on revocation and re-distribution via keyservers and WKD.",
+  "All git commits and tags are signed (shown as Verified on GitHub).",
+];
+
+const OBTAIN_ITEMS = [
+  {
+    label: "This site",
+    href: "/pgp-key.asc",
+    text: "/pgp-key.asc",
+    external: false,
+  },
+  {
+    label: "WKD",
+    href: null,
+    text: "gpg --locate-keys yusuke@haya.company",
+    external: false,
+  },
+  {
+    label: "keys.openpgp.org",
+    href: `https://keys.openpgp.org/search?q=${PGP_FINGERPRINT_HEX.toUpperCase()}`,
+    text: "verified for both email identities",
+    external: true,
+  },
+  {
+    label: "GitHub",
+    href: "https://github.com/yhay81.gpg",
+    text: "github.com/yhay81.gpg",
+    external: true,
+  },
+  {
+    label: "Keyoxide",
+    href: KEYOXIDE_URL,
+    text: "verified identity proofs",
+    external: true,
+  },
+];
 ---
 
 <Base description={description} path="/keys" title={title}>
   <main>
     <section>
       <SectionHeader label="Keys" no="PGP" title="OpenPGP Key Policy" />
-      <p>Rebuild in progress (P2 will fill this page).</p>
+
+      <p class="lead">
+        How my OpenPGP key is structured and operated, and where to obtain it.
+        Publishing the operating policy costs nothing in security — the key
+        material stays offline; only the design is public.
+      </p>
+
+      <h2 class="heading">Current key (since 2026-07-12)</h2>
+
+      <CodeBlock code={KEY_STRUCTURE} />
+
+      <ul class="itemList">
+        {POLICY_ITEMS.map((item) => <li>{item}</li>)}
+      </ul>
+
+      <h2 class="heading">Where to obtain this key</h2>
+
+      <ul class="itemList">
+        {
+          OBTAIN_ITEMS.map((item) => (
+            <li>
+              {item.label}
+              {": "}
+              {item.href === null ? (
+                <code class="inlineCode">{item.text}</code>
+              ) : (
+                <a
+                  href={item.href}
+                  rel={item.external ? "noreferrer" : undefined}
+                  target={item.external ? "_blank" : undefined}
+                >
+                  {item.text}
+                </a>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+
+      <h2 class="heading">Identity proofs</h2>
+
+      <p class="bodyText">
+        This key is bidirectionally linked to github.com/yhay81 and my domains
+        (haya-inc.co.jp, yusuke-hayashi.com) through proofs verifiable on
+        Keyoxide. The same identity extends to Ethereum — see the{" "}
+        <a href="/proofs">cross-attestation</a> and the{" "}
+        <a href="/siwe">Sign-In with Ethereum demo</a>, or start from the{" "}
+        <a href="/identity">identity overview</a>.
+      </p>
+
+      <h2 class="heading">Previous key</h2>
+
+      <p class="bodyText">
+        RSA-4096 <code class="inlineCode">89C3 25D4 1DD3 055B</code>{" "}
+        (2020–2026) was revoked as superseded by the current key on 2026-07-12.
+      </p>
+
+      <p class="updated">Last updated: 2026-07-14</p>
     </section>
   </main>
 </Base>
