@@ -10,7 +10,7 @@ const { currentPath } = Astro.props;
 
 <header class="header">
   <nav class="nav" aria-label="Primary">
-    <a class="brand" href="/">
+    <a aria-label={`${PROFILE_NAME} — home`} class="brand" href="/">
       <span aria-hidden="true" class="prompt">❯</span>
       <span class="name">{PROFILE_NAME}</span>
     </a>
@@ -99,13 +99,13 @@ const { currentPath } = Astro.props;
 
   .links {
     display: flex;
-    gap: clamp(4px, 2vw, 20px);
+    gap: clamp(2px, 2vw, 20px);
     padding: 0;
     margin: 0;
     list-style: none;
 
     a {
-      padding: 8px 10px;
+      padding: 8px clamp(5px, 1.5vw, 10px);
       font-size: var(--text-xs);
       letter-spacing: 0.08em;
       color: var(--color-text-soft);
@@ -124,6 +124,11 @@ const { currentPath } = Astro.props;
   @media (width <= 640px) {
     .brand .name {
       display: none;
+    }
+
+    .links a {
+      font-size: var(--text-2xs);
+      letter-spacing: 0.04em;
     }
   }
 </style>

@@ -5,6 +5,10 @@ import "@fontsource-variable/space-grotesk";
 import "@/styles/tokens.css";
 import "@/styles/global.css";
 
+import firaCodeWoff2 from "@fontsource-variable/fira-code/files/fira-code-latin-wght-normal.woff2?url";
+import spaceGroteskWoff2 from "@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url";
+import workSansWoff2 from "@fontsource-variable/work-sans/files/work-sans-latin-wght-normal.woff2?url";
+
 import Footer from "@/components/Footer.astro";
 import Nav from "@/components/Nav.astro";
 import Side from "@/components/Side.astro";
@@ -41,6 +45,28 @@ const speculationRules = JSON.stringify({
     <link href="/favicon.ico" rel="icon" sizes="32x32" />
     <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
     <link href="/apple-touch-icon.png" rel="apple-touch-icon" />
+
+    <link
+      as="font"
+      crossorigin="anonymous"
+      href={workSansWoff2}
+      rel="preload"
+      type="font/woff2"
+    />
+    <link
+      as="font"
+      crossorigin="anonymous"
+      href={spaceGroteskWoff2}
+      rel="preload"
+      type="font/woff2"
+    />
+    <link
+      as="font"
+      crossorigin="anonymous"
+      href={firaCodeWoff2}
+      rel="preload"
+      type="font/woff2"
+    />
 
     <meta content={title} property="og:title" />
     <meta content={description} property="og:description" />
