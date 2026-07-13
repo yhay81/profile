@@ -106,7 +106,7 @@ const SKILLS = [
       <ol class="timeline">
         {
           EXPERIENCE.map((item) => (
-            <li class="timelineItem">
+            <li class="timelineItem reveal">
               <time class="timelinePeriod" datetime={item.periodStartIso}>
                 {item.period}
               </time>
@@ -132,7 +132,7 @@ const SKILLS = [
       <div class="skillGrid">
         {
           SKILLS.map((group) => (
-            <section class="skillBlock">
+            <section class="skillBlock reveal">
               <h4 class="skillTitle">{group.name}</h4>
               <ul class="chipList">
                 {group.items.map((item) => (

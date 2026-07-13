@@ -51,6 +51,8 @@ const { currentPath } = Astro.props;
       transform: none;
     }
 
+    /* ページ遷移中もヘッダーを連続した要素としてモーフィングさせる */
+    view-transition-name: site-header;
     position: fixed;
     top: 0;
     z-index: 11;

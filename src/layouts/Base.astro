@@ -17,9 +17,14 @@ interface Props {
   ogImage?: string;
 }
 
-const { title, description, path, ogImage = "/me.webp" } = Astro.props;
+const { title, description, path, ogImage = "/og.png" } = Astro.props;
 const canonical = new URL(path, PROFILE_URL).href;
 const ogImageAbs = new URL(ogImage, PROFILE_URL).href;
+
+// Speculation Rules: 内部リンクをホバー時に prerender(未対応ブラウザは無視)
+const speculationRules = JSON.stringify({
+  prerender: [{ where: { href_matches: "/*" }, eagerness: "moderate" }],
+});
 ---
 
 <!doctype html>
@@ -43,10 +48,12 @@ const ogImageAbs = new URL(ogImage, PROFILE_URL).href;
     <meta content="website" property="og:type" />
     <meta content="en_US" property="og:locale" />
     <meta content={ogImageAbs} property="og:image" />
-    <meta content="summary" name="twitter:card" />
+    <meta content="summary_large_image" name="twitter:card" />
     <meta content={title} name="twitter:title" />
     <meta content={description} name="twitter:description" />
     <meta content={ogImageAbs} name="twitter:image" />
+
+    <script is:inline set:html={speculationRules} type="speculationrules" />
 
     <slot name="head" />
   </head>
