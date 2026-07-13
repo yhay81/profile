@@ -103,7 +103,8 @@ const Keys: React.FC = () => (
     <p className={styles.text}>
       This key is bidirectionally linked to github.com/yhay81 and my domains
       (haya-inc.co.jp, yusuke-hayashi.com) through proofs verifiable on
-      Keyoxide. The same identity extends on-chain — see the{" "}
+      Keyoxide. The same identity extends to Ethereum — see the{" "}
+      <a href="/proofs">cross-attestation</a> and the{" "}
       <a href="/siwe">Sign-In with Ethereum demo</a>.
     </p>
 
@@ -114,7 +115,7 @@ const Keys: React.FC = () => (
       (2020–2026) was revoked as superseded by the current key on 2026-07-12.
     </p>
 
-    <p className={styles.updated}>Last updated: 2026-07-13</p>
+    <p className={styles.updated}>Last updated: 2026-07-14</p>
   </section>
 );
 

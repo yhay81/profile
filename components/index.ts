@@ -6,5 +6,6 @@ export { Icon } from "./Icon";
 export { Keys } from "./Keys";
 export { Layout } from "./Layout";
 export { Nav } from "./Nav";
+export { Proofs } from "./Proofs";
 export { Side } from "./Side";
 export { Siwe } from "./Siwe";

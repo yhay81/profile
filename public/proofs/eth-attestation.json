@@ -1,0 +1,7 @@
+{
+  "address": "0x1C049D25D368bFD50c74df68c919a12aDc48C079",
+  "message": "I control this Ethereum account and I am the owner of OpenPGP key B22B98ABB2D503307AB6A3160718EFA6506BB669. Proofs: https://yusuke-hayashi.com/proofs/",
+  "signature": "0xa80d5393815d43cb00f3031fb67b90216b8e96e41846096b98556d723dfb8b73194c5843d358455250bb543839d37dabb56f751593905bb9626383d1765356fe1c",
+  "scheme": "EIP-191 personal_sign",
+  "signedAt": "2026-07-14"
+}
