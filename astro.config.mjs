@@ -7,5 +7,8 @@ export default defineConfig({
   // ディレクトリ形式ではなくファイル形式(keys.html)で出力する
   build: {
     format: "file",
+    // ページ数が少ない静的サイトでは CSS を常時インライン化して
+    // レンダリング前の RTT を 1 往復削る方が LCP に効く
+    inlineStylesheets: "always",
   },
 });
