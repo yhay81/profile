@@ -24,7 +24,14 @@ export default {
       true,
       // color 系の transition は再ペイントのみで実害が小さいため許容する
       // (アニメーション(@keyframes)は引き続き transform/opacity に限定)
-      { ignoreProperties: ["color", "background-color", "border-color"] },
+      {
+        ignoreProperties: [
+          "color",
+          "background-color",
+          "border-color",
+          "box-shadow",
+        ],
+      },
     ],
     "scale-unlimited/declaration-strict-value": [
       "/color$/",
@@ -51,6 +58,8 @@ export default {
           "text-decoration",
           "css-lch-lab",
           "css-relative-colors",
+          "css-clip-path",
+          "css-masks",
           "css-container-queries",
           "css-has",
           "css-text-wrap-balance",

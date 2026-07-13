@@ -1,0 +1,394 @@
+---
+/**
+ * ヒーロー。タイプライター演出は CSS steps() のみ(JS ゼロ)。
+ * 各行の文字数はビルド時に計算して steps() に渡す。
+ */
+const TYPED_LINES = [
+  "I build AI-first products from concept to production.",
+  "I make my work verifiable — keys, proofs, and code.",
+  "I turn complex problems into reliable systems.",
+];
+
+const HERO_STATS = [
+  { label: "Focus", value: "AI / Web / Cloud" },
+  { label: "Experience", value: "10+ Years" },
+  { label: "Mindset", value: "Pragmatic and practical" },
+];
+
+const SECONDS_PER_LINE = 5;
+const totalSeconds = TYPED_LINES.length * SECONDS_PER_LINE;
+---
+
+<section class="hero" id="top">
+  <p class="kicker">$ whoami</p>
+
+  <h1 class="title">Yusuke Hayashi</h1>
+  <h2 class="subtitle">Software Engineer</h2>
+
+  <div
+    aria-hidden="true"
+    class="typer"
+    style={`--total: ${totalSeconds}s; --slot: ${SECONDS_PER_LINE}s;`}
+  >
+    {
+      TYPED_LINES.map((line, index) => (
+        <span class="line" style={`--n: ${line.length}; --i: ${index};`}>
+          {line}
+        </span>
+      ))
+    }
+  </div>
+  <p class="visuallyHidden">{TYPED_LINES.join(" ")}</p>
+
+  <p class="summary">
+    I build reliable, user-focused products across web, cloud, and AI — and I
+    like my work to be verifiable: signed commits, published keys, and
+    cryptographic proofs of identity.
+  </p>
+
+  <dl class="metrics">
+    {
+      HERO_STATS.map((stat) => (
+        <div class="metric">
+          <dt class="metricLabel">{stat.label}</dt>
+          <dd class="metricValue">{stat.value}</dd>
+        </div>
+      ))
+    }
+  </dl>
+
+  <div class="cta">
+    <a class="primary" href="#contact">Contact</a>
+    <a class="secondary" href="/identity">Verify my identity</a>
+  </div>
+
+  <a aria-label="Scroll to About" class="arrow" href="#about">scroll</a>
+</section>
+
+<style>
+  @keyframes hero-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hero {
+    @media (width <= 768px) {
+      padding-top: calc(var(--nav-height) + 24px);
+    }
+
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+    justify-content: center;
+    min-height: 100vh;
+    padding: calc(var(--nav-height) + 40px) 0 clamp(64px, 12vh, 110px);
+
+    &::before {
+      @media (width <= 768px) {
+        top: -180px;
+        right: -160px;
+      }
+
+      pointer-events: none;
+      position: absolute;
+      top: -140px;
+      right: -120px;
+      z-index: -3;
+      width: min(520px, 60vw);
+      height: min(520px, 60vw);
+      content: "";
+      background: radial-gradient(
+        circle,
+        color-mix(in oklab, var(--color-info) 26%, transparent) 0%,
+        transparent 65%
+      );
+      border-radius: 50%;
+      opacity: 0.55;
+    }
+
+    &::after {
+      @media (width <= 900px) {
+        left: -70%;
+        width: min(460px, 92vw);
+        height: min(460px, 92vw);
+      }
+
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      left: -10%;
+      z-index: -2;
+      width: min(700px, 78vw);
+      height: min(700px, 78vw);
+      content: "";
+      background: radial-gradient(
+        circle,
+        var(--surface-raised) 0%,
+        transparent 65%
+      );
+      border-radius: 50%;
+      transform: translate3d(0, -18%, 0);
+    }
+  }
+
+  .kicker {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+  }
+
+  .title {
+    font-size: var(--text-display);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    text-shadow: 0 10px 30px var(--info-glow);
+  }
+
+  .subtitle {
+    font-size: clamp(1.2rem, 3.2vw, 2rem);
+    font-weight: 500;
+    color: var(--color-text-soft);
+  }
+
+  .typer {
+    display: grid;
+    min-height: 1.8em;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-text-soft);
+  }
+
+  .line {
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+
+      &::after {
+        content: none;
+      }
+    }
+
+    grid-area: 1 / 1;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 100%;
+    opacity: 0;
+
+    /* stylelint-disable-next-line plugin/no-low-performance-animation-properties -- タイプライター演出: 離散 steps で 1 インライン要素のみ */
+    animation:
+      line-typing var(--total) steps(var(--n)) infinite,
+      line-show var(--total) step-end infinite;
+    animation-delay: calc(var(--i) * var(--slot));
+
+    &::after {
+      content: "▌";
+      color: var(--color-accent);
+    }
+  }
+
+  /* 低減設定時は 1 行目のみ静的表示 */
+  @media (prefers-reduced-motion: reduce) {
+    .line[style*="--i: 0"] {
+      width: auto;
+      opacity: 1;
+    }
+  }
+
+  /* stylelint-disable plugin/no-low-performance-animation-properties --
+     タイプライター演出: 離散 steps で 1 インライン要素のみ、実測で無害 */
+  @keyframes line-typing {
+    0% {
+      width: 0;
+    }
+
+    15% {
+      width: calc(var(--n) * 1ch + 1ch);
+    }
+
+    33.32% {
+      width: calc(var(--n) * 1ch + 1ch);
+    }
+
+    33.33%,
+    100% {
+      width: 0;
+    }
+  }
+  /* stylelint-enable plugin/no-low-performance-animation-properties */
+
+  @keyframes line-show {
+    0%,
+    33.32% {
+      opacity: 1;
+    }
+
+    33.33%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .visuallyHidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .summary {
+    max-width: 55ch;
+    margin-top: 8px;
+    font-size: var(--text-lg);
+    line-height: 1.7;
+    color: var(--color-text);
+  }
+
+  .metrics {
+    @media (width <= 900px) {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    width: min(100%, 680px);
+    margin: 10px 0 0;
+  }
+
+  .metric {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px;
+    background: linear-gradient(
+      140deg,
+      var(--surface-raised),
+      color-mix(in oklab, var(--color-bg-deep) 55%, transparent) 55%,
+      color-mix(in oklab, var(--color-accent) 7%, transparent)
+    );
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+
+    /* stylelint-disable-next-line plugin/no-unsupported-browser-features */
+    backdrop-filter: blur(8px);
+  }
+
+  .metricLabel {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--color-text-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+
+  .metricValue {
+    margin: 0;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-text-strong);
+    letter-spacing: 0.01em;
+  }
+
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    margin-top: 12px;
+  }
+
+  .primary {
+    padding: 1rem 1.6rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-bg-deep);
+    background-color: var(--color-accent);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 12px 28px
+      color-mix(in oklab, var(--color-accent) 22%, transparent);
+    transition: box-shadow var(--dur-base) var(--ease-swift);
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-bg-deep);
+      box-shadow: 0 16px 32px
+        color-mix(in oklab, var(--color-accent) 30%, transparent);
+    }
+  }
+
+  .secondary {
+    padding-bottom: 2px;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-text-strong);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid var(--border-subtle);
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-accent);
+      border-color: var(--border-accent);
+    }
+  }
+
+  .arrow {
+    @media (height <= 720px) {
+      display: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      opacity: 1;
+      animation: none;
+    }
+
+    position: absolute;
+    right: 0;
+    bottom: 28px;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--color-text-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    opacity: 0;
+    animation: hero-fade-in 0.6s var(--ease-out) 2s forwards;
+
+    &::after {
+      width: 18px;
+      height: 18px;
+      content: "";
+      border-right: 2px solid var(--color-text-strong);
+      border-bottom: 2px solid var(--color-text-strong);
+      transition: transform var(--dur-fast) var(--ease-out);
+      transform: rotate(45deg);
+    }
+
+    &:hover::after,
+    &:focus-visible::after {
+      transform: rotate(45deg) translate(3px, 3px);
+    }
+  }
+</style>

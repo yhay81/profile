@@ -1,16 +1,42 @@
 ---
+import About from "@/components/About.astro";
+import Contact from "@/components/Contact.astro";
+import Hero from "@/components/Hero.astro";
 import Base from "@/layouts/Base.astro";
-import { PROFILE_NAME } from "@/lib/site";
+import { PROFILE_EMAIL, PROFILE_NAME, PROFILE_URL } from "@/lib/site";
 
 const description =
   "This is a profile page of Yusuke Hayashi. I am a software engineer in Tokyo, Japan.";
+
+const structuredData = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  dateModified: "2026-07-14",
+  mainEntity: {
+    "@type": "Person",
+    name: PROFILE_NAME,
+    givenName: "Yusuke",
+    familyName: "Hayashi",
+    email: PROFILE_EMAIL,
+    url: PROFILE_URL,
+    image: `${PROFILE_URL}/me.webp`,
+    jobTitle: "Software Engineer",
+    sameAs: [
+      "https://github.com/yhay81",
+      "https://twitter.com/yhay81",
+      "https://www.linkedin.com/in/yhay81",
+      "https://zenn.dev/yhay81",
+      "https://keyoxide.org/b22b98abb2d503307ab6a3160718efa6506bb669",
+    ],
+  },
+}).replaceAll("<", "\\u003c");
 ---
 
 <Base description={description} path="/" title={PROFILE_NAME}>
+  <script is:inline set:html={structuredData} type="application/ld+json" />
   <main>
-    <section>
-      <h1>{PROFILE_NAME}</h1>
-      <p>Rebuild in progress (P3 will fill this page).</p>
-    </section>
+    <Hero />
+    <About />
+    <Contact />
   </main>
 </Base>
