@@ -54,6 +54,9 @@
   font-family: var(--font-mono);
   font-size: var(--text-xs);
   color: var(--color-text-strong);
+
+  /* 42 文字のアドレスや指紋など、区切りのない長い文字列を狭幅で折り返す */
+  overflow-wrap: anywhere;
 }
 
 .updated {

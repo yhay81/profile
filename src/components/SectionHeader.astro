@@ -23,9 +23,10 @@ const { no, label, title, level = 1, accent = "info" } = Astro.props;
 
 <style>
   .sectionLabel {
-    display: inline-flex;
+    display: flex;
     gap: 14px;
     align-items: center;
+    max-width: 100%;
     margin: 0 0 16px;
     font-family: var(--font-mono);
     font-size: var(--text-2xs);
@@ -34,8 +35,9 @@ const { no, label, title, level = 1, accent = "info" } = Astro.props;
     letter-spacing: 0.24em;
 
     &::after {
-      display: inline-block;
-      width: clamp(120px, 22vw, 260px);
+      /* 固定幅ではなく残余幅を使う(狭幅でラベルがはみ出さない) */
+      flex: 1 1 24px;
+      max-width: 260px;
       height: 1px;
       content: "";
       background: linear-gradient(
