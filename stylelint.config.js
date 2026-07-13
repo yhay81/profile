@@ -22,9 +22,11 @@ export default {
   ],
   rules: {
     "max-nesting-depth": 4,
+    // ネイティブ CSS ネスティングでは宣言が「書かれた位置」で評価されるため、
+    // @media オーバーライドは必ず宣言の後に置く(SCSS 時代の逆)
     "order/order": [
-      ["custom-properties", "at-rules", "declarations", "rules"],
-      { severity: "warning" },
+      ["custom-properties", "declarations", "rules", "at-rules"],
+      { severity: "error" },
     ],
     "plugin/declaration-block-no-ignored-properties": true,
     "plugin/no-low-performance-animation-properties": [

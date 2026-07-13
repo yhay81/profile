@@ -64,15 +64,15 @@ const { currentPath } = Astro.props;
 
   /* 登場演出はセッション初回のみ(Base.astro が data-first-visit を付与) */
   :global(html[data-first-visit]) .header {
+    opacity: 0;
+    animation: nav-in 1s var(--ease-out) 0.4s forwards;
+    transform: translateY(-16px);
+
     @media (prefers-reduced-motion: reduce) {
       opacity: 1;
       animation: none;
       transform: none;
     }
-
-    opacity: 0;
-    animation: nav-in 1s var(--ease-out) 0.4s forwards;
-    transform: translateY(-16px);
   }
 
   .nav {

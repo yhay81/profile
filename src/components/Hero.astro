@@ -79,10 +79,6 @@ const totalSeconds = TYPED_LINES.length * SECONDS_PER_LINE;
   }
 
   .hero {
-    @media (width <= 768px) {
-      padding-top: calc(var(--nav-height) + 24px);
-    }
-
     position: relative;
     isolation: isolate;
     display: flex;
@@ -94,11 +90,6 @@ const totalSeconds = TYPED_LINES.length * SECONDS_PER_LINE;
     padding: calc(var(--nav-height) + 40px) 0 clamp(64px, 12vh, 110px);
 
     &::before {
-      @media (width <= 768px) {
-        top: -180px;
-        right: -160px;
-      }
-
       pointer-events: none;
       position: absolute;
       top: -140px;
@@ -114,15 +105,14 @@ const totalSeconds = TYPED_LINES.length * SECONDS_PER_LINE;
       );
       border-radius: 50%;
       opacity: 0.55;
+
+      @media (width <= 768px) {
+        top: -180px;
+        right: -160px;
+      }
     }
 
     &::after {
-      @media (width <= 900px) {
-        left: -70%;
-        width: min(460px, 92vw);
-        height: min(460px, 92vw);
-      }
-
       pointer-events: none;
       position: absolute;
       top: 0;
@@ -138,6 +128,16 @@ const totalSeconds = TYPED_LINES.length * SECONDS_PER_LINE;
       );
       border-radius: 50%;
       transform: translate3d(0, -18%, 0);
+
+      @media (width <= 900px) {
+        left: -70%;
+        width: min(460px, 92vw);
+        height: min(460px, 92vw);
+      }
+    }
+
+    @media (width <= 768px) {
+      padding-top: calc(var(--nav-height) + 24px);
     }
   }
 
@@ -172,14 +172,6 @@ const totalSeconds = TYPED_LINES.length * SECONDS_PER_LINE;
   }
 
   .line {
-    @media (prefers-reduced-motion: reduce) {
-      animation: none;
-
-      &::after {
-        content: none;
-      }
-    }
-
     grid-area: 1 / 1;
     overflow: hidden;
     white-space: nowrap;
@@ -195,6 +187,14 @@ const totalSeconds = TYPED_LINES.length * SECONDS_PER_LINE;
     &::after {
       content: "▌";
       color: var(--color-accent);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+
+      &::after {
+        content: none;
+      }
     }
   }
 
@@ -278,16 +278,16 @@ const totalSeconds = TYPED_LINES.length * SECONDS_PER_LINE;
   }
 
   .metrics {
-    @media (width <= 900px) {
-      grid-template-columns: 1fr;
-      gap: 8px;
-    }
-
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 10px;
     width: min(100%, 680px);
     margin: 10px 0 0;
+
+    @media (width <= 900px) {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
   }
 
   .metric {
@@ -368,10 +368,6 @@ const totalSeconds = TYPED_LINES.length * SECONDS_PER_LINE;
   }
 
   .arrow {
-    @media (height <= 720px) {
-      display: none;
-    }
-
     position: absolute;
     right: 0;
     bottom: 28px;
@@ -400,16 +396,20 @@ const totalSeconds = TYPED_LINES.length * SECONDS_PER_LINE;
     &:focus-visible::after {
       transform: rotate(45deg) translate(3px, 3px);
     }
+
+    @media (height <= 720px) {
+      display: none;
+    }
   }
 
   /* 登場演出はセッション初回のみ */
   :global(html[data-first-visit]) .arrow {
+    opacity: 0;
+    animation: hero-fade-in 0.6s var(--ease-out) 2s forwards;
+
     @media (prefers-reduced-motion: reduce) {
       opacity: 1;
       animation: none;
     }
-
-    opacity: 0;
-    animation: hero-fade-in 0.6s var(--ease-out) 2s forwards;
   }
 </style>

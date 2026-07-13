@@ -149,14 +149,14 @@ const SKILLS = [
 
 <style>
   .inner {
+    display: block;
+
     @media (width >= 901px) {
       display: grid;
       grid-template-columns: minmax(160px, 220px) 1fr;
       gap: 50px;
       align-items: start;
     }
-
-    display: block;
   }
 
   .text {
@@ -292,14 +292,14 @@ const SKILLS = [
   }
 
   .skillGrid {
+    display: grid;
+    gap: 16px;
+    margin-top: 12px;
+
     @media (width >= 700px) {
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 14px;
     }
-
-    display: grid;
-    gap: 16px;
-    margin-top: 12px;
   }
 
   .skillBlock {
@@ -326,12 +326,12 @@ const SKILLS = [
   }
 
   .pic {
+    max-width: 160px;
+    margin: 50px auto;
+
     @media (width <= 900px) {
       margin: 0 auto 30px;
     }
-
-    max-width: 160px;
-    margin: 50px auto;
   }
 
   .wrapper {

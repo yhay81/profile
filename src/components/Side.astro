@@ -42,14 +42,6 @@ import { PROFILE_EMAIL, SOCIAL_LINKS } from "@/lib/site";
   }
 
   .side {
-    @media (width <= 1080px) {
-      right: 16px;
-    }
-
-    @media (width <= 768px) {
-      display: none;
-    }
-
     position: fixed;
     right: 32px;
     bottom: 0;
@@ -57,19 +49,27 @@ import { PROFILE_EMAIL, SOCIAL_LINKS } from "@/lib/site";
     z-index: 10;
     width: 40px;
     color: var(--color-text-soft);
+
+    @media (width <= 1080px) {
+      right: 16px;
+    }
+
+    @media (width <= 768px) {
+      display: none;
+    }
   }
 
   /* 登場演出はセッション初回のみ */
   :global(html[data-first-visit]) .side {
+    opacity: 0;
+    animation: side-in 0.8s var(--ease-out) 0.6s forwards;
+    transform: translateY(24px);
+
     @media (prefers-reduced-motion: reduce) {
       opacity: 1;
       animation: none;
       transform: none;
     }
-
-    opacity: 0;
-    animation: side-in 0.8s var(--ease-out) 0.6s forwards;
-    transform: translateY(24px);
   }
 
   .socialList {
@@ -86,10 +86,6 @@ import { PROFILE_EMAIL, SOCIAL_LINKS } from "@/lib/site";
   }
 
   .socialLabel {
-    @media (prefers-reduced-motion: reduce) {
-      transition: none;
-    }
-
     pointer-events: none;
     position: absolute;
     top: 50%;
@@ -108,13 +104,13 @@ import { PROFILE_EMAIL, SOCIAL_LINKS } from "@/lib/site";
       opacity var(--dur-base) var(--ease-swift),
       transform var(--dur-base) var(--ease-swift);
     transform: translate(8px, -50%);
-  }
 
-  .socialLink {
     @media (prefers-reduced-motion: reduce) {
       transition: none;
     }
+  }
 
+  .socialLink {
     position: relative;
     display: inline-flex;
     align-items: center;
@@ -142,6 +138,10 @@ import { PROFILE_EMAIL, SOCIAL_LINKS } from "@/lib/site";
       width: 20px;
       height: 20px;
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
   }
 
   .linkWrapper {
@@ -152,10 +152,6 @@ import { PROFILE_EMAIL, SOCIAL_LINKS } from "@/lib/site";
   }
 
   .emailLink {
-    @media (prefers-reduced-motion: reduce) {
-      transition: none;
-    }
-
     padding: 10px;
     margin: 0 auto 20px;
     font-family: var(--font-mono);
@@ -167,6 +163,10 @@ import { PROFILE_EMAIL, SOCIAL_LINKS } from "@/lib/site";
     &:hover,
     &:focus-visible {
       transform: translateY(-6px);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
     }
   }
 </style>
