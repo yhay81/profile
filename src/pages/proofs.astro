@@ -1,0 +1,22 @@
+---
+import SectionHeader from "@/components/SectionHeader.astro";
+import Base from "@/layouts/Base.astro";
+import { PROFILE_NAME } from "@/lib/site";
+
+const title = `Cross-attestation | ${PROFILE_NAME}`;
+const description =
+  "Bidirectional signatures binding my OpenPGP key and Ethereum account.";
+---
+
+<Base description={description} path="/proofs" title={title}>
+  <main>
+    <section>
+      <SectionHeader
+        label="Cross-attestation"
+        no="PGP ⇄ ETH"
+        title="Cross-attestation"
+      />
+      <p>Rebuild in progress (P2 will fill this page).</p>
+    </section>
+  </main>
+</Base>

@@ -1,0 +1,18 @@
+---
+import SectionHeader from "@/components/SectionHeader.astro";
+import Base from "@/layouts/Base.astro";
+import { PROFILE_NAME } from "@/lib/site";
+
+const title = `OpenPGP Key Policy | ${PROFILE_NAME}`;
+const description =
+  "How my OpenPGP key is structured and operated, and where to obtain it.";
+---
+
+<Base description={description} path="/keys" title={title}>
+  <main>
+    <section>
+      <SectionHeader label="Keys" no="PGP" title="OpenPGP Key Policy" />
+      <p>Rebuild in progress (P2 will fill this page).</p>
+    </section>
+  </main>
+</Base>

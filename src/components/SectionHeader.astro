@@ -1,0 +1,72 @@
+---
+/**
+ * セクション見出しキット。
+ * 旧実装で 5 コンポーネントにコピペされていた
+ * sectionLabel / sectionNo / sectionText / title を一本化したもの。
+ */
+interface Props {
+  no: string;
+  label: string;
+  title: string;
+  level?: 1 | 2;
+  accent?: "info" | "violet";
+}
+
+const { no, label, title, level = 1, accent = "info" } = Astro.props;
+---
+
+<p class:list={["sectionLabel", accent]}>
+  <span class="no">{no}</span>
+  <span class="text">{label}</span>
+</p>
+{level === 1 ? <h1 class="title">{title}</h1> : <h2 class="title">{title}</h2>}
+
+<style>
+  .sectionLabel {
+    display: inline-flex;
+    gap: 14px;
+    align-items: center;
+    margin: 0 0 16px;
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--color-text-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+
+    &::after {
+      display: inline-block;
+      width: clamp(120px, 22vw, 260px);
+      height: 1px;
+      content: "";
+      background: linear-gradient(
+        90deg,
+        var(--label-line, var(--info-glow)),
+        var(--border-subtle),
+        transparent
+      );
+    }
+
+    &.violet {
+      --label-line: color-mix(in oklab, var(--color-violet) 45%, transparent);
+    }
+  }
+
+  .no {
+    font-size: var(--text-xs);
+    color: var(--color-accent);
+    letter-spacing: 0.2em;
+  }
+
+  .text {
+    letter-spacing: 0.28em;
+  }
+
+  .title {
+    margin: 0 0 32px;
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--color-text-strong);
+    text-shadow: 0 10px 30px var(--accent-glow);
+  }
+</style>

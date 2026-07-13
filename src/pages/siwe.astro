@@ -1,0 +1,22 @@
+---
+import SectionHeader from "@/components/SectionHeader.astro";
+import Base from "@/layouts/Base.astro";
+import { PROFILE_NAME } from "@/lib/site";
+
+const title = `Sign-In with Ethereum Demo | ${PROFILE_NAME}`;
+const description =
+  "An EIP-4361 (Sign-In with Ethereum) demo verified entirely client-side.";
+---
+
+<Base description={description} path="/siwe" title={title}>
+  <main>
+    <section>
+      <SectionHeader
+        label="Sign-In with Ethereum"
+        no="EIP-4361"
+        title="SIWE Demo"
+      />
+      <p>Rebuild in progress (P5 will fill this page).</p>
+    </section>
+  </main>
+</Base>

@@ -1,6 +1,6 @@
-.next
-.vercel
+.astro
 .vscode
+dist
 out
 public
-next.config.js
+pnpm-lock.yaml

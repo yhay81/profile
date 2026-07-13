@@ -1,0 +1,33 @@
+---
+/**
+ * コードブロック。旧実装で 3 コンポーネントに重複していた
+ * codeBlock / keyBlock / messageBlock を一本化したもの。
+ */
+interface Props {
+  code: string;
+  wrap?: boolean;
+}
+
+const { code, wrap = false } = Astro.props;
+---
+
+<pre class:list={["codeBlock", { wrap }]}><code>{code}</code></pre>
+
+<style>
+  .codeBlock {
+    margin: 0 0 14px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    line-height: 1.8;
+    color: var(--color-text-strong);
+    background-color: var(--surface-subtle);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+
+    &.wrap {
+      white-space: pre-wrap;
+    }
+  }
+</style>

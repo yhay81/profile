@@ -1,0 +1,18 @@
+---
+import SectionHeader from "@/components/SectionHeader.astro";
+import Base from "@/layouts/Base.astro";
+import { PROFILE_NAME } from "@/lib/site";
+
+const title = `Verifiable Identity | ${PROFILE_NAME}`;
+const description =
+  "How my GitHub, domains, email, OpenPGP key, and Ethereum account are cryptographically linked.";
+---
+
+<Base description={description} path="/identity" title={title}>
+  <main>
+    <section>
+      <SectionHeader label="Identity" no="00" title="Verifiable Identity" />
+      <p>Rebuild in progress (P4 will fill this page).</p>
+    </section>
+  </main>
+</Base>

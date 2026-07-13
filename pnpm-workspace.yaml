@@ -1,5 +1,6 @@
+onlyBuiltDependencies:
+  - esbuild
+  - sharp
 ignoredBuiltDependencies:
   - "@parcel/watcher"
-  - scrollreveal
-  - sharp
   - unrs-resolver

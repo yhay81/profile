@@ -1,0 +1,75 @@
+---
+import "@fontsource-variable/work-sans";
+import "@fontsource-variable/fira-code";
+import "@fontsource-variable/space-grotesk";
+import "@/styles/tokens.css";
+import "@/styles/global.css";
+
+import Footer from "@/components/Footer.astro";
+import Nav from "@/components/Nav.astro";
+import Side from "@/components/Side.astro";
+import { GA_ID, MAIN_COLOR, PROFILE_URL } from "@/lib/site";
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  ogImage?: string;
+}
+
+const { title, description, path, ogImage = "/me.webp" } = Astro.props;
+const canonical = new URL(path, PROFILE_URL).href;
+const ogImageAbs = new URL(ogImage, PROFILE_URL).href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <title>{title}</title>
+    <meta content={description} name="description" />
+    <link href={canonical} rel="canonical" />
+    <meta content={MAIN_COLOR} name="theme-color" />
+    <meta content={Astro.generator} name="generator" />
+
+    <link href="/favicon.ico" rel="icon" sizes="32x32" />
+    <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+    <link href="/apple-touch-icon.png" rel="apple-touch-icon" />
+
+    <meta content={title} property="og:title" />
+    <meta content={description} property="og:description" />
+    <meta content={canonical} property="og:url" />
+    <meta content="website" property="og:type" />
+    <meta content="en_US" property="og:locale" />
+    <meta content={ogImageAbs} property="og:image" />
+    <meta content="summary" name="twitter:card" />
+    <meta content={title} name="twitter:title" />
+    <meta content={description} name="twitter:description" />
+    <meta content={ogImageAbs} name="twitter:image" />
+
+    <slot name="head" />
+  </head>
+  <body>
+    <Nav currentPath={path} />
+    <Side />
+    <div id="content">
+      <slot />
+      <Footer />
+    </div>
+
+    <script
+      async
+      is:inline
+      src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
+    <script define:vars={{ gaId: GA_ID }} is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        // eslint-disable-next-line prefer-rest-params
+        window.dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", gaId);
+    </script>
+  </body>
+</html>

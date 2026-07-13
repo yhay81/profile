@@ -1,0 +1,143 @@
+/* Global base styles — native CSS (nesting, color-mix), no preprocessor. */
+
+html {
+  @media (prefers-reduced-motion: reduce) {
+    scroll-behavior: auto;
+  }
+
+  width: 100%;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  overflow-x: hidden;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.6;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--color-text-strong) 3%, transparent) 0,
+      color-mix(in oklab, var(--color-text-strong) 3%, transparent) 1px,
+      transparent 1px,
+      transparent 160px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      color-mix(in oklab, var(--color-text-strong) 3%, transparent) 0,
+      color-mix(in oklab, var(--color-text-strong) 3%, transparent) 1px,
+      transparent 1px,
+      transparent 160px
+    ),
+    radial-gradient(
+      700px circle at 18% 10%,
+      color-mix(in oklab, var(--color-info) 18%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      600px circle at 15% 5%,
+      color-mix(in oklab, var(--color-accent) 10%, transparent),
+      transparent 60%
+    ),
+    linear-gradient(
+      180deg,
+      var(--color-bg-deep) 0%,
+      var(--color-bg) 55%,
+      var(--color-bg-deep) 100%
+    );
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* stylelint-disable-next-line plugin/no-unsupported-browser-features */
+::selection {
+  color: var(--color-text-strong);
+  background-color: color-mix(in oklab, var(--color-accent) 18%, transparent);
+}
+
+main {
+  width: 100%;
+  max-width: 1600px;
+  min-height: 100vh;
+  padding: 0 var(--page-padding);
+  margin: 0 auto;
+}
+
+section {
+  position: relative;
+  max-width: 1000px;
+  padding: clamp(88px, 11vh, 130px) 0;
+  margin: 0 auto;
+  scroll-margin-top: calc(var(--nav-height) + 24px);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--color-text-strong);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+img,
+svg {
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+a {
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  position: relative;
+  display: inline-block;
+  color: inherit;
+  text-decoration: none;
+  text-decoration-skip-ink: auto;
+  transition: color var(--dur-base) var(--ease-swift);
+
+  &:hover,
+  &:focus-visible {
+    color: var(--color-accent);
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
+p {
+  margin: 0 0 15px;
+  text-wrap: pretty;
+
+  &:last-child,
+  &:last-of-type {
+    margin: 0;
+  }
+}
+
+code,
+pre {
+  font-family: var(--font-mono);
+}
