@@ -1,0 +1,148 @@
+---
+/**
+ * トラストグラフ図解: GitHub / ドメイン / メール / OpenPGP 鍵 / Ethereum が
+ * どの証明で結ばれているかを 1 枚の SVG で示す。
+ * 色はサイトのデザイントークン(CSS 変数)を参照する。
+ */
+---
+
+<figure class="graph">
+  <svg
+    aria-labelledby="trust-graph-title trust-graph-desc"
+    role="img"
+    viewBox="0 0 760 500"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <title id="trust-graph-title">Trust graph of my identities</title>
+    <desc id="trust-graph-desc">
+      GitHub, my domains, and my email addresses are each linked to my OpenPGP
+      key by verifiable proofs; the key and my Ethereum account are linked by a
+      bidirectional cross-attestation.
+    </desc>
+
+    <!-- edges -->
+    <g class="edges">
+      <path class="edge" d="M 190 96 L 328 208"></path>
+      <path class="edge" d="M 570 96 L 432 208"></path>
+      <path class="edge" d="M 588 250 L 482 250"></path>
+      <path class="edge twoWay" d="M 380 292 L 380 384"></path>
+    </g>
+
+    <!-- edge labels -->
+    <g class="edgeLabels">
+      <text x="200" y="166">Keyoxide proof</text>
+      <text x="202" y="184">signed commits</text>
+      <text x="472" y="166">WKD</text>
+      <text x="472" y="184">keys.openpgp.org</text>
+      <text x="486" y="238">DNS TXT</text>
+      <text x="396" y="330">cross-</text>
+      <text x="396" y="348">attestation</text>
+    </g>
+
+    <!-- nodes -->
+    <g class="node">
+      <rect height="56" rx="10" width="180" x="100" y="40"></rect>
+      <text class="nodeTitle" x="190" y="64">GitHub</text>
+      <text class="nodeSub" x="190" y="84">yhay81</text>
+    </g>
+
+    <g class="node">
+      <rect height="56" rx="10" width="180" x="480" y="40"></rect>
+      <text class="nodeTitle" x="570" y="64">Email</text>
+      <text class="nodeSub" x="570" y="84">2 verified identities</text>
+    </g>
+
+    <g class="node">
+      <rect height="56" rx="10" width="164" x="588" y="222"></rect>
+      <text class="nodeTitle" x="670" y="246">Domains</text>
+      <text class="nodeSub" x="670" y="266">×2 (DNS proofs)</text>
+    </g>
+
+    <g class="node keyNode">
+      <rect height="84" rx="10" width="204" x="278" y="208"></rect>
+      <text class="nodeTitle" x="380" y="240">OpenPGP key</text>
+      <text class="nodeSub" x="380" y="262">B22B 98AB … 506B B669</text>
+      <text class="nodeSub" x="380" y="280">primary key offline</text>
+    </g>
+
+    <g class="node">
+      <rect height="56" rx="10" width="240" x="260" y="384"></rect>
+      <text class="nodeTitle" x="380" y="408">Ethereum account</text>
+      <text class="nodeSub" x="380" y="428">0x1C04…C079</text>
+    </g>
+  </svg>
+  <figcaption class="caption">
+    Every line is independently verifiable — nothing on this page asks you to
+    trust it.
+  </figcaption>
+</figure>
+
+<style>
+  .graph {
+    max-width: 760px;
+    margin: 24px 0 0;
+  }
+
+  svg {
+    width: 100%;
+    height: auto;
+  }
+
+  .edge {
+    stroke: var(--border-subtle);
+    stroke-width: 1.5;
+  }
+
+  .edge.twoWay {
+    stroke: var(--border-accent);
+    stroke-width: 2;
+  }
+
+  .edgeLabels text {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    fill: var(--color-text);
+  }
+
+  .node rect {
+    fill: var(--surface-subtle);
+    stroke: var(--border-subtle);
+  }
+
+  .keyNode rect {
+    fill: var(--accent-glow);
+    stroke: var(--border-accent);
+  }
+
+  .nodeTitle {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 600;
+    fill: var(--color-text-strong);
+    text-anchor: middle;
+  }
+
+  .nodeSub {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    fill: var(--color-text);
+    text-anchor: middle;
+  }
+
+  .caption {
+    margin-top: 10px;
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--color-text-soft);
+  }
+
+  @media (width <= 640px) {
+    .edgeLabels text {
+      font-size: 14px;
+    }
+
+    .nodeSub {
+      font-size: 13px;
+    }
+  }
+</style>
