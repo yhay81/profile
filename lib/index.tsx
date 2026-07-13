@@ -41,7 +41,7 @@ const PROFILE_SOCIAL_LINKS = [
     id: "social-pgp",
     name: "PGP",
     icon: "Key",
-    url: "/pgp-key.asc",
+    url: "/keys",
     description: "B22B 98AB B2D5 0330 7AB6 A316 0718 EFA6 506B B669",
     external: false,
   },
