@@ -3,7 +3,6 @@ export const PROFILE_EMAIL = "yusuke8h@gmail.com";
 export const PROFILE_URL = "https://yusuke-hayashi.com";
 export const PROFILE_REPOSITORY = "https://github.com/yhay81/profile";
 export const COPYRIGHT_START_YEAR = 2022;
-export const GA_ID = "G-8XGEJZF2J0";
 export const MAIN_COLOR = "#04ffaa";
 
 export const PGP_FINGERPRINT_SPACED =
@@ -62,7 +61,7 @@ export const SOCIAL_LINKS: readonly SocialLink[] = [
     name: "PGP",
     icon: "key",
     url: "/keys",
-    description: PGP_FINGERPRINT_SPACED,
+    description: "Key policy and fingerprint",
     external: false,
   },
   {
@@ -80,9 +79,9 @@ export interface NavLink {
   readonly label: string;
 }
 
+// Keys / Proofs / SIWE は /identity から辿れるためナビには出さない
 export const NAV_LINKS: readonly NavLink[] = [
+  { href: "/#about", label: "About" },
   { href: "/identity", label: "Identity" },
-  { href: "/keys", label: "Keys" },
-  { href: "/proofs", label: "Proofs" },
-  { href: "/siwe", label: "SIWE" },
+  { href: "/#contact", label: "Contact" },
 ];

@@ -136,7 +136,16 @@
     color: var(--color-text-soft);
   }
 
+  /* 狭い画面では縮小せず横スクロールで原寸に近い可読性を保つ */
   @media (width <= 640px) {
+    .graph {
+      overflow-x: auto;
+    }
+
+    svg {
+      min-width: 620px;
+    }
+
     .edgeLabels text {
       font-size: 14px;
     }

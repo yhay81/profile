@@ -1,7 +1,8 @@
 ---
 /**
  * ヒーロー。タイプライター演出は CSS steps() のみ(JS ゼロ)。
- * 各行の文字数はビルド時に計算して steps() に渡す。
+ * 3 行を順にタイプして残す(ループで消さない)。各行の文字数・
+ * 所要時間・開始遅延はビルド時に計算して CSS 変数で渡す。
  */
 const TYPED_LINES = [
   "I build AI-first products from concept to production.",
@@ -15,8 +16,21 @@ const HERO_STATS = [
   { label: "Mindset", value: "Pragmatic and practical" },
 ];
 
-const SECONDS_PER_LINE = 5;
-const totalSeconds = TYPED_LINES.length * SECONDS_PER_LINE;
+const CHAR_SECONDS = 0.045;
+const LINE_PAUSE_SECONDS = 0.35;
+let elapsedSeconds = 0.4;
+const typedLines = TYPED_LINES.map((text) => {
+  const line = {
+    text,
+    chars: text.length,
+    delaySeconds: elapsedSeconds,
+    durationSeconds: Number((text.length * CHAR_SECONDS).toFixed(2)),
+  };
+  elapsedSeconds = Number(
+    (elapsedSeconds + line.durationSeconds + LINE_PAUSE_SECONDS).toFixed(2),
+  );
+  return line;
+});
 ---
 
 <section class="hero" id="top">
@@ -25,15 +39,14 @@ const totalSeconds = TYPED_LINES.length * SECONDS_PER_LINE;
   <h1 class="title">Yusuke Hayashi</h1>
   <h2 class="subtitle">Software Engineer</h2>
 
-  <div
-    aria-hidden="true"
-    class="typer"
-    style={`--total: ${totalSeconds}s; --slot: ${SECONDS_PER_LINE}s;`}
-  >
+  <div aria-hidden="true" class="typer">
     {
-      TYPED_LINES.map((line, index) => (
-        <span class="line" style={`--n: ${line.length}; --i: ${index};`}>
-          {line}
+      typedLines.map((line) => (
+        <span
+          class="line"
+          style={`--n: ${line.chars}; --delay: ${line.delaySeconds}s; --duration: ${line.durationSeconds}s;`}
+        >
+          {line.text}
         </span>
       ))
     }
@@ -165,31 +178,37 @@ const totalSeconds = TYPED_LINES.length * SECONDS_PER_LINE;
 
   .typer {
     display: grid;
-    min-height: 1.8em;
+    gap: 2px;
     font-family: var(--font-mono);
     font-size: var(--text-sm);
     color: var(--color-text-soft);
   }
 
   .line {
-    grid-area: 1 / 1;
+    width: 0;
     overflow: hidden;
     white-space: nowrap;
     max-width: 100%;
-    opacity: 0;
 
     /* stylelint-disable-next-line plugin/no-low-performance-animation-properties -- タイプライター演出: 離散 steps で 1 インライン要素のみ */
-    animation:
-      line-typing var(--total) steps(var(--n)) infinite,
-      line-show var(--total) step-end infinite;
-    animation-delay: calc(var(--i) * var(--slot));
+    animation: line-typing var(--duration) steps(var(--n)) var(--delay) forwards;
 
+    /* カーソルは基本非表示とし、自行のタイプ中だけアニメで表示する
+       (fill-mode の終端値に頼ると極短アニメで不定になるため使わない) */
     &::after {
       content: "▌";
       color: var(--color-accent);
+      opacity: 0;
+      animation: cursor-on var(--duration) step-end var(--delay);
+    }
+
+    /* 最終行はタイプ開始以降ずっと点滅 */
+    &:last-child::after {
+      animation: cursor-blink 1.1s step-end var(--delay) infinite;
     }
 
     @media (prefers-reduced-motion: reduce) {
+      width: auto;
       animation: none;
 
       &::after {
@@ -198,17 +217,10 @@ const totalSeconds = TYPED_LINES.length * SECONDS_PER_LINE;
     }
   }
 
-  /* 低減設定時は 1 行目のみ静的表示 */
-  @media (prefers-reduced-motion: reduce) {
-    .line[style*="--i: 0"] {
-      width: auto;
-      opacity: 1;
-    }
-  }
-
   /* 狭い画面では 1 行に収まらないため、静的表示にフォールバック */
   @media (width <= 640px) {
     .line {
+      width: auto;
       white-space: normal;
       animation: none;
 
@@ -216,43 +228,35 @@ const totalSeconds = TYPED_LINES.length * SECONDS_PER_LINE;
         content: none;
       }
     }
-
-    .line[style*="--i: 0"] {
-      width: auto;
-      opacity: 1;
-    }
   }
 
   /* stylelint-disable plugin/no-low-performance-animation-properties --
      タイプライター演出: 離散 steps で 1 インライン要素のみ、実測で無害 */
   @keyframes line-typing {
-    0% {
+    from {
       width: 0;
     }
 
-    15% {
+    to {
       width: calc(var(--n) * 1ch + 1ch);
-    }
-
-    33.32% {
-      width: calc(var(--n) * 1ch + 1ch);
-    }
-
-    33.33%,
-    100% {
-      width: 0;
     }
   }
   /* stylelint-enable plugin/no-low-performance-animation-properties */
 
-  @keyframes line-show {
+  @keyframes cursor-on {
+    from,
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes cursor-blink {
     0%,
-    33.32% {
+    100% {
       opacity: 1;
     }
 
-    33.33%,
-    100% {
+    50% {
       opacity: 0;
     }
   }

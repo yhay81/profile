@@ -12,7 +12,7 @@ import workSansWoff2 from "@fontsource-variable/work-sans/files/work-sans-latin-
 import Footer from "@/components/Footer.astro";
 import Nav from "@/components/Nav.astro";
 import Side from "@/components/Side.astro";
-import { GA_ID, MAIN_COLOR, PROFILE_URL } from "@/lib/site";
+import { MAIN_COLOR, PROFILE_URL } from "@/lib/site";
 
 interface Props {
   title: string;
@@ -98,19 +98,5 @@ const speculationRules = JSON.stringify({
       <slot />
       <Footer />
     </div>
-
-    <script
-      async
-      is:inline
-      src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
-    <script define:vars={{ gaId: GA_ID }} is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        // eslint-disable-next-line prefer-rest-params
-        window.dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-      gtag("config", gaId);
-    </script>
   </body>
 </html>

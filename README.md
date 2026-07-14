@@ -9,11 +9,11 @@ Astro + ネイティブ CSS の静的サイト。フレームワークランタ�
 - **ページ遷移**: Cross-document View Transitions(`@view-transition`、CSS のみ)+ Speculation Rules API(内部リンクの prerender)。SPA ルーターは使わない
 - **モーション**: Scroll-driven Animations(`animation-timeline: view()`)によるリビール、CSS `steps()` のみのタイプライター演出。すべて `prefers-reduced-motion` で無効化
 - **色**: OKLCH のデザイントークン + `color-mix()` で透明度バリエーションを導出(`src/styles/tokens.css` が単一の情報源。生 rgb/hex リテラル禁止 — stylelint の `declaration-strict-value` で強制)
-- **JS を使う場所**: SIWE デモ(viem、/siwe のみ ~46KB)とメールコピー(~30 行)だけ。それ以外のページはページ固有 JS ゼロ(GA を除く)
+- **JS を使う場所**: SIWE デモ(viem、/siwe のみ ~46KB)とメールコピー(~30 行)だけ。それ以外のページは JS ゼロ。アナリティクスなし・第三者スクリプトなし
 
 ## 構成
 
-- `src/layouts/Base.astro` — 共通シェル(メタ・OG/Twitter カード・GA・Speculation Rules)
+- `src/layouts/Base.astro` — 共通シェル(メタ・OG/Twitter カード・Speculation Rules)
 - `src/components/` — SectionHeader / CodeBlock / TrustGraph など
 - `src/pages/` — `/`(Hero+About+Contact)、`/identity`(トラストグラフ)、`/keys`、`/proofs`、`/siwe`、`sitemap.xml.ts`
 - `src/lib/site.ts` — プロフィール情報・ソーシャルリンク・鍵指紋などの共通定数
