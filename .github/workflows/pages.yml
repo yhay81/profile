@@ -44,10 +44,23 @@ jobs:
         run: pnpm build
       - name: Verify identity artifacts
         run: node dist/.well-known/verify-identity.mjs --artifact-dir dist --local-only --report identity-health.json
-      - name: Package reproducible site artifact
-        if: github.event_name == 'push'
+      - name: Verify and package reproducible site artifact
         shell: bash
-        run: tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner -cf - -C dist . | gzip -n > site-dist.tar.gz
+        run: |
+          create_archive() {
+            tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner -cf - -C dist . \
+              | gzip -n > "$1"
+          }
+
+          create_archive "$RUNNER_TEMP/site-dist-first.tar.gz"
+          pnpm build
+          create_archive site-dist.tar.gz
+
+          first_digest="$(sha256sum "$RUNNER_TEMP/site-dist-first.tar.gz" | cut -d ' ' -f 1)"
+          second_digest="$(sha256sum site-dist.tar.gz | cut -d ' ' -f 1)"
+          echo "first build:  $first_digest"
+          echo "second build: $second_digest"
+          test "$first_digest" = "$second_digest"
       - name: Attest site artifact provenance
         if: github.event_name == 'push'
         uses: actions/attest@v4

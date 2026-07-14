@@ -60,7 +60,8 @@ sitemap は `src/pages/sitemap.xml.ts` の静的エンドポイントで、`robo
 Pages 用artifactでは `include-hidden-files: true` を必須とし、`/.well-known` を公開対象から落とさない。
 デプロイ後は公開済み検証 CLI を取得して site-owned artifact を再検証し、公開経路まで含めてCIで確認する。
 
-`main` の build では `dist/` を再現可能な `site-dist.tar.gz` にまとめ、GitHub Artifact
+CIでは同じcommitを2回buildし、固定metadataで作った `site-dist.tar.gz` のSHA-256一致を必須にする。
+`main` の build では検証済みのarchiveに対してGitHub Artifact
 Attestation で commit・workflow・成果物 digest の provenance を発行する。ダウンロードした成果物は
 `gh attestation verify site-dist.tar.gz -R yhay81/profile` で検証できる。
 
