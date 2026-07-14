@@ -13,7 +13,7 @@ export const ETH_ADDRESS = "0x1C049D25D368bFD50c74df68c919a12aDc48C079";
 export const KEYOXIDE_URL = `https://keyoxide.org/${PGP_FINGERPRINT_HEX}`;
 
 export type IconName =
-  "github" | "twitter" | "linkedin" | "zenn" | "key" | "mail";
+  "github" | "x" | "linkedin" | "zenn" | "key" | "shield" | "mail";
 
 export interface SocialLink {
   readonly id: string;
@@ -34,10 +34,10 @@ export const SOCIAL_LINKS: readonly SocialLink[] = [
     external: true,
   },
   {
-    id: "social-twitter",
-    name: "Twitter",
-    icon: "twitter",
-    url: "https://twitter.com/yhay81",
+    id: "social-x",
+    name: "X",
+    icon: "x",
+    url: "https://x.com/yhay81",
     description: "Short updates",
     external: true,
   },
@@ -68,7 +68,7 @@ export const SOCIAL_LINKS: readonly SocialLink[] = [
   {
     id: "social-keyoxide",
     name: "Keyoxide",
-    icon: "key",
+    icon: "shield",
     url: KEYOXIDE_URL,
     description: "Verified identity proofs",
     external: true,
