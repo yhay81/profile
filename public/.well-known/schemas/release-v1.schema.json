@@ -50,11 +50,33 @@
     "deployment": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["platform", "canonicalUrl", "runtimeCode"],
+      "required": ["platform", "canonicalUrl", "runtimeCode", "edgeTransforms"],
       "properties": {
         "platform": { "const": "Cloudflare Workers Static Assets" },
         "canonicalUrl": { "type": "string", "format": "uri" },
-        "runtimeCode": { "const": false }
+        "runtimeCode": { "const": false },
+        "edgeTransforms": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "provider", "mode", "preservedSuffix"],
+            "properties": {
+              "path": { "type": "string", "pattern": "^/" },
+              "provider": { "type": "string", "minLength": 1 },
+              "mode": { "const": "prepend" },
+              "preservedSuffix": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["bytes", "sha256"],
+                "properties": {
+                  "bytes": { "type": "integer", "minimum": 1 },
+                  "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "performance": {

@@ -112,9 +112,27 @@ async function main() {
     throw new Error("Asset-set digest mismatch");
   }
 
+  for (const transform of manifest.deployment.edgeTransforms || []) {
+    const bytes = await loadFile(
+      transform.path.replace(/^\//, ""),
+      transform.path,
+    );
+    const suffix = bytes.subarray(
+      bytes.byteLength - transform.preservedSuffix.bytes,
+    );
+    if (suffix.byteLength !== transform.preservedSuffix.bytes) {
+      throw new Error(`${transform.path} preserved suffix length mismatch`);
+    }
+    if (sha256(suffix) !== transform.preservedSuffix.sha256) {
+      throw new Error(`${transform.path} preserved suffix SHA-256 mismatch`);
+    }
+  }
+
   process.stdout.write(
     `Release verified: ${manifest.source.commit.slice(0, 12)}, ` +
-      `${verified.length} files, sha256:${manifest.assetSet.sha256}\n`,
+      `${verified.length} exact files, ` +
+      `${manifest.deployment.edgeTransforms?.length || 0} edge transform(s), ` +
+      `sha256:${manifest.assetSet.sha256}\n`,
   );
 }
 

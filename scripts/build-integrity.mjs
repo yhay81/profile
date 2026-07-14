@@ -238,7 +238,19 @@ async function generateReleaseManifest({
   committedAt,
   performanceBytes,
 }) {
-  const excluded = ["_headers", "_redirects", RELEASE_PATH];
+  const excluded = ["_headers", "_redirects", RELEASE_PATH, "robots.txt"];
+  const robotsBytes = await readFile(join(DIST, "robots.txt"));
+  const edgeTransforms = [
+    {
+      path: "/robots.txt",
+      provider: "Cloudflare managed robots.txt",
+      mode: "prepend",
+      preservedSuffix: {
+        bytes: robotsBytes.byteLength,
+        sha256: sha256(robotsBytes),
+      },
+    },
+  ];
   const files = (await walk(DIST)).filter((file) => !excluded.includes(file));
   const entries = await Promise.all(
     files.map(async (file) => {
@@ -278,6 +290,7 @@ async function generateReleaseManifest({
       platform: "Cloudflare Workers Static Assets",
       canonicalUrl: ORIGIN,
       runtimeCode: false,
+      edgeTransforms,
     },
     performance: {
       url: `${ORIGIN}/${PERFORMANCE_PATH}`,

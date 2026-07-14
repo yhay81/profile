@@ -20,10 +20,12 @@ node verify-identity.mjs
 
 ## Release integrity
 
-[`/integrity`](https://yusuke-hayashi.com/integrity) は、自己参照になる
-`release.json` と配信設定を除く全公開 asset の SHA-256、source commit、再現可能 build
-provenance、performance contract、identity proof を一つの検証面にまとめる。archive
-attestation は `release.json` と配信設定も含む。ブラウザー内の検証器はクリックされるまで読み込まれない。
+[`/integrity`](https://yusuke-hayashi.com/integrity) は、source commit、再現可能 build
+provenance、performance contract、identity proof を一つの検証面にまとめる。通常 asset
+は SHA-256 で完全一致を検証する。Cloudflare が先頭に managed policy を加える
+`robots.txt` は、source-controlled suffix の byte 数と SHA-256 を検証する。自己参照になる
+`release.json` と配信設定は asset set 外だが、archive attestation には含まれる。ブラウザー内の
+検証器はクリックされるまで読み込まれない。
 
 ```sh
 node scripts/verify-release.mjs --base-url https://yusuke-hayashi.com

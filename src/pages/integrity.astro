@@ -16,7 +16,7 @@ node scripts/verify-release.mjs --base-url https://yusuke-hayashi.com`;
 
 const CHECKS = [
   ["release", "Published release manifest"],
-  ["assets", "All non-recursive assets"],
+  ["assets", "Deployed asset integrity"],
   ["performance", "Performance contract"],
   ["identity", "Identity manifest signature"],
   ["history", "Append-only identity history"],
@@ -66,9 +66,13 @@ const CHECKS = [
         </div>
         <div class="ledgerRow">
           <span class="key">assetSet.scope</span>
-          <span class="value">
-            all public files; self-reference and edge config excluded
-          </span>
+          <span class="value"
+            >exact assets + source-preserving edge transforms</span
+          >
+        </div>
+        <div class="ledgerRow">
+          <span class="key">edge.transforms</span>
+          <span class="value" id="edge-transforms">—</span>
         </div>
         <div class="ledgerRow">
           <span class="key">build.provenance</span>
@@ -202,6 +206,13 @@ const CHECKS = [
       }
       const release = (await releaseResponse.json()) as {
         source: { commit: string; commitUrl: string };
+        deployment: {
+          edgeTransforms: {
+            path: string;
+            provider: string;
+            mode: string;
+          }[];
+        };
         assetSet: { sha256: string; fileCount: number; totalBytes: number };
       };
       const performance = (await performanceResponse.json()) as {
@@ -222,6 +233,12 @@ const CHECKS = [
       byId("asset-digest").textContent = release.assetSet.sha256;
       byId("asset-count").textContent =
         `${release.assetSet.fileCount} files · ${formatBytes(release.assetSet.totalBytes)}`;
+      byId("edge-transforms").textContent = release.deployment.edgeTransforms
+        .map(
+          (transform) =>
+            `${transform.path} · ${transform.provider} (${transform.mode})`,
+        )
+        .join(", ");
 
       for (const route of performance.routes) {
         const row = document.querySelector<HTMLElement>(

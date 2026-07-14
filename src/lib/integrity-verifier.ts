@@ -19,6 +19,13 @@ interface ReleaseEntry {
 interface ReleaseManifest {
   source: { commit: string };
   performance: { sha256: string };
+  deployment: {
+    edgeTransforms: {
+      path: string;
+      mode: "prepend";
+      preservedSuffix: { bytes: number; sha256: string };
+    }[];
+  };
   assetSet: {
     sha256: string;
     fileCount: number;
@@ -134,7 +141,7 @@ export async function runIntegrityVerification(
     return `commit ${release.source.commit.slice(0, 12)}`;
   });
 
-  await check("assets", "All non-recursive assets", async () => {
+  await check("assets", "Deployed asset integrity", async () => {
     if (!release) throw new Error("release manifest unavailable");
     await verifyInParallel(release.assetSet.entries, async (entry) => {
       const bytes = await fetchBytes(entry.path);
@@ -151,8 +158,21 @@ export async function runIntegrityVerification(
     if ((await sha256(encoder.encode(canonical))) !== release.assetSet.sha256) {
       throw new Error("asset-set digest mismatch");
     }
+    for (const transform of release.deployment.edgeTransforms) {
+      const bytes = await fetchBytes(transform.path);
+      const suffix = bytes.slice(-transform.preservedSuffix.bytes);
+      if (suffix.byteLength !== transform.preservedSuffix.bytes) {
+        throw new Error(`${transform.path} preserved suffix length mismatch`);
+      }
+      if ((await sha256(suffix)) !== transform.preservedSuffix.sha256) {
+        throw new Error(`${transform.path} preserved suffix SHA-256 mismatch`);
+      }
+    }
     const kib = Math.round(release.assetSet.totalBytes / 1024);
-    return `${release.assetSet.fileCount} files · ${kib} KiB · SHA-256 complete`;
+    return (
+      `${release.assetSet.fileCount} exact files · ${kib} KiB · ` +
+      `${release.deployment.edgeTransforms.length} verified edge transform`
+    );
   });
 
   await check("performance", "Performance contract", async () => {
