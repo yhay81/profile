@@ -1,0 +1,140 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yusuke-hayashi.com/.well-known/schemas/identity-manifest-v1.schema.json",
+  "title": "Yusuke Hayashi identity manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "subject",
+    "validity",
+    "identifiers",
+    "proofs",
+    "history",
+    "verifier",
+    "thirdPartyAttestations"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "format": "uri" },
+    "schemaVersion": { "const": 1 },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "canonicalUrl"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "canonicalUrl": { "type": "string", "format": "uri" }
+      }
+    },
+    "validity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["issuedAt", "expiresAt"],
+      "properties": {
+        "issuedAt": { "type": "string", "format": "date-time" },
+        "expiresAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "identifiers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["domains", "github", "openpgp", "ethereum", "nostr", "bluesky"],
+      "properties": {
+        "domains": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "format": "hostname" }
+        },
+        "github": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["handle", "profile", "repository"],
+          "properties": {
+            "handle": { "type": "string" },
+            "profile": { "type": "string", "format": "uri" },
+            "repository": { "type": "string", "format": "uri" }
+          }
+        },
+        "openpgp": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["fingerprint", "uri", "keyUrl", "wkdEmail"],
+          "properties": {
+            "fingerprint": { "type": "string", "pattern": "^[A-F0-9]{40}$" },
+            "uri": { "type": "string", "pattern": "^openpgp4fpr:[a-f0-9]{40}$" },
+            "keyUrl": { "type": "string", "format": "uri" },
+            "wkdEmail": { "type": "string", "format": "email" }
+          }
+        },
+        "ethereum": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["chainId", "address"],
+          "properties": {
+            "chainId": { "const": 1 },
+            "address": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" }
+          }
+        },
+        "nostr": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["npub", "hex", "nip05"],
+          "properties": {
+            "npub": { "type": "string", "pattern": "^npub1[023456789acdefghjklmnpqrstuvwxyz]+$" },
+            "hex": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            "nip05": { "type": "string", "format": "email" }
+          }
+        },
+        "bluesky": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["handle", "did"],
+          "properties": {
+            "handle": { "type": "string", "format": "hostname" },
+            "did": { "type": "string", "pattern": "^did:plc:[a-z2-7]+$" }
+          }
+        }
+      }
+    },
+    "proofs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "type", "url"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "type": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "mediaType": { "type": "string" }
+        }
+      }
+    },
+    "history": { "$ref": "#/definitions/hashedResource" },
+    "verifier": { "$ref": "#/definitions/hashedResource" },
+    "thirdPartyAttestations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["index", "policy", "schema"],
+      "properties": {
+        "index": { "$ref": "#/definitions/hashedResource" },
+        "policy": { "$ref": "#/definitions/hashedResource" },
+        "schema": { "type": "string", "format": "uri" }
+      }
+    }
+  },
+  "definitions": {
+    "hashedResource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url", "sha256"],
+      "properties": {
+        "url": { "type": "string", "format": "uri" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    }
+  }
+}

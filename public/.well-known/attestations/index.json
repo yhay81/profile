@@ -1,0 +1,7 @@
+{
+  "$schema": "https://yusuke-hayashi.com/.well-known/schemas/third-party-attestation-index-v1.schema.json",
+  "schemaVersion": 1,
+  "subject": "https://yusuke-hayashi.com",
+  "updatedAt": "2026-07-14",
+  "attestations": []
+}

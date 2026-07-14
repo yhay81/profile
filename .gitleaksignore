@@ -1,0 +1,3 @@
+# OpenPGP.js armor encoder marker embedded in the generated verifier bundle.
+dist/.well-known/verify-identity.mjs:private-key:12699
+public/.well-known/verify-identity.mjs:private-key:12699

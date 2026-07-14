@@ -2,6 +2,22 @@
 
 Yusuke Hayashi のプロフィールページ(yusuke-hayashi.com)。
 
+## Identity verification
+
+OpenPGP 署名付きの機械可読 manifest を
+[`/.well-known/identity.json`](https://yusuke-hayashi.com/.well-known/identity.json)
+で配信する。detached signature、変更履歴、schema、公開検証 CLI も同じ `.well-known` 配下に置く。
+
+```sh
+gpg --locate-keys yusuke@haya.company
+curl -sO https://yusuke-hayashi.com/.well-known/identity.json
+curl -sO https://yusuke-hayashi.com/.well-known/identity.json.asc
+gpg --verify identity.json.asc identity.json
+
+curl -sO https://yusuke-hayashi.com/.well-known/verify-identity.mjs
+node verify-identity.mjs
+```
+
 ## 技術方針
 
 Astro + ネイティブ CSS の静的サイト。フレームワークランタイムを持たず、出力はデフォルトで JS ゼロの純 HTML/CSS。プラットフォーム標準機能を優先する:
@@ -17,7 +33,7 @@ Astro + ネイティブ CSS の静的サイト。フレームワークランタ�
 - `src/components/` — SectionHeader / CodeBlock / TrustGraph など
 - `src/pages/` — `/`(Hero+About+Contact)、`/identity`(トラストグラフ)、`/keys`、`/proofs`、`/siwe`、`sitemap.xml.ts`
 - `src/lib/site.ts` — プロフィール情報・ソーシャルリンク・鍵指紋などの共通定数
-- `public/` — **外部参照される固定資産**(変更・移動禁止): `pgp-key.asc`(+.ots)、`.well-known/security.txt`(+.ots)、`.well-known/nostr.json`、`proofs/statement.txt.asc`、`proofs/eth-attestation.json`
+- `public/` — **外部参照される固定資産**(変更・移動禁止): `pgp-key.asc`(+.ots)、`.well-known/security.txt`(+.ots)、`.well-known/identity.json`(+署名・履歴・検証 CLI)、`.well-known/nostr.json`、`proofs/statement.txt.asc`、`proofs/eth-attestation.json`
 
 ## デザイン
 
@@ -41,6 +57,10 @@ pnpm security:audit
 GitHub Actions(`.github/workflows/pages.yml`)で lint → audit → `astro build` → GitHub Pages(`dist/`)。
 `build.format: "file"` により `/keys` などの拡張子なし URL を 301 なしで維持しています。
 sitemap は `src/pages/sitemap.xml.ts` の静的エンドポイントで、`robots.txt` の記載と同じ `/sitemap.xml` 名で生成します。
+
+`main` の build では `dist/` を再現可能な `site-dist.tar.gz` にまとめ、GitHub Artifact
+Attestation で commit・workflow・成果物 digest の provenance を発行する。ダウンロードした成果物は
+`gh attestation verify site-dist.tar.gz -R yhay81/profile` で検証できる。
 
 ## 参考
 

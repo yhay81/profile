@@ -7,6 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  attestations: write
   contents: read
   pages: write
   id-token: write
@@ -41,6 +42,24 @@ jobs:
         run: pnpm security:audit
       - name: Build with Astro
         run: pnpm build
+      - name: Verify identity artifacts
+        run: node dist/.well-known/verify-identity.mjs --artifact-dir dist --local-only --report identity-health.json
+      - name: Package reproducible site artifact
+        if: github.event_name == 'push'
+        shell: bash
+        run: tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner -cf - -C dist . | gzip -n > site-dist.tar.gz
+      - name: Attest site artifact provenance
+        if: github.event_name == 'push'
+        uses: actions/attest@v4
+        with:
+          subject-path: site-dist.tar.gz
+      - name: Upload verifiable site artifact
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v7
+        with:
+          name: site-dist-${{ github.sha }}
+          path: site-dist.tar.gz
+          retention-days: 30
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:

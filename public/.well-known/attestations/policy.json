@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "status": "framework-ready",
+  "subject": "https://yusuke-hayashi.com",
+  "acceptedClaimTypes": [
+    "identity-witness",
+    "professional-relationship",
+    "key-transition-witness"
+  ],
+  "acceptedProofTypes": [
+    "openpgp-clearsign",
+    "eip191"
+  ],
+  "requirements": [
+    "The issuer must control the signing key or account named in the proof.",
+    "issuer.identifier must equal the EIP-191 address or the openpgp4fpr URI derived from the proof signer.",
+    "The statement must be specific, time-bounded where appropriate, and publishable with the issuer's consent.",
+    "Active records must not be expired; revoked records must retain a public timestamp and reason.",
+    "The attestation must not disclose private contact details, confidential work, wallet balances, or asset-storage addresses.",
+    "Publication requires manual review; schema validity alone is not sufficient."
+  ],
+  "revocation": "An issuer may request revocation. Revoked records remain in the index with status=revoked so historical references do not silently disappear.",
+  "submission": "No automatic submission endpoint is provided. Attestations are accepted only through an explicitly agreed exchange with the issuer."
+}

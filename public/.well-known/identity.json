@@ -1,0 +1,100 @@
+{
+  "$schema": "https://yusuke-hayashi.com/.well-known/schemas/identity-manifest-v1.schema.json",
+  "schemaVersion": 1,
+  "subject": {
+    "name": "Yusuke Hayashi",
+    "canonicalUrl": "https://yusuke-hayashi.com"
+  },
+  "validity": {
+    "issuedAt": "2026-07-14T00:00:00+09:00",
+    "expiresAt": "2027-07-13T00:00:00.000Z"
+  },
+  "identifiers": {
+    "domains": [
+      "yusuke-hayashi.com",
+      "haya.company",
+      "haya-inc.co.jp"
+    ],
+    "github": {
+      "handle": "yhay81",
+      "profile": "https://github.com/yhay81",
+      "repository": "https://github.com/yhay81/profile"
+    },
+    "openpgp": {
+      "fingerprint": "B22B98ABB2D503307AB6A3160718EFA6506BB669",
+      "uri": "openpgp4fpr:b22b98abb2d503307ab6a3160718efa6506bb669",
+      "keyUrl": "https://yusuke-hayashi.com/pgp-key.asc",
+      "wkdEmail": "yusuke@haya.company"
+    },
+    "ethereum": {
+      "chainId": 1,
+      "address": "0x1C049D25D368bFD50c74df68c919a12aDc48C079"
+    },
+    "nostr": {
+      "npub": "npub1p7jz9mh4vnz3c939w2af2q8zfgsg57ykjgcrjtxnnhdlmy62d7tsp9zw8v",
+      "hex": "0fa422eef564c51c162572ba9500e24a208a78969230392cd39ddbfd934a6f97",
+      "nip05": "yusuke@yusuke-hayashi.com"
+    },
+    "bluesky": {
+      "handle": "yusuke-hayashi.com",
+      "did": "did:plc:vesjclqfso2eo4h2dhfj3vwo"
+    }
+  },
+  "proofs": [
+    {
+      "id": "openpgp-key",
+      "type": "OpenPGP public key",
+      "url": "https://yusuke-hayashi.com/pgp-key.asc",
+      "mediaType": "application/pgp-keys"
+    },
+    {
+      "id": "openpgp-ethereum",
+      "type": "OpenPGP clearsign",
+      "url": "https://yusuke-hayashi.com/proofs/statement.txt.asc",
+      "mediaType": "text/plain"
+    },
+    {
+      "id": "ethereum-openpgp",
+      "type": "EIP-191 personal_sign",
+      "url": "https://yusuke-hayashi.com/proofs/eth-attestation.json",
+      "mediaType": "application/json"
+    },
+    {
+      "id": "security-txt",
+      "type": "OpenPGP clearsign",
+      "url": "https://yusuke-hayashi.com/.well-known/security.txt",
+      "mediaType": "text/plain"
+    },
+    {
+      "id": "identity-manifest-signature",
+      "type": "OpenPGP detached signature",
+      "url": "https://yusuke-hayashi.com/.well-known/identity.json.asc",
+      "mediaType": "application/pgp-signature"
+    },
+    {
+      "id": "keyoxide",
+      "type": "Keyoxide profile",
+      "url": "https://keyoxide.org/b22b98abb2d503307ab6a3160718efa6506bb669",
+      "mediaType": "text/html"
+    }
+  ],
+  "history": {
+    "url": "https://yusuke-hayashi.com/.well-known/identity-history.json",
+    "sha256": "527de654b5e10740b5a98a16f2cf2edaf808296fc8cac5c3cbc1dc68cbe46774"
+  },
+  "verifier": {
+    "url": "https://yusuke-hayashi.com/.well-known/verify-identity.mjs",
+    "sha256": "f0f24f114a75b95fada4fc1bfce5d36c9a3fa50f1fd018943d621666cf8feccc"
+  },
+  "thirdPartyAttestations": {
+    "index": {
+      "url": "https://yusuke-hayashi.com/.well-known/attestations/index.json",
+      "sha256": "ae3d48cfb57f3ec24fec6bd362fd33697ecb6b2519aa7105b6cad12d4b836d82"
+    },
+    "policy": {
+      "url": "https://yusuke-hayashi.com/.well-known/attestations/policy.json",
+      "sha256": "9bf07bf0133b2b616d6f2b7db415512d0ffde77a1b8ef12b067883a0828162d3"
+    },
+    "schema": "https://yusuke-hayashi.com/.well-known/schemas/third-party-attestation-v1.schema.json"
+  }
+}

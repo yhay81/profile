@@ -62,6 +62,13 @@ const PROOF_CARDS: ProofCard[] = [
     linkText: "nostr.json",
     external: false,
   },
+  {
+    pair: "Machine-readable root",
+    method: "OpenPGP-signed identity manifest with hashed history and verifier",
+    href: "/.well-known/identity.json",
+    linkText: "identity.json",
+    external: false,
+  },
 ];
 
 const VERIFY_QUICKSTART = `# 1. Fetch my key via WKD and check the Keyoxide proofs
@@ -72,6 +79,16 @@ open ${KEYOXIDE_URL}
 curl -sO https://yusuke-hayashi.com/proofs/statement.txt.asc
 gpg --verify statement.txt.asc
 cast wallet verify --address ${ETH_ADDRESS} "<message>" "<signature>"`;
+
+const VERIFY_MACHINE = `# Verify the machine-readable identity root via WKD
+gpg --locate-keys yusuke@haya.company
+curl -sO https://yusuke-hayashi.com/.well-known/identity.json
+curl -sO https://yusuke-hayashi.com/.well-known/identity.json.asc
+gpg --verify identity.json.asc identity.json
+
+# Run all public checks (Node.js 22+; inspect the file before executing)
+curl -sO https://yusuke-hayashi.com/.well-known/verify-identity.mjs
+node verify-identity.mjs`;
 ---
 
 <Base description={description} path="/identity" title={title}>
@@ -119,8 +136,22 @@ cast wallet verify --address ${ETH_ADDRESS} "<message>" "<signature>"`;
 
       <CodeBlock code={VERIFY_QUICKSTART} />
 
+      <h2 class="heading">Machine-readable identity</h2>
+
+      <p class="bodyText">
+        The signed <a href="/.well-known/identity.json">identity manifest</a>{
+          " "
+        }
+        pins every public identifier, the hash of its{" "}
+        <a href="/.well-known/identity-history.json">append-only history</a>,
+        and the exact verifier bundle. A scheduled health check uses the same
+        verifier to detect broken signatures, DNS drift, and expired proofs.
+      </p>
+
+      <CodeBlock code={VERIFY_MACHINE} />
+
       <p class="updated">
-        ENS integration is planned once yhay81.eth is registered.
+        ENS is an optional naming adapter and is not required for verification.
       </p>
     </section>
   </main>

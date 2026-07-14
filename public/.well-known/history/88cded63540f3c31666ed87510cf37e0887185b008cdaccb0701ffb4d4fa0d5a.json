@@ -1,0 +1,61 @@
+{
+  "$schema": "https://yusuke-hayashi.com/.well-known/schemas/identity-history-v1.schema.json",
+  "schemaVersion": 1,
+  "subject": "https://yusuke-hayashi.com",
+  "updatedAt": "2026-07-14",
+  "previousVersionSha256": null,
+  "events": [
+    {
+      "id": "2026-07-12/openpgp-key-rotation",
+      "effectiveAt": "2026-07-12",
+      "type": "key-rotation",
+      "summary": "The RSA-4096 primary key was superseded by an offline Ed25519 certify-only primary key with machine-scoped subkeys.",
+      "identifiers": {
+        "previousOpenpgpFingerprint": "F1B6AE71751BAC79EE04BC5789C325D41DD3055B",
+        "currentOpenpgpFingerprint": "B22B98ABB2D503307AB6A3160718EFA6506BB669"
+      },
+      "evidence": [
+        "https://yusuke-hayashi.com/keys"
+      ]
+    },
+    {
+      "id": "2026-07-13/ethereum-identity-created",
+      "effectiveAt": "2026-07-13",
+      "type": "identifier-created",
+      "summary": "A dedicated public Ethereum identity account was created separately from asset-storage accounts.",
+      "identifiers": {
+        "ethereumAddress": "0x1C049D25D368bFD50c74df68c919a12aDc48C079"
+      },
+      "evidence": [
+        "https://yusuke-hayashi.com/identity"
+      ]
+    },
+    {
+      "id": "2026-07-14/openpgp-ethereum-cross-attestation",
+      "effectiveAt": "2026-07-14",
+      "type": "proof-published",
+      "summary": "Bidirectional OpenPGP and EIP-191 signatures linking the OpenPGP key and Ethereum account were published.",
+      "identifiers": {
+        "openpgpFingerprint": "B22B98ABB2D503307AB6A3160718EFA6506BB669",
+        "ethereumAddress": "0x1C049D25D368bFD50c74df68c919a12aDc48C079"
+      },
+      "evidence": [
+        "https://yusuke-hayashi.com/proofs/statement.txt.asc",
+        "https://yusuke-hayashi.com/proofs/eth-attestation.json"
+      ]
+    },
+    {
+      "id": "2026-07-14/domain-identities-linked",
+      "effectiveAt": "2026-07-14",
+      "type": "identifier-linked",
+      "summary": "The personal domain was linked to Bluesky through DNS and to Nostr through NIP-05.",
+      "identifiers": {
+        "blueskyDid": "did:plc:vesjclqfso2eo4h2dhfj3vwo",
+        "nostrNip05": "yusuke@yusuke-hayashi.com"
+      },
+      "evidence": [
+        "https://yusuke-hayashi.com/.well-known/nostr.json"
+      ]
+    }
+  ]
+}
