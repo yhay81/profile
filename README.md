@@ -25,6 +25,7 @@ Astro + ネイティブ CSS の静的サイト。フレームワークランタ�
 - **ページ遷移**: Cross-document View Transitions(`@view-transition`、CSS のみ)+ Speculation Rules API(内部リンクの prerender)。SPA ルーターは使わない
 - **モーション**: Scroll-driven Animations(`animation-timeline: view()`)によるリビール、CSS `steps()` のみのタイプライター演出。すべて `prefers-reduced-motion` で無効化
 - **色**: OKLCH のデザイントークン + `color-mix()` で透明度バリエーションを導出(`src/styles/tokens.css` が単一の情報源。生 rgb/hex リテラル禁止 — stylelint の `declaration-strict-value` で強制)
+- **フォント**: `system-ui` / `ui-monospace` のみ。Web フォントの取得・preload・表示待ちを発生させない
 - **JS を使う場所**: SIWE デモ(viem、/siwe のみ ~46KB)とメールコピー(~30 行)だけ。それ以外のページは JS ゼロ。アナリティクスなし・第三者スクリプトなし
 
 ## 構成
@@ -37,7 +38,7 @@ Astro + ネイティブ CSS の静的サイト。フレームワークランタ�
 
 ## デザイン
 
-ダークネイビー + ネオングリーンのターミナル調。主要フォントは Work Sans / Space Grotesk / Fira Code(fontsource で self-host)。背景の薄いグリッド、セクション番号と見出しのリズム、`:focus-visible` のアウトライン。プロフィール写真は `astro:assets` でビルド時に最適化。
+ダークネイビー + ネオングリーンのターミナル調。OS ネイティブフォントによる即時描画、背景の薄いグリッド、セクション番号と見出しのリズム、`:focus-visible` のアウトライン。プロフィール写真は `astro:assets` でビルド時に最適化。
 
 ## 開発
 
@@ -45,6 +46,7 @@ Astro + ネイティブ CSS の静的サイト。フレームワークランタ�
 pnpm install
 pnpm dev        # localhost:4321
 pnpm build      # dist/ に静的書き出し
+pnpm deploy:cloudflare # 検証済み dist/ を Cloudflare へ配置
 pnpm lint       # astro check + eslint + stylelint + prettier
 pnpm fix        # 自動修正
 pnpm security:audit
@@ -54,10 +56,11 @@ pnpm security:audit
 
 ## デプロイ
 
-GitHub Actions(`.github/workflows/pages.yml`)で lint → audit → `astro build` → GitHub Pages(`dist/`)。
-`build.format: "file"` により `/keys` などの拡張子なし URL を 301 なしで維持しています。
+GitHub Actions(`.github/workflows/cloudflare.yml`)で lint → audit → 再現可能ビルド → artifact attestation → Cloudflare Workers Static Assets への直接配置を行う。リクエスト時に Worker コードは実行しない。
+`build.format: "file"` と `assets.html_handling: "drop-trailing-slash"` により、`/keys` などの拡張子なし URL をリダイレクトなしで維持する。
 sitemap は `src/pages/sitemap.xml.ts` の静的エンドポイントで、`robots.txt` の記載と同じ `/sitemap.xml` 名で生成します。
-Pages 用artifactでは `include-hidden-files: true` を必須とし、`/.well-known` を公開対象から落とさない。
+`dist/` 全体を固定 metadata の archive にして job 間で受け渡すため、`/.well-known` も欠落せず、attestation 対象と実際のデプロイ内容が一致する。
+ハッシュ付きの `/_astro/*` は `public/_headers` で1年間 immutable、HTML と固定 URL の identity artifact は Cloudflare 標準の再検証動作を使う。
 デプロイ後は公開済み検証 CLI を取得して site-owned artifact を再検証し、公開経路まで含めてCIで確認する。
 
 CIでは同じcommitを2回buildし、固定metadataで作った `site-dist.tar.gz` のSHA-256一致を必須にする。

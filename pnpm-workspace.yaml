@@ -8,3 +8,4 @@ allowBuilds:
   sharp: true
   "@parcel/watcher": false
   unrs-resolver: false
+  workerd: true
