@@ -12,6 +12,12 @@ const PAGES = [
     priority: "0.8",
   },
   {
+    path: "/integrity",
+    lastmod: "2026-07-14",
+    changefreq: "weekly",
+    priority: "0.8",
+  },
+  {
     path: "/keys",
     lastmod: "2026-07-14",
     changefreq: "yearly",

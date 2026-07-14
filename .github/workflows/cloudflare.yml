@@ -37,7 +37,7 @@ jobs:
         run: pnpm lint
       - name: Run security audit
         run: pnpm security:audit
-      - name: Build with Astro
+      - name: Build and enforce performance contract
         run: pnpm build
       - name: Verify identity artifacts
         run: node dist/.well-known/verify-identity.mjs --artifact-dir dist --local-only --report identity-health.json
@@ -117,7 +117,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: deploy
     steps:
-      - name: Verify published identity resources
+      - name: Checkout verifier source
+        uses: actions/checkout@v7
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+      - name: Verify published release and identity resources
         shell: bash
         run: |
           for attempt in {1..12}; do
@@ -125,7 +131,10 @@ jobs:
               --header 'Cache-Control: no-cache' \
               'https://yusuke-hayashi.com/.well-known/verify-identity.mjs' \
               --output verify-identity.mjs \
-              && node verify-identity.mjs --local-only --report identity-health.json; then
+              && node verify-identity.mjs --local-only --report identity-health.json \
+              && node scripts/verify-release.mjs \
+                --base-url https://yusuke-hayashi.com \
+                --expected-commit "$GITHUB_SHA"; then
               exit 0
             fi
 
@@ -135,6 +144,19 @@ jobs:
           done
 
           exit 1
+      - name: Verify production security headers
+        shell: bash
+        run: |
+          curl --fail --silent --show-error \
+            --header 'Cache-Control: no-cache' \
+            --dump-header response-headers.txt \
+            --output response-body.html \
+            'https://yusuke-hayashi.com/'
+          grep --ignore-case --quiet '^content-security-policy:' response-headers.txt
+          grep --ignore-case --quiet '^strict-transport-security:' response-headers.txt
+          grep --ignore-case --quiet '^x-content-type-options: nosniff' response-headers.txt
+          grep --ignore-case --quiet '^x-frame-options: DENY' response-headers.txt
+          ! grep --quiet 'static.cloudflareinsights.com\|data-cf-beacon\|/cdn-cgi/rum' response-body.html
       - name: Upload deployment health report
         if: always() && hashFiles('identity-health.json') != ''
         uses: actions/upload-artifact@v7

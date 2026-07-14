@@ -1,0 +1,49 @@
+name: Production integrity health
+
+on:
+  schedule:
+    - cron: "19 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-production:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout verifier source
+        uses: actions/checkout@v7
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+      - name: Verify release manifest and every deployed asset
+        run: node scripts/verify-release.mjs --base-url https://yusuke-hayashi.com
+      - name: Verify identity signatures and public claims
+        shell: bash
+        run: |
+          curl --fail --silent --show-error \
+            --header 'Cache-Control: no-cache' \
+            'https://yusuke-hayashi.com/.well-known/verify-identity.mjs' \
+            --output verify-identity.mjs
+          node verify-identity.mjs --report identity-health.json
+      - name: Verify security headers and RUM absence
+        shell: bash
+        run: |
+          curl --fail --silent --show-error \
+            --header 'Cache-Control: no-cache' \
+            --dump-header response-headers.txt \
+            --output response-body.html \
+            'https://yusuke-hayashi.com/'
+          grep --ignore-case --quiet '^content-security-policy:' response-headers.txt
+          grep --ignore-case --quiet '^strict-transport-security:' response-headers.txt
+          grep --ignore-case --quiet '^x-content-type-options: nosniff' response-headers.txt
+          ! grep --quiet 'static.cloudflareinsights.com\|data-cf-beacon\|/cdn-cgi/rum' response-body.html
+      - name: Upload signed-identity health report
+        if: always() && hashFiles('identity-health.json') != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: production-integrity-${{ github.run_id }}
+          path: identity-health.json
+          retention-days: 30

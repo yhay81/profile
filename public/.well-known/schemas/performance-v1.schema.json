@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yusuke-hayashi.com/.well-known/schemas/performance-v1.schema.json",
+  "title": "Yusuke Hayashi site performance contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "subject", "checkedAt", "sourceCommit", "status", "global", "routes"],
+  "properties": {
+    "$schema": { "type": "string", "format": "uri" },
+    "schemaVersion": { "const": 1 },
+    "subject": { "type": "string", "format": "uri" },
+    "checkedAt": { "type": "string", "format": "date-time" },
+    "sourceCommit": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "status": { "enum": ["pass", "fail"] },
+    "global": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["thirdPartyRequests", "fontRequests", "rumReferences"],
+      "properties": {
+        "thirdPartyRequests": { "const": 0 },
+        "fontRequests": { "const": 0 },
+        "rumReferences": { "const": 0 }
+      }
+    },
+    "routes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "status", "budgets", "metrics"],
+        "properties": {
+          "path": { "type": "string", "pattern": "^/" },
+          "status": { "enum": ["pass", "fail"] },
+          "budgets": { "type": "object" },
+          "metrics": { "type": "object" }
+        }
+      }
+    }
+  }
+}

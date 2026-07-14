@@ -1,8 +1,7 @@
 ---
 /**
  * ヒーロー。タイプライター演出は CSS steps() のみ(JS ゼロ)。
- * 3 行を順にタイプして残す(ループで消さない)。各行の文字数・
- * 所要時間・開始遅延はビルド時に計算して CSS 変数で渡す。
+ * 3 行を順にタイプして残す(ループで消さない)。
  */
 const TYPED_LINES = [
   "I build AI-first products from concept to production.",
@@ -15,22 +14,6 @@ const HERO_STATS = [
   { label: "Experience", value: "10+ Years" },
   { label: "Mindset", value: "Pragmatic and practical" },
 ];
-
-const CHAR_SECONDS = 0.012;
-const LINE_PAUSE_SECONDS = 0.1;
-let elapsedSeconds = 0.08;
-const typedLines = TYPED_LINES.map((text) => {
-  const line = {
-    text,
-    chars: text.length,
-    delaySeconds: elapsedSeconds,
-    durationSeconds: Number((text.length * CHAR_SECONDS).toFixed(2)),
-  };
-  elapsedSeconds = Number(
-    (elapsedSeconds + line.durationSeconds + LINE_PAUSE_SECONDS).toFixed(2),
-  );
-  return line;
-});
 ---
 
 <section class="hero" id="top">
@@ -40,16 +23,7 @@ const typedLines = TYPED_LINES.map((text) => {
   <h2 class="subtitle">Software Engineer</h2>
 
   <div aria-hidden="true" class="typer">
-    {
-      typedLines.map((line) => (
-        <span
-          class="line"
-          style={`--n: ${line.chars}; --delay: ${line.delaySeconds}s; --duration: ${line.durationSeconds}s;`}
-        >
-          {line.text}
-        </span>
-      ))
-    }
+    {TYPED_LINES.map((line) => <span class="line">{line}</span>)}
   </div>
   <p class="visuallyHidden">{TYPED_LINES.join(" ")}</p>
 
@@ -205,6 +179,24 @@ const typedLines = TYPED_LINES.map((text) => {
     /* 最終行はタイプ開始以降ずっと点滅 */
     &:last-child::after {
       animation: cursor-blink 0.8s step-end var(--delay) infinite;
+    }
+
+    &:nth-child(1) {
+      --n: 53;
+      --delay: 0.08s;
+      --duration: 0.64s;
+    }
+
+    &:nth-child(2) {
+      --n: 51;
+      --delay: 0.82s;
+      --duration: 0.61s;
+    }
+
+    &:nth-child(3) {
+      --n: 46;
+      --delay: 1.53s;
+      --duration: 0.55s;
     }
 
     @media (prefers-reduced-motion: reduce) {

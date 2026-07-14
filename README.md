@@ -18,6 +18,22 @@ curl -sO https://yusuke-hayashi.com/.well-known/verify-identity.mjs
 node verify-identity.mjs
 ```
 
+## Release integrity
+
+[`/integrity`](https://yusuke-hayashi.com/integrity) は、自己参照になる
+`release.json` と配信設定を除く全公開 asset の SHA-256、source commit、再現可能 build
+provenance、performance contract、identity proof を一つの検証面にまとめる。archive
+attestation は `release.json` と配信設定も含む。ブラウザー内の検証器はクリックされるまで読み込まれない。
+
+```sh
+node scripts/verify-release.mjs --base-url https://yusuke-hayashi.com
+```
+
+機械可読の [`release.json`](https://yusuke-hayashi.com/.well-known/release.json) と
+[`performance.json`](https://yusuke-hayashi.com/.well-known/performance.json) は各 build で
+決定論的に生成される。CSP の inline script/style hash も同じ build で生成し、未登録の
+inline code は本番で実行できない。
+
 ## 技術方針
 
 Astro + ネイティブ CSS の静的サイト。フレームワークランタイムを持たず、出力はデフォルトで JS ゼロの純 HTML/CSS。プラットフォーム標準機能を優先する:
@@ -26,13 +42,15 @@ Astro + ネイティブ CSS の静的サイト。フレームワークランタ�
 - **モーション**: Scroll-driven Animations(`animation-timeline: view()`)によるリビール、CSS `steps()` のみのタイプライター演出。すべて `prefers-reduced-motion` で無効化
 - **色**: OKLCH のデザイントークン + `color-mix()` で透明度バリエーションを導出(`src/styles/tokens.css` が単一の情報源。生 rgb/hex リテラル禁止 — stylelint の `declaration-strict-value` で強制)
 - **フォント**: `system-ui` / `ui-monospace` のみ。Web フォントの取得・preload・表示待ちを発生させない
-- **JS を使う場所**: SIWE デモ(viem、/siwe のみ ~46KB)とメールコピー(~30 行)だけ。それ以外のページは JS ゼロ。アナリティクスなし・第三者スクリプトなし
+- **JS を使う場所**: SIWE デモ(viem はクリック時 import)、メールコピー、`/integrity` の検証器だけ。OpenPGP/viem を含む暗号コードは検証開始時まで import しない。アナリティクスなし・第三者スクリプトなし
+- **performance contract**: 主要 route の圧縮 HTML/初期 JS 上限と、第三者 request・font・RUM が常に 0 であることを build で強制
+- **security headers**: build 出力から生成する hash-based CSP、HSTS、COOP/CORP、Permissions-Policy、nosniff、clickjacking 防止を Cloudflare edge で付与
 
 ## 構成
 
 - `src/layouts/Base.astro` — 共通シェル(メタ・OG/Twitter カード・Speculation Rules)
 - `src/components/` — SectionHeader / CodeBlock / TrustGraph など
-- `src/pages/` — `/`(Hero+About+Contact)、`/identity`(トラストグラフ)、`/keys`、`/proofs`、`/siwe`、`sitemap.xml.ts`
+- `src/pages/` — `/`(Hero+About+Contact)、`/identity`(トラストグラフ)、`/integrity`(release ledger + browser verifier)、`/keys`、`/proofs`、`/siwe`、`sitemap.xml.ts`
 - `src/lib/site.ts` — プロフィール情報・ソーシャルリンク・鍵指紋などの共通定数
 - `public/` — **外部参照される固定資産**(変更・移動禁止): `pgp-key.asc`(+.ots)、`.well-known/security.txt`(+.ots)、`.well-known/identity.json`(+署名・履歴・検証 CLI)、`.well-known/nostr.json`、`proofs/statement.txt.asc`、`proofs/eth-attestation.json`
 
@@ -46,6 +64,7 @@ Astro + ネイティブ CSS の静的サイト。フレームワークランタ�
 pnpm install
 pnpm dev        # localhost:4321
 pnpm build      # dist/ に静的書き出し
+pnpm verify:release # 公開中の全 asset hash と performance report を再検証
 pnpm deploy:cloudflare # 検証済み dist/ を Cloudflare へ配置
 pnpm lint       # astro check + eslint + stylelint + prettier
 pnpm fix        # 自動修正
@@ -61,7 +80,7 @@ GitHub Actions(`.github/workflows/cloudflare.yml`)で lint → audit → 再現�
 sitemap は `src/pages/sitemap.xml.ts` の静的エンドポイントで、`robots.txt` の記載と同じ `/sitemap.xml` 名で生成します。
 `dist/` 全体を固定 metadata の archive にして job 間で受け渡すため、`/.well-known` も欠落せず、attestation 対象と実際のデプロイ内容が一致する。
 ハッシュ付きの `/_astro/*` は `public/_headers` で1年間 immutable、HTML と固定 URL の identity artifact は Cloudflare 標準の再検証動作を使う。
-デプロイ後は公開済み検証 CLI を取得して site-owned artifact を再検証し、公開経路まで含めてCIで確認する。
+デプロイ後は release manifest の全 asset と公開済み identity 検証 CLI を再検証し、security header と RUM 不在も CI で確認する。別の daily workflow が DNS を含む identity claim と公開中の全 byte を毎日監視する。
 
 CIでは同じcommitを2回buildし、固定metadataで作った `site-dist.tar.gz` のSHA-256一致を必須にする。
 `main` の build では検証済みのarchiveに対してGitHub Artifact

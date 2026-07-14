@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yusuke-hayashi.com/.well-known/schemas/release-v1.schema.json",
+  "title": "Yusuke Hayashi site release v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "subject",
+    "source",
+    "build",
+    "deployment",
+    "performance",
+    "assetSet"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "format": "uri" },
+    "schemaVersion": { "const": 1 },
+    "subject": { "type": "string", "format": "uri" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "commit", "commitUrl", "committedAt"],
+      "properties": {
+        "repository": { "type": "string", "format": "uri" },
+        "commit": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+        "commitUrl": { "type": "string", "format": "uri" },
+        "committedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "build": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["workflow", "reproducible", "provenance"],
+      "properties": {
+        "workflow": { "type": "string", "format": "uri" },
+        "reproducible": { "const": true },
+        "provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["predicateType", "verifyCommand"],
+          "properties": {
+            "predicateType": { "const": "https://slsa.dev/provenance/v1" },
+            "verifyCommand": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "deployment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["platform", "canonicalUrl", "runtimeCode"],
+      "properties": {
+        "platform": { "const": "Cloudflare Workers Static Assets" },
+        "canonicalUrl": { "type": "string", "format": "uri" },
+        "runtimeCode": { "const": false }
+      }
+    },
+    "performance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url", "sha256"],
+      "properties": {
+        "url": { "type": "string", "format": "uri" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "assetSet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "sha256", "fileCount", "totalBytes", "excluded", "entries"],
+      "properties": {
+        "algorithm": { "const": "sha256-lines-v1" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "fileCount": { "type": "integer", "minimum": 1 },
+        "totalBytes": { "type": "integer", "minimum": 1 },
+        "excluded": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "entries": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["file", "path", "bytes", "sha256"],
+            "properties": {
+              "file": { "type": "string", "minLength": 1 },
+              "path": { "type": "string", "pattern": "^/" },
+              "bytes": { "type": "integer", "minimum": 0 },
+              "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,27 +1,17 @@
 ---
 /**
- * コードブロック。Astro 組み込みの Code(Shiki)でビルド時にハイライトする。
- * 出力は静的 HTML のみ(クライアント JS なし)。
+ * コードブロック。CSP の style-src-attr 'none' を維持し、Shiki が生成する
+ * inline style を避けるため、意味論的な pre/code だけを静的に出力する。
  */
-import type { ComponentProps } from "astro/types";
-import { Code } from "astro:components";
-
 interface Props {
   code: string;
-  lang?: ComponentProps<typeof Code>["lang"];
   wrap?: boolean;
 }
 
-const { code, lang = "sh", wrap = false } = Astro.props;
+const { code, wrap = false } = Astro.props;
 ---
 
-<Code
-  class:list={["codeBlock", { wrap }]}
-  code={code}
-  lang={lang}
-  theme="poimandres"
-  wrap={wrap}
-/>
+<pre class:list={["codeBlock", { wrap }]}><code>{code}</code></pre>
 
 <style is:global>
   pre.codeBlock {
@@ -33,7 +23,8 @@ const { code, lang = "sh", wrap = false } = Astro.props;
     line-height: 1.8;
 
     /* テーマの背景ではなくサイトのサーフェスに揃える */
-    background-color: var(--surface-subtle) !important;
+    color: var(--color-text-strong);
+    background-color: var(--surface-subtle);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-md);
 

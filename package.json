@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/build-integrity.mjs && node scripts/verify-release.mjs --artifact-dir dist",
     "deploy:cloudflare": "wrangler deploy --env=\"\"",
     "preview": "astro preview",
     "check": "pnpm lint:astro && pnpm lint:eslint && pnpm lint:style && pnpm lint:prettier",
@@ -20,6 +20,7 @@
     "lint:prettier:fix": "prettier --write .",
     "lint-staged": "lint-staged",
     "security:audit": "pnpm audit --audit-level=high",
+    "verify:release": "node scripts/verify-release.mjs",
     "fix": "pnpm lint:style:fix && pnpm lint:eslint:fix && pnpm lint:prettier:fix",
     "prepare": "husky"
   },
@@ -44,6 +45,7 @@
   ],
   "dependencies": {
     "astro": "^7.0.9",
+    "openpgp": "6.3.1",
     "sharp": "^0.35.3",
     "viem": "^2.55.1"
   },

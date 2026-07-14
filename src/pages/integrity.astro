@@ -1,0 +1,593 @@
+---
+import "@/styles/article.css";
+
+import CodeBlock from "@/components/CodeBlock.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import Base from "@/layouts/Base.astro";
+import { PROFILE_NAME } from "@/lib/site";
+
+const title = `Release Integrity | ${PROFILE_NAME}`;
+const description =
+  "A machine-verifiable record of this site's source commit, deployed bytes, performance contract, provenance, and cryptographic identity proofs.";
+const VERIFY_COMMAND = `# Verify the live deployment with Node.js 22+
+git clone https://github.com/yhay81/profile.git
+cd profile
+node scripts/verify-release.mjs --base-url https://yusuke-hayashi.com`;
+
+const CHECKS = [
+  ["release", "Published release manifest"],
+  ["assets", "All non-recursive assets"],
+  ["performance", "Performance contract"],
+  ["identity", "Identity manifest signature"],
+  ["history", "Append-only identity history"],
+  ["pgp-eth", "OpenPGP → Ethereum proof"],
+  ["eth-pgp", "Ethereum → OpenPGP proof"],
+  ["security", "Signed security.txt"],
+] as const;
+---
+
+<Base description={description} path="/integrity" title={title}>
+  <main>
+    <section>
+      <SectionHeader
+        label="Release ledger"
+        no="SHA-256"
+        title="Release Integrity"
+      />
+
+      <p class="lead">
+        Do not trust the badge. Recompute it. This page binds the live bytes to
+        a Git commit, a reproducible build, a strict performance contract, and
+        my cryptographic identity.
+      </p>
+
+      <div class="releaseStrip" data-status="loading" id="release-strip">
+        <span aria-hidden="true" class="pulse"></span>
+        <span class="releaseLabel">LIVE RELEASE</span>
+        <strong id="release-status">loading manifest…</strong>
+      </div>
+
+      <div class="ledger" aria-label="Current release">
+        <div class="ledgerRow">
+          <span class="key">source.commit</span>
+          <a
+            class="value code"
+            href="https://github.com/yhay81/profile/commits/main"
+            id="commit-link">—</a
+          >
+        </div>
+        <div class="ledgerRow">
+          <span class="key">assetSet.sha256</span>
+          <code class="value digest" id="asset-digest">—</code>
+        </div>
+        <div class="ledgerRow">
+          <span class="key">deployed.assets</span>
+          <span class="value" id="asset-count">—</span>
+        </div>
+        <div class="ledgerRow">
+          <span class="key">assetSet.scope</span>
+          <span class="value">
+            all public files; self-reference and edge config excluded
+          </span>
+        </div>
+        <div class="ledgerRow">
+          <span class="key">build.provenance</span>
+          <a
+            class="value"
+            href="https://github.com/yhay81/profile/attestations"
+            rel="noreferrer"
+            target="_blank">SLSA v1 + Sigstore/Rekor ↗</a
+          >
+        </div>
+        <div class="ledgerRow">
+          <span class="key">runtime.code</span>
+          <span class="value">none — Cloudflare Static Assets</span>
+        </div>
+      </div>
+
+      <h2 class="heading">Performance contract</h2>
+      <p class="bodyText">
+        The build fails before deployment if any route crosses its compressed
+        HTML/initial-JavaScript budget, or if a font, third-party request, or
+        Cloudflare RUM reference appears.
+      </p>
+
+      <div class="contract">
+        <div class="contractHeader" aria-hidden="true">
+          <span>route</span><span>HTML gzip</span><span>JS gzip</span><span
+            >result</span
+          >
+        </div>
+        {
+          ["/", "/identity", "/integrity", "/siwe"].map((path) => (
+            <div class="contractRow" data-route={path}>
+              <code>{path}</code>
+              <span data-metric="html">—</span>
+              <span data-metric="js">—</span>
+              <span class="result" data-metric="status">
+                pending
+              </span>
+            </div>
+          ))
+        }
+      </div>
+      <p class="zeroContract" id="zero-contract">
+        0 third parties · 0 fonts · 0 RUM
+      </p>
+
+      <div class="verifyHeading">
+        <div>
+          <h2 class="heading">Browser verification console</h2>
+          <p class="bodyText">
+            Runs locally in this tab. Heavy cryptographic code is downloaded
+            only after you click.
+          </p>
+        </div>
+        <button class="runButton" id="run-proofs" type="button">
+          <span aria-hidden="true">▶</span> Run all proofs
+        </button>
+      </div>
+
+      <div
+        aria-atomic="true"
+        aria-live="polite"
+        class="verificationSummary"
+        id="verification-summary"
+      >
+        IDLE · no verification has run in this tab
+      </div>
+
+      <ol class="checks" id="verification-checks">
+        {
+          CHECKS.map(([id, label], index) => (
+            <li data-check={id} data-status="idle">
+              <span class="checkIndex">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <span class="checkBody">
+                <strong>{label}</strong>
+                <span class="checkDetail">waiting</span>
+              </span>
+              <span aria-hidden="true" class="checkMark">
+                ·
+              </span>
+            </li>
+          ))
+        }
+      </ol>
+
+      <details class="manual">
+        <summary>Verify from a clean terminal</summary>
+        <div class="manualBody">
+          <CodeBlock code={VERIFY_COMMAND} wrap />
+        </div>
+      </details>
+
+      <nav aria-label="Raw integrity artifacts" class="artifactLinks">
+        <a href="/.well-known/release.json">release.json</a>
+        <a href="/.well-known/performance.json">performance.json</a>
+        <a href="/.well-known/identity.json">identity.json</a>
+        <a
+          href="https://github.com/yhay81/profile/actions"
+          rel="noreferrer"
+          target="_blank">build logs ↗</a
+        >
+      </nav>
+    </section>
+  </main>
+</Base>
+
+<script>
+  interface PerformanceRoute {
+    path: string;
+    status: string;
+    budgets: { documentGzipBytes: number; initialJsGzipBytes: number };
+    metrics: { documentGzipBytes: number; initialJsGzipBytes: number };
+  }
+
+  const byId = <T extends HTMLElement>(id: string) =>
+    document.getElementById(id) as T;
+  const formatBytes = (bytes: number) =>
+    bytes === 0 ? "0 B" : `${(bytes / 1024).toFixed(1)} KiB`;
+
+  async function loadReleaseSummary() {
+    const strip = byId<HTMLDivElement>("release-strip");
+    try {
+      const [releaseResponse, performanceResponse] = await Promise.all([
+        fetch("/.well-known/release.json", { cache: "no-cache" }),
+        fetch("/.well-known/performance.json", { cache: "no-cache" }),
+      ]);
+      if (!releaseResponse.ok || !performanceResponse.ok) {
+        throw new Error("integrity artifacts unavailable");
+      }
+      const release = (await releaseResponse.json()) as {
+        source: { commit: string; commitUrl: string };
+        assetSet: { sha256: string; fileCount: number; totalBytes: number };
+      };
+      const performance = (await performanceResponse.json()) as {
+        status: string;
+        global: Record<string, number>;
+        routes: PerformanceRoute[];
+      };
+      const passed = performance.status === "pass";
+      strip.dataset.status = passed ? "pass" : "fail";
+      byId("release-status").textContent = passed
+        ? "manifest published · performance contract passing"
+        : "performance contract failed";
+      const commitLink = byId<HTMLAnchorElement>("commit-link");
+      commitLink.textContent = release.source.commit;
+      commitLink.href = release.source.commitUrl;
+      commitLink.target = "_blank";
+      commitLink.rel = "noreferrer";
+      byId("asset-digest").textContent = release.assetSet.sha256;
+      byId("asset-count").textContent =
+        `${release.assetSet.fileCount} files · ${formatBytes(release.assetSet.totalBytes)}`;
+
+      for (const route of performance.routes) {
+        const row = document.querySelector<HTMLElement>(
+          `[data-route="${CSS.escape(route.path)}"]`,
+        );
+        if (!row) continue;
+        const html = row.querySelector<HTMLElement>("[data-metric='html']");
+        const js = row.querySelector<HTMLElement>("[data-metric='js']");
+        const status = row.querySelector<HTMLElement>("[data-metric='status']");
+        if (html) {
+          html.textContent = `${formatBytes(route.metrics.documentGzipBytes)} / ${formatBytes(route.budgets.documentGzipBytes)}`;
+        }
+        if (js) {
+          js.textContent = `${formatBytes(route.metrics.initialJsGzipBytes)} / ${formatBytes(route.budgets.initialJsGzipBytes)}`;
+        }
+        if (status) status.textContent = route.status;
+        row.dataset.status = route.status;
+      }
+      byId("zero-contract").textContent =
+        `${performance.global.thirdPartyRequests} third parties · ` +
+        `${performance.global.fontRequests} fonts · ` +
+        `${performance.global.rumReferences} RUM`;
+    } catch (error) {
+      strip.dataset.status = "fail";
+      byId("release-status").textContent =
+        error instanceof Error ? error.message : "manifest unavailable";
+    }
+  }
+
+  const runButton = byId<HTMLButtonElement>("run-proofs");
+  runButton.addEventListener("click", async () => {
+    runButton.disabled = true;
+    const summary = byId("verification-summary");
+    summary.setAttribute("aria-busy", "true");
+    summary.textContent = "RUNNING · loading verifier on demand";
+    try {
+      const { runIntegrityVerification } =
+        await import("@/lib/integrity-verifier");
+      await runIntegrityVerification((update) => {
+        const row = document.querySelector<HTMLElement>(
+          `[data-check="${CSS.escape(update.id)}"]`,
+        );
+        if (!row) return;
+        row.dataset.status = update.status;
+        const detail = row.querySelector<HTMLElement>(".checkDetail");
+        const mark = row.querySelector<HTMLElement>(".checkMark");
+        if (detail) detail.textContent = update.detail;
+        if (mark) {
+          mark.textContent =
+            update.status === "pass"
+              ? "✓"
+              : update.status === "fail"
+                ? "×"
+                : "↻";
+        }
+      });
+      summary.textContent = "PASS · every browser-verifiable proof is valid";
+      summary.dataset.status = "pass";
+    } catch (error) {
+      summary.textContent =
+        error instanceof Error
+          ? `FAIL · ${error.message}`
+          : "FAIL · verifier error";
+      summary.dataset.status = "fail";
+    } finally {
+      summary.removeAttribute("aria-busy");
+      runButton.disabled = false;
+      runButton.textContent = "Run again";
+    }
+  });
+
+  void loadReleaseSummary();
+</script>
+
+<style>
+  .releaseStrip {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 0;
+    margin-top: 32px;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    border-block: 1px solid var(--border-subtle);
+  }
+
+  .pulse {
+    width: 8px;
+    height: 8px;
+    background: var(--color-text-soft);
+    border-radius: var(--radius-full);
+  }
+
+  .releaseStrip[data-status="pass"] .pulse {
+    background: var(--color-accent);
+    box-shadow: 0 0 14px var(--color-accent);
+  }
+
+  .releaseStrip[data-status="fail"] .pulse {
+    background: var(--color-danger);
+  }
+
+  .releaseLabel {
+    color: var(--color-text-soft);
+    letter-spacing: 0.14em;
+  }
+
+  .releaseStrip strong {
+    font-weight: 500;
+    color: var(--color-text-strong);
+  }
+
+  .ledger {
+    margin-top: 18px;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .ledgerRow {
+    display: grid;
+    grid-template-columns: minmax(150px, 0.34fr) minmax(0, 1fr);
+    gap: 20px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .key,
+  .code,
+  .digest {
+    font-family: var(--font-mono);
+  }
+
+  .key {
+    font-size: var(--text-xs);
+    color: var(--color-text-soft);
+  }
+
+  .value {
+    min-width: 0;
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--color-text-strong);
+  }
+
+  .digest {
+    overflow-wrap: anywhere;
+  }
+
+  .contract {
+    margin-top: 20px;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    border-block: 1px solid var(--border-subtle);
+  }
+
+  .contractHeader,
+  .contractRow {
+    display: grid;
+    grid-template-columns: 0.7fr 1.2fr 1.2fr 0.7fr;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 4px;
+  }
+
+  .contractHeader {
+    color: var(--color-text-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .contractRow {
+    color: var(--color-text-strong);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .contractRow code {
+    color: var(--color-accent);
+  }
+
+  .contractRow[data-status="pass"] .result {
+    color: var(--color-accent);
+  }
+
+  .contractRow[data-status="fail"] .result {
+    color: var(--color-danger);
+  }
+
+  .zeroContract {
+    margin-top: 10px;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-accent);
+  }
+
+  .verifyHeading {
+    display: flex;
+    gap: 24px;
+    align-items: end;
+    justify-content: space-between;
+    margin-top: 44px;
+  }
+
+  .verifyHeading .heading {
+    margin-top: 0;
+  }
+
+  .runButton {
+    flex: 0 0 auto;
+    padding: 11px 16px;
+    font: inherit;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--color-bg-deep);
+    cursor: pointer;
+    background: var(--color-accent);
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius-sm);
+    transition:
+      transform var(--dur-fast) var(--ease-out),
+      box-shadow var(--dur-fast) var(--ease-out);
+  }
+
+  .runButton:hover,
+  .runButton:focus-visible {
+    color: var(--color-bg-deep);
+    box-shadow: 0 0 24px var(--accent-glow);
+    transform: translateY(-1px);
+  }
+
+  .runButton:disabled {
+    cursor: wait;
+    opacity: 0.65;
+    transform: none;
+  }
+
+  .verificationSummary {
+    padding: 10px 0;
+    margin-top: 18px;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-soft);
+    border-block: 1px solid var(--border-subtle);
+  }
+
+  .verificationSummary[data-status="pass"] {
+    color: var(--color-accent);
+  }
+
+  .verificationSummary[data-status="fail"] {
+    color: var(--color-danger);
+  }
+
+  .checks {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .checks li {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) 24px;
+    gap: 10px;
+    align-items: center;
+    min-height: 62px;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .checkIndex,
+  .checkDetail,
+  .checkMark {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  .checkIndex,
+  .checkDetail {
+    color: var(--color-text-soft);
+  }
+
+  .checkBody {
+    display: grid;
+    gap: 2px;
+  }
+
+  .checkBody strong {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-strong);
+  }
+
+  .checkMark {
+    font-size: var(--text-lg);
+    text-align: right;
+  }
+
+  .checks li[data-status="running"] .checkMark {
+    color: var(--color-info);
+  }
+
+  .checks li[data-status="pass"] .checkMark {
+    color: var(--color-accent);
+  }
+
+  .checks li[data-status="fail"] .checkMark,
+  .checks li[data-status="fail"] .checkDetail {
+    color: var(--color-danger);
+  }
+
+  .manual {
+    margin-top: 32px;
+    border-block: 1px solid var(--border-subtle);
+  }
+
+  .manual summary {
+    padding: 12px 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-strong);
+    cursor: pointer;
+  }
+
+  .manualBody {
+    padding-top: 8px;
+  }
+
+  .artifactLinks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    margin-top: 24px;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  @media (width <= 640px) {
+    .ledgerRow {
+      grid-template-columns: 1fr;
+      gap: 2px;
+    }
+
+    .contractHeader {
+      display: none;
+    }
+
+    .contractRow {
+      grid-template-columns: 0.6fr 1.4fr;
+    }
+
+    .contractRow span:nth-child(3),
+    .contractRow span:nth-child(4) {
+      text-align: right;
+    }
+
+    .verifyHeading {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .runButton {
+      align-self: flex-start;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .runButton {
+      transition: none;
+    }
+  }
+</style>

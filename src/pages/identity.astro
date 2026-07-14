@@ -69,6 +69,14 @@ const PROOF_CARDS: ProofCard[] = [
     linkText: "identity.json",
     external: false,
   },
+  {
+    pair: "Deployment ⇄ source",
+    method:
+      "Per-file release digest, reproducible build provenance, and budgets",
+    href: "/integrity",
+    linkText: "release integrity",
+    external: false,
+  },
 ];
 
 const VERIFY_QUICKSTART = `# 1. Fetch my key via WKD and check the Keyoxide proofs
@@ -145,7 +153,11 @@ node verify-identity.mjs`;
         pins every public identifier, the hash of its{" "}
         <a href="/.well-known/identity-history.json">append-only history</a>,
         and the exact verifier bundle. A scheduled health check uses the same
-        verifier to detect broken signatures, DNS drift, and expired proofs.
+        verifier to detect broken signatures, DNS drift, and expired proofs. The{
+          " "
+        }
+        <a href="/integrity">release ledger</a> separately binds every deployed byte
+        to its source commit.
       </p>
 
       <CodeBlock code={VERIFY_MACHINE} />
