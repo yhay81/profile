@@ -63,6 +63,9 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:
+          # Identity and security resources live under /.well-known. The action
+          # excludes dot-prefixed paths unless this input is enabled explicitly.
+          include-hidden-files: true
           path: ./dist
 
   deploy:
@@ -76,3 +79,34 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+
+  verify-deployment:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - name: Verify published identity resources
+        shell: bash
+        run: |
+          for attempt in {1..12}; do
+            if curl --fail --silent --show-error \
+              --header 'Cache-Control: no-cache' \
+              'https://yusuke-hayashi.com/.well-known/verify-identity.mjs' \
+              --output verify-identity.mjs \
+              && node verify-identity.mjs --local-only --report identity-health.json; then
+              exit 0
+            fi
+
+            if [[ "$attempt" -lt 12 ]]; then
+              sleep 10
+            fi
+          done
+
+          exit 1
+      - name: Upload deployment health report
+        if: always() && hashFiles('identity-health.json') != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: identity-health-${{ github.sha }}
+          path: identity-health.json
+          retention-days: 30
