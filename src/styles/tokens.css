@@ -87,7 +87,7 @@
   /* ---- Motion ---- */
   --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-swift: cubic-bezier(0.645, 0.045, 0.355, 1);
-  --dur-fast: 150ms;
-  --dur-base: 250ms;
-  --dur-slow: 500ms;
+  --dur-fast: 90ms;
+  --dur-base: 140ms;
+  --dur-slow: 240ms;
 }

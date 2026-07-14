@@ -59,8 +59,6 @@ const description =
 </Base>
 
 <script>
-  import { recoverMessageAddress, stringToHex } from "viem";
-
   const DOMAIN = "yusuke-hayashi.com";
   const STATEMENT = "Sign in to verify you control this Ethereum account.";
 
@@ -119,6 +117,10 @@ const description =
         return;
       }
 
+      // Load signature utilities only after an actual SIWE attempt. Starting
+      // this before the wallet prompt hides the network cost behind user input.
+      const viemPromise = import("@/lib/siwe-crypto");
+
       try {
         button.disabled = true;
         button.textContent = "Connecting…";
@@ -137,6 +139,7 @@ const description =
         const nonce = crypto.randomUUID().replaceAll("-", "");
         const issuedAt = new Date().toISOString();
         const siweMessage = buildSiweMessage(address, chainId, nonce, issuedAt);
+        const { recoverMessageAddress, stringToHex } = await viemPromise;
         if (messageEl) {
           messageEl.textContent = siweMessage;
           messageEl.hidden = false;

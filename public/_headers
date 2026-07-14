@@ -1,2 +1,39 @@
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
+
+# HTML is static but may change on deploy. A short freshness window removes
+# repeat-visit network validation without keeping releases stale for long.
+/
+  Cache-Control: public, max-age=300, stale-while-revalidate=86400
+/404
+  Cache-Control: public, max-age=300, stale-while-revalidate=86400
+/identity
+  Cache-Control: public, max-age=300, stale-while-revalidate=86400
+/keys
+  Cache-Control: public, max-age=300, stale-while-revalidate=86400
+/proofs
+  Cache-Control: public, max-age=300, stale-while-revalidate=86400
+/siwe
+  Cache-Control: public, max-age=300, stale-while-revalidate=86400
+/*.html
+  Cache-Control: public, max-age=300, stale-while-revalidate=86400
+
+# Stable root assets are not fingerprinted, so keep their browser TTL bounded.
+/favicon*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/apple-touch-icon.png
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/android-chrome-192x192.png
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/android-chrome-512x512.png
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/mstile-150x150.png
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/safari-pinned-tab.svg
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/browserconfig.xml
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/me.webp
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/og.png
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800

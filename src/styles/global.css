@@ -15,11 +15,11 @@
 }
 
 ::view-transition-old(root) {
-  animation-duration: 0.18s;
+  animation-duration: 0.1s;
 }
 
 ::view-transition-new(root) {
-  animation-duration: 0.18s;
+  animation-duration: 0.1s;
 }
 
 /* ---- Scroll-driven reveal (progressive enhancement) ---- */
@@ -27,7 +27,7 @@
 @keyframes reveal-in {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(8px);
   }
 
   to {
@@ -44,7 +44,7 @@
 
       /* stylelint-disable-next-line plugin/no-unsupported-browser-features */
       animation-timeline: view();
-      animation-range: entry 0% entry 40%;
+      animation-range: entry 0% entry 18%;
     }
   }
 }
