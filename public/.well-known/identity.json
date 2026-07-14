@@ -84,7 +84,7 @@
   },
   "verifier": {
     "url": "https://yusuke-hayashi.com/.well-known/verify-identity.mjs",
-    "sha256": "f0f24f114a75b95fada4fc1bfce5d36c9a3fa50f1fd018943d621666cf8feccc"
+    "sha256": "a08f6c442fed59866b25a7d6e37a29892d590612a2437a7475ad2494ce889629"
   },
   "thirdPartyAttestations": {
     "index": {

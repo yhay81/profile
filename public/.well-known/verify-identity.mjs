@@ -36431,7 +36431,12 @@ async function verifyEthAttestation(attestation, expectedAddress) {
   invariant(getAddress(recovered) === getAddress(expectedAddress), `EIP-191 signer mismatch: ${recovered}`);
   return recovered;
 }
-function createHttpClient(baseUrl, { artifactDir, attempts = DEFAULT_ATTEMPTS, timeoutMs = DEFAULT_TIMEOUT_MS } = {}) {
+function isTransientHttpFailure(response) {
+  if ([408, 425, 429].includes(response.status) || response.status >= 500) return true;
+  if (response.status !== 403) return false;
+  return response.headers.get("x-ratelimit-remaining") === "0" || response.headers.has("retry-after");
+}
+function createHttpClient(baseUrl, { artifactDir, attempts = DEFAULT_ATTEMPTS, timeoutMs = DEFAULT_TIMEOUT_MS, fetchImpl = fetch } = {}) {
   const cache = /* @__PURE__ */ new Map();
   const root = baseUrl.replace(/\/$/, "");
   const rootOrigin = new URL(root).origin;
@@ -36458,7 +36463,7 @@ function createHttpClient(baseUrl, { artifactDir, attempts = DEFAULT_ATTEMPTS, t
       let lastError;
       for (let attempt = 1; attempt <= attempts; attempt += 1) {
         try {
-          const response = await fetch(url, {
+          const response = await fetchImpl(url, {
             headers: {
               accept: binary ? "application/octet-stream,*/*" : "text/plain,application/json,*/*",
               "user-agent": "crypto-notes-identity-health/1"
@@ -36466,7 +36471,7 @@ function createHttpClient(baseUrl, { artifactDir, attempts = DEFAULT_ATTEMPTS, t
             redirect: "follow",
             signal: AbortSignal.timeout(timeoutMs)
           });
-          if (response.status >= 400 && response.status < 500 && response.status !== 429) {
+          if (response.status >= 400 && response.status < 500 && !isTransientHttpFailure(response)) {
             throw new IntegrityError(`${url} returned HTTP ${response.status}`);
           }
           if (!response.ok) throw new AvailabilityError(`${url} returned HTTP ${response.status}`);
