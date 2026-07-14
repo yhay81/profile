@@ -3,7 +3,7 @@
   "schemaVersion": 1,
   "subject": "https://yusuke-hayashi.com",
   "updatedAt": "2026-07-14",
-  "previousVersionSha256": "527de654b5e10740b5a98a16f2cf2edaf808296fc8cac5c3cbc1dc68cbe46774",
+  "previousVersionSha256": "88cded63540f3c31666ed87510cf37e0887185b008cdaccb0701ffb4d4fa0d5a",
   "events": [
     {
       "id": "2026-07-12/openpgp-key-rotation",
@@ -55,18 +55,6 @@
       },
       "evidence": [
         "https://yusuke-hayashi.com/.well-known/nostr.json"
-      ]
-    },
-    {
-      "id": "2026-07-14/verifier-release-1",
-      "effectiveAt": "2026-07-14",
-      "type": "proof-published",
-      "summary": "Verifier release 1 added anti-rollback revisions, canonical third-party signing payloads, and availability-independent revocation.",
-      "identifiers": {
-        "releaseRevision": "1"
-      },
-      "evidence": [
-        "https://yusuke-hayashi.com/.well-known/verify-identity.mjs"
       ]
     }
   ]

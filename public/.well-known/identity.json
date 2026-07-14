@@ -1,6 +1,7 @@
 {
-  "$schema": "https://yusuke-hayashi.com/.well-known/schemas/identity-manifest-v1.schema.json",
-  "schemaVersion": 1,
+  "$schema": "https://yusuke-hayashi.com/.well-known/schemas/identity-manifest-v2.schema.json",
+  "schemaVersion": 2,
+  "releaseRevision": 1,
   "subject": {
     "name": "Yusuke Hayashi",
     "canonicalUrl": "https://yusuke-hayashi.com"
@@ -80,11 +81,11 @@
   ],
   "history": {
     "url": "https://yusuke-hayashi.com/.well-known/identity-history.json",
-    "sha256": "527de654b5e10740b5a98a16f2cf2edaf808296fc8cac5c3cbc1dc68cbe46774"
+    "sha256": "484ff2bee1278eef8d74f46b931564ab7cbcf4f117518da6ea3664627001e5fb"
   },
   "verifier": {
     "url": "https://yusuke-hayashi.com/.well-known/verify-identity.mjs",
-    "sha256": "a08f6c442fed59866b25a7d6e37a29892d590612a2437a7475ad2494ce889629"
+    "sha256": "ba330bd492a357a43fe2b698dd0c8f30fefcbc1a9e563c65c59cfa251835844a"
   },
   "thirdPartyAttestations": {
     "index": {
