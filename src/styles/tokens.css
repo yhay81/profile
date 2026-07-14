@@ -48,9 +48,11 @@
   --scrim: color-mix(in oklab, var(--color-bg-deep) 85%, transparent);
 
   /* ---- Typography ---- */
-  --font-sans: "Work Sans Variable", system-ui, sans-serif;
-  --font-mono: "Fira Code Variable", ui-monospace, monospace;
-  --font-display: "Space Grotesk Variable", var(--font-sans);
+
+  /* OS native fonts avoid font downloads and render immediately. */
+  --font-sans: system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+  --font-display: var(--font-sans);
 
   /* Fluid type scale (minor third-ish, clamped) */
   --text-2xs: clamp(0.72rem, 0.7rem + 0.1vw, 0.78rem);

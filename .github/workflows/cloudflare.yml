@@ -1,4 +1,4 @@
-name: Deploy Astro site to Pages
+name: Deploy Astro site to Cloudflare
 
 on:
   push:
@@ -9,11 +9,10 @@ on:
 permissions:
   attestations: write
   contents: read
-  pages: write
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: "cloudflare-production"
   cancel-in-progress: true
 
 jobs:
@@ -32,8 +31,6 @@ jobs:
           node-version: "24"
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
-      - name: Setup Pages
-        uses: actions/configure-pages@v6
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Run quality checks
@@ -73,25 +70,47 @@ jobs:
           name: site-dist-${{ github.sha }}
           path: site-dist.tar.gz
           retention-days: 30
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v5
-        with:
-          # Identity and security resources live under /.well-known. The action
-          # excludes dot-prefixed paths unless this input is enabled explicitly.
-          include-hidden-files: true
-          path: ./dist
 
   deploy:
     if: github.event_name == 'push'
     environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      name: production
+      url: https://yusuke-hayashi.com
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 11.13.0
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Download attested site artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: site-dist-${{ github.sha }}
+      - name: Extract and verify deployment artifact
+        shell: bash
+        run: |
+          mkdir dist
+          tar -xzf site-dist.tar.gz -C dist
+          node dist/.well-known/verify-identity.mjs \
+            --artifact-dir dist \
+            --local-only \
+            --report identity-health.json
+      - name: Deploy static assets to Cloudflare
+        run: pnpm deploy:cloudflare
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
   verify-deployment:
     if: github.event_name == 'push'

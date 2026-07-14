@@ -1,0 +1,24 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "yusuke-hayashi-profile",
+  "compatibility_date": "2026-07-14",
+  "workers_dev": true,
+  "routes": [
+    {
+      "pattern": "yusuke-hayashi.com",
+      "custom_domain": true,
+    },
+  ],
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "drop-trailing-slash",
+    "not_found_handling": "404-page",
+  },
+  "env": {
+    "staging": {
+      "name": "yusuke-hayashi-profile-staging",
+      "workers_dev": true,
+      "routes": [],
+    },
+  },
+}
