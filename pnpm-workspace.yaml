@@ -1,6 +1,10 @@
-onlyBuiltDependencies:
-  - esbuild
-  - sharp
-ignoredBuiltDependencies:
-  - "@parcel/watcher"
-  - unrs-resolver
+# pnpm 11 の既定(公開後 24h 未満のパッケージを拒否)を無効化し、
+# リリース直後でも最新版を採用する
+minimumReleaseAge: 0
+
+# ビルドスクリプトの許可(pnpm 11 の allowBuilds 形式)
+allowBuilds:
+  esbuild: true
+  sharp: true
+  "@parcel/watcher": false
+  unrs-resolver: false
