@@ -2993,7 +2993,7 @@ var require_compile = __commonJS({
       const schOrFunc = root.refs[ref];
       if (schOrFunc)
         return schOrFunc;
-      let _sch = resolve2.call(this, root, ref);
+      let _sch = resolve3.call(this, root, ref);
       if (_sch === void 0) {
         const schema = (_a2 = root.localRefs) === null || _a2 === void 0 ? void 0 : _a2[ref];
         const { schemaId } = this.opts;
@@ -3020,7 +3020,7 @@ var require_compile = __commonJS({
     function sameSchemaEnv(s1, s2) {
       return s1.schema === s2.schema && s1.root === s2.root && s1.baseId === s2.baseId;
     }
-    function resolve2(root, ref) {
+    function resolve3(root, ref) {
       let sch;
       while (typeof (sch = this.refs[ref]) == "string")
         ref = sch;
@@ -3651,7 +3651,7 @@ var require_fast_uri = __commonJS({
       }
       return uri;
     }
-    function resolve2(baseURI, relativeURI, options) {
+    function resolve3(baseURI, relativeURI, options) {
       const schemelessOptions = options ? Object.assign({ scheme: "null" }, options) : { scheme: "null" };
       const resolved = resolveComponent(parse2(baseURI, schemelessOptions), parse2(relativeURI, schemelessOptions), schemelessOptions, true);
       schemelessOptions.skipEscape = true;
@@ -3909,7 +3909,7 @@ var require_fast_uri = __commonJS({
     var fastUri = {
       SCHEMES,
       normalize,
-      resolve: resolve2,
+      resolve: resolve3,
       resolveComponent,
       equal,
       serialize,
@@ -10297,8 +10297,7 @@ var import_ajv = __toESM(require_ajv(), 1);
 var import_ajv_formats = __toESM(require_dist(), 1);
 import { createHash as createHash2 } from "node:crypto";
 import { resolveTxt } from "node:dns/promises";
-import { readFile } from "node:fs/promises";
-import { resolve, sep } from "node:path";
+import { resolve as resolve2 } from "node:path";
 
 // node_modules/openpgp/dist/node/openpgp.mjs
 import { createRequire } from "module";
@@ -10328,8 +10327,8 @@ var ArrayStream = class _ArrayStream extends Array {
   constructor() {
     super();
     Object.setPrototypeOf(this, _ArrayStream.prototype);
-    this[doneWritingPromise] = new Promise((resolve2, reject) => {
-      this[doneWritingResolve] = resolve2;
+    this[doneWritingPromise] = new Promise((resolve3, reject) => {
+      this[doneWritingResolve] = resolve3;
       this[doneWritingReject] = reject;
     });
     this[doneWritingPromise].catch(() => {
@@ -10708,8 +10707,8 @@ function transformWithCancel(customCancel) {
         }
         outputController.enqueue(chunk);
         if (!pulled) {
-          await new Promise((resolve2, reject) => {
-            backpressureChangePromiseResolve = resolve2;
+          await new Promise((resolve3, reject) => {
+            backpressureChangePromiseResolve = resolve3;
             backpressureChangePromiseReject = reject;
           });
           backpressureChangePromiseResolve = null;
@@ -10812,7 +10811,7 @@ function transformPair(input, fn) {
     const outgoing = transformWithCancel(async function(reason) {
       incomingTransformController.error(reason);
       await pipeDonePromise;
-      await new Promise((resolve2) => setTimeout(resolve2));
+      await new Promise((resolve3) => setTimeout(resolve3));
     });
     fn(incoming.readable, outgoing.writable);
     return outgoing.readable;
@@ -10997,12 +10996,12 @@ async function cancel(input, reason) {
   if (isStream(input)) {
     if (input.cancel) {
       const cancelled = await input.cancel(reason);
-      await new Promise((resolve2) => setTimeout(resolve2));
+      await new Promise((resolve3) => setTimeout(resolve3));
       return cancelled;
     }
     if (input.destroy) {
       input.destroy(reason);
-      await new Promise((resolve2) => setTimeout(resolve2));
+      await new Promise((resolve3) => setTimeout(resolve3));
       return reason;
     }
   }
@@ -12329,11 +12328,11 @@ var util = {
    *                          or rejected with the Error of the last resolved Promise (if all promises are rejected)
    */
   anyPromise: function(promises) {
-    return new Promise((resolve2, reject) => {
+    return new Promise((resolve3, reject) => {
       let exception;
       void Promise.all(promises.map(async (promise) => {
         try {
-          resolve2(await promise);
+          resolve3(await promise);
         } catch (e) {
           exception = e;
         }
@@ -12550,7 +12549,7 @@ function removeChecksum(text) {
   return body;
 }
 function unarmor(input) {
-  return new Promise((resolve2, reject) => {
+  return new Promise((resolve3, reject) => {
     try {
       const reSplit = /^-----[^-]+-----$/m;
       const reEmptyLine = /^[ \f\r\t\u00a0\u2000-\u200a\u202f\u205f\u3000]*$/;
@@ -12583,7 +12582,7 @@ function unarmor(input) {
                 verifyHeaders$1(lastHeaders);
                 headersDone = true;
                 if (textDone || type !== enums.armor.signed) {
-                  resolve2({ text, data, headers, type });
+                  resolve3({ text, data, headers, type });
                   break;
                 }
               }
@@ -13991,12 +13990,12 @@ async function generate$4(bits2, e) {
       publicKeyEncoding: { type: "pkcs1", format: "jwk" },
       privateKeyEncoding: { type: "pkcs1", format: "jwk" }
     };
-    const jwk = await new Promise((resolve2, reject) => {
+    const jwk = await new Promise((resolve3, reject) => {
       nodeCrypto$6.generateKeyPair("rsa", opts, (err2, _, jwkPrivateKey) => {
         if (err2) {
           reject(err2);
         } else {
-          resolve2(jwkPrivateKey);
+          resolve3(jwkPrivateKey);
         }
       });
     });
@@ -24108,8 +24107,8 @@ var Message = class _Message {
     const signatureList = packets.filterByTag(enums.packet.signature);
     if (onePassSigList.length && !signatureList.length && util.isStream(packets.stream) && !isArrayStream(packets.stream)) {
       await Promise.all(onePassSigList.map(async (onePassSig) => {
-        onePassSig.correspondingSig = new Promise((resolve2, reject) => {
-          onePassSig.correspondingSigResolve = resolve2;
+        onePassSig.correspondingSig = new Promise((resolve3, reject) => {
+          onePassSig.correspondingSigResolve = resolve3;
           onePassSig.correspondingSigReject = reject;
         });
         onePassSig.signatureData = fromAsync(async () => (await onePassSig.correspondingSig).signatureData);
@@ -35916,7 +35915,7 @@ var expected_identity_default = {
   baseUrl: "https://yusuke-hayashi.com",
   subject: "https://yusuke-hayashi.com",
   displayName: "Yusuke Hayashi",
-  releaseRevision: 2,
+  releaseRevision: 3,
   domains: [
     "yusuke-hayashi.com",
     "haya.company",
@@ -36329,25 +36328,7 @@ var schemas = {
   thirdPartyAttestationIndex: third_party_attestation_index_v1_schema_default
 };
 
-// src/verify-identity.mjs
-var ZBASE32_ALPHABET = "ybndrfg8ejkmcpqxot1uwisza345h769";
-var DEFAULT_TIMEOUT_MS = 1e4;
-var DEFAULT_ATTEMPTS = 3;
-var EXPIRY_WARNING_MS = 30 * 24 * 60 * 60 * 1e3;
-var FUTURE_CLOCK_SKEW_MS = 5 * 60 * 1e3;
-var MAX_HISTORY_DEPTH = 50;
-var MAX_REDIRECTS = 5;
-var REDIRECT_STATUSES = /* @__PURE__ */ new Set([301, 302, 303, 307, 308]);
-var ATTESTATION_SIGNING_CONTEXT = "https://yusuke-hayashi.com/.well-known/attestations/signing-payload/v1";
-var HUMANITY_CHALLENGE_CONTEXT = "https://yusuke-hayashi.com/.well-known/attestations/humanity-challenge/v1";
-var ajv = new import_ajv.default({ allErrors: true, allowUnionTypes: true, strict: false });
-(0, import_ajv_formats.default)(ajv);
-var validators = {
-  identityHistory: ajv.compile(schemas.identityHistory),
-  identityManifest: ajv.compile(schemas.identityManifest),
-  thirdPartyAttestation: ajv.compile(schemas.thirdPartyAttestation),
-  thirdPartyAttestationIndex: ajv.compile(schemas.thirdPartyAttestationIndex)
-};
+// src/errors.mjs
 var IntegrityError = class extends Error {
   constructor(message, options) {
     super(message, options);
@@ -36366,201 +36347,19 @@ var FreshnessWarning = class extends Error {
     this.name = "FreshnessWarning";
   }
 };
+
+// src/http-client.mjs
+import { readFile } from "node:fs/promises";
+import { resolve, sep } from "node:path";
+var DEFAULT_TIMEOUT_MS = 1e4;
+var DEFAULT_ATTEMPTS = 3;
+var MAX_REDIRECTS = 5;
+var REDIRECT_STATUSES = /* @__PURE__ */ new Set([301, 302, 303, 307, 308]);
 function invariant(condition, message) {
   if (!condition) throw new IntegrityError(message);
 }
 function delay(ms) {
-  return new Promise((resolve2) => setTimeout(resolve2, ms));
-}
-function once(factory) {
-  let promise;
-  return () => {
-    promise ??= factory();
-    return promise;
-  };
-}
-function normalizeFingerprint(value) {
-  return value.replaceAll(/\s/g, "").toUpperCase();
-}
-function openPgpUri(fingerprint) {
-  return `openpgp4fpr:${normalizeFingerprint(fingerprint).toLowerCase()}`;
-}
-function describeAjvErrors(errors) {
-  return (errors ?? []).map((error) => `${error.instancePath || "/"} ${error.message}`).join("; ");
-}
-function validateWithSchema(name, value) {
-  const validator = validators[name];
-  invariant(Boolean(validator), `unknown schema validator: ${name}`);
-  invariant(validator(value), `${name} schema validation failed: ${describeAjvErrors(validator.errors)}`);
-}
-function sha2563(value) {
-  return createHash2("sha256").update(value).digest("hex");
-}
-function attestationSigningPayload(record) {
-  const issuer = {
-    name: record.issuer.name,
-    identifier: record.issuer.identifier
-  };
-  if (record.issuer.profileUrl !== void 0) issuer.profileUrl = record.issuer.profileUrl;
-  const claim = {
-    type: record.claim.type,
-    statement: record.claim.statement,
-    issuedAt: record.claim.issuedAt
-  };
-  if (record.claim.observedAt !== void 0) claim.observedAt = record.claim.observedAt;
-  if (record.claim.verificationMethod !== void 0) claim.verificationMethod = record.claim.verificationMethod;
-  if (record.claim.expiresAt !== void 0) claim.expiresAt = record.claim.expiresAt;
-  const subject = {
-    canonicalUrl: record.subject.canonicalUrl,
-    openpgpFingerprint: record.subject.openpgpFingerprint
-  };
-  if (record.subject.ethereumAddress !== void 0) subject.ethereumAddress = record.subject.ethereumAddress;
-  const payload = {
-    context: ATTESTATION_SIGNING_CONTEXT,
-    schemaVersion: record.schemaVersion,
-    id: record.id,
-    subject,
-    issuer,
-    claim,
-    proofType: record.proof.type
-  };
-  if (record.subjectChallenge !== void 0) {
-    payload.subjectChallenge = {
-      nonce: record.subjectChallenge.nonce,
-      issuedAt: record.subjectChallenge.issuedAt,
-      expiresAt: record.subjectChallenge.expiresAt,
-      proof: {
-        type: record.subjectChallenge.proof.type,
-        address: record.subjectChallenge.proof.address,
-        message: record.subjectChallenge.proof.message,
-        signature: record.subjectChallenge.proof.signature
-      }
-    };
-  }
-  if (record.evidence !== void 0) payload.evidence = record.evidence;
-  return `${JSON.stringify(payload, null, 2)}
-`;
-}
-function humanityChallengeSigningPayload(record) {
-  const payload = {
-    context: HUMANITY_CHALLENGE_CONTEXT,
-    id: record.id,
-    purpose: "Prove current control of the published identity address during an attended humanity check. This signature alone is not proof of humanity or global uniqueness.",
-    subject: {
-      canonicalUrl: record.subject.canonicalUrl,
-      openpgpFingerprint: record.subject.openpgpFingerprint,
-      ethereumAddress: record.subject.ethereumAddress
-    },
-    challenge: {
-      nonce: record.subjectChallenge.nonce,
-      issuedAt: record.subjectChallenge.issuedAt,
-      expiresAt: record.subjectChallenge.expiresAt
-    }
-  };
-  return `${JSON.stringify(payload, null, 2)}
-`;
-}
-function assertFreshUntil(value, now, label, warningMs = EXPIRY_WARNING_MS) {
-  const expiresAt = new Date(value).getTime();
-  invariant(Number.isFinite(expiresAt), `${label} expiry is invalid`);
-  invariant(expiresAt > now.getTime(), `${label} has expired`);
-  if (expiresAt - now.getTime() <= warningMs) {
-    throw new FreshnessWarning(`${label} expires within 30 days: ${value}`);
-  }
-}
-function collectFreshnessWarning(value, now, label, warningMs = EXPIRY_WARNING_MS) {
-  try {
-    assertFreshUntil(value, now, label, warningMs);
-    return void 0;
-  } catch (error) {
-    if (error instanceof FreshnessWarning) return error;
-    throw error;
-  }
-}
-function zBase32(bytes) {
-  let bits2 = 0;
-  let accumulator = 0;
-  let result = "";
-  for (const byte of bytes) {
-    accumulator = accumulator << 8 | byte;
-    bits2 += 8;
-    while (bits2 >= 5) {
-      bits2 -= 5;
-      result += ZBASE32_ALPHABET[accumulator >>> bits2 & 31];
-    }
-  }
-  if (bits2 > 0) result += ZBASE32_ALPHABET[accumulator << 5 - bits2 & 31];
-  return result;
-}
-async function readAndPinOpenPgpKey(armoredKey, expectedFingerprint) {
-  let key;
-  try {
-    key = await readKey({ armoredKey });
-  } catch (error) {
-    throw new IntegrityError("unable to parse OpenPGP public key", { cause: error });
-  }
-  const actual = normalizeFingerprint(key.getFingerprint());
-  invariant(actual === normalizeFingerprint(expectedFingerprint), `OpenPGP fingerprint mismatch: ${actual}`);
-  return key;
-}
-async function assertCurrentOpenPgpKey(key, now = /* @__PURE__ */ new Date(), label = "OpenPGP public key") {
-  try {
-    await key.verifyPrimaryKey(now);
-  } catch (error) {
-    throw new IntegrityError(`${label} is not currently valid`, { cause: error });
-  }
-}
-async function verifyDetachedOpenPgp(payload, armoredSignature, verificationKey) {
-  try {
-    const message = await createMessage({ binary: new TextEncoder().encode(payload) });
-    const signature = await readSignature({ armoredSignature });
-    const verification = await verify({ message, signature, verificationKeys: verificationKey });
-    invariant(verification.signatures.length > 0, "detached OpenPGP signature is missing");
-    await verification.signatures[0].verified;
-  } catch (error) {
-    if (error instanceof IntegrityError) throw error;
-    throw new IntegrityError("detached OpenPGP signature verification failed", { cause: error });
-  }
-}
-async function verifyGitHubCommit(response, verificationKey) {
-  invariant(response?.commit?.verification?.verified === true, "GitHub main commit is not verified");
-  const { payload, signature } = response.commit.verification;
-  invariant(typeof payload === "string" && payload.length > 0, "GitHub commit signature payload is missing");
-  invariant(
-    typeof signature === "string" && signature.startsWith("-----BEGIN PGP SIGNATURE-----"),
-    "GitHub main commit is not OpenPGP-signed"
-  );
-  await verifyDetachedOpenPgp(payload, signature, verificationKey);
-  return response.sha;
-}
-async function verifyCleartextOpenPgp(armoredMessage, verificationKey) {
-  try {
-    const message = await readCleartextMessage({ cleartextMessage: armoredMessage });
-    const verification = await verify({ message, verificationKeys: verificationKey });
-    invariant(verification.signatures.length > 0, "cleartext OpenPGP signature is missing");
-    await verification.signatures[0].verified;
-    return message.getText();
-  } catch (error) {
-    if (error instanceof IntegrityError) throw error;
-    throw new IntegrityError("cleartext OpenPGP signature verification failed", { cause: error });
-  }
-}
-async function verifyEthAttestation(attestation, expectedAddress) {
-  invariant(typeof attestation.message === "string", "Ethereum attestation message is missing");
-  invariant(typeof attestation.signature === "string", "Ethereum attestation signature is missing");
-  invariant(typeof attestation.address === "string", "Ethereum attestation address is missing");
-  let recovered;
-  try {
-    recovered = await recoverMessageAddress({
-      message: attestation.message,
-      signature: attestation.signature
-    });
-  } catch (error) {
-    throw new IntegrityError("EIP-191 signature recovery failed", { cause: error });
-  }
-  invariant(getAddress(attestation.address) === getAddress(expectedAddress), "attestation address changed");
-  invariant(getAddress(recovered) === getAddress(expectedAddress), `EIP-191 signer mismatch: ${recovered}`);
-  return recovered;
+  return new Promise((resolveDelay) => setTimeout(resolveDelay, ms));
 }
 function isTransientHttpFailure(response) {
   if ([408, 425, 429].includes(response.status) || response.status >= 500) return true;
@@ -36575,8 +36374,8 @@ function createHttpClient(baseUrl, {
   fetchImpl = fetch
 } = {}) {
   const cache = /* @__PURE__ */ new Map();
-  const root = baseUrl.replace(/\/$/, "");
-  const canonicalRoot = canonicalBaseUrl.replace(/\/$/, "");
+  const root = baseUrl.replace(/\/$/u, "");
+  const canonicalRoot = canonicalBaseUrl.replace(/\/$/u, "");
   const rootOrigin = new URL(root).origin;
   const localRoot = artifactDir ? resolve(artifactDir) : void 0;
   function fetchUrlFor(pathOrUrl) {
@@ -36666,6 +36465,215 @@ function createHttpClient(baseUrl, {
     text: (pathOrUrl) => fetchResource(pathOrUrl, false)
   };
 }
+
+// src/verify-identity.mjs
+var ZBASE32_ALPHABET = "ybndrfg8ejkmcpqxot1uwisza345h769";
+var EXPIRY_WARNING_MS = 30 * 24 * 60 * 60 * 1e3;
+var FUTURE_CLOCK_SKEW_MS = 5 * 60 * 1e3;
+var MAX_HISTORY_DEPTH = 50;
+var ATTESTATION_SIGNING_CONTEXT = "https://yusuke-hayashi.com/.well-known/attestations/signing-payload/v1";
+var HUMANITY_CHALLENGE_CONTEXT = "https://yusuke-hayashi.com/.well-known/attestations/humanity-challenge/v1";
+var ajv = new import_ajv.default({ allErrors: true, allowUnionTypes: true, strict: false });
+(0, import_ajv_formats.default)(ajv);
+var validators = {
+  identityHistory: ajv.compile(schemas.identityHistory),
+  identityManifest: ajv.compile(schemas.identityManifest),
+  thirdPartyAttestation: ajv.compile(schemas.thirdPartyAttestation),
+  thirdPartyAttestationIndex: ajv.compile(schemas.thirdPartyAttestationIndex)
+};
+function invariant2(condition, message) {
+  if (!condition) throw new IntegrityError(message);
+}
+function once(factory) {
+  let promise;
+  return () => {
+    promise ??= factory();
+    return promise;
+  };
+}
+function normalizeFingerprint(value) {
+  return value.replaceAll(/\s/g, "").toUpperCase();
+}
+function openPgpUri(fingerprint) {
+  return `openpgp4fpr:${normalizeFingerprint(fingerprint).toLowerCase()}`;
+}
+function describeAjvErrors(errors) {
+  return (errors ?? []).map((error) => `${error.instancePath || "/"} ${error.message}`).join("; ");
+}
+function validateWithSchema(name, value) {
+  const validator = validators[name];
+  invariant2(Boolean(validator), `unknown schema validator: ${name}`);
+  invariant2(validator(value), `${name} schema validation failed: ${describeAjvErrors(validator.errors)}`);
+}
+function sha2563(value) {
+  return createHash2("sha256").update(value).digest("hex");
+}
+function attestationSigningPayload(record) {
+  const issuer = {
+    name: record.issuer.name,
+    identifier: record.issuer.identifier
+  };
+  if (record.issuer.profileUrl !== void 0) issuer.profileUrl = record.issuer.profileUrl;
+  const claim = {
+    type: record.claim.type,
+    statement: record.claim.statement,
+    issuedAt: record.claim.issuedAt
+  };
+  if (record.claim.observedAt !== void 0) claim.observedAt = record.claim.observedAt;
+  if (record.claim.verificationMethod !== void 0) claim.verificationMethod = record.claim.verificationMethod;
+  if (record.claim.expiresAt !== void 0) claim.expiresAt = record.claim.expiresAt;
+  const subject = {
+    canonicalUrl: record.subject.canonicalUrl,
+    openpgpFingerprint: record.subject.openpgpFingerprint
+  };
+  if (record.subject.ethereumAddress !== void 0) subject.ethereumAddress = record.subject.ethereumAddress;
+  const payload = {
+    context: ATTESTATION_SIGNING_CONTEXT,
+    schemaVersion: record.schemaVersion,
+    id: record.id,
+    subject,
+    issuer,
+    claim,
+    proofType: record.proof.type
+  };
+  if (record.subjectChallenge !== void 0) {
+    payload.subjectChallenge = {
+      nonce: record.subjectChallenge.nonce,
+      issuedAt: record.subjectChallenge.issuedAt,
+      expiresAt: record.subjectChallenge.expiresAt,
+      proof: {
+        type: record.subjectChallenge.proof.type,
+        address: record.subjectChallenge.proof.address,
+        message: record.subjectChallenge.proof.message,
+        signature: record.subjectChallenge.proof.signature
+      }
+    };
+  }
+  if (record.evidence !== void 0) payload.evidence = record.evidence;
+  return `${JSON.stringify(payload, null, 2)}
+`;
+}
+function humanityChallengeSigningPayload(record) {
+  const payload = {
+    context: HUMANITY_CHALLENGE_CONTEXT,
+    id: record.id,
+    purpose: "Prove current control of the published identity address during an attended humanity check. This signature alone is not proof of humanity or global uniqueness.",
+    subject: {
+      canonicalUrl: record.subject.canonicalUrl,
+      openpgpFingerprint: record.subject.openpgpFingerprint,
+      ethereumAddress: record.subject.ethereumAddress
+    },
+    challenge: {
+      nonce: record.subjectChallenge.nonce,
+      issuedAt: record.subjectChallenge.issuedAt,
+      expiresAt: record.subjectChallenge.expiresAt
+    }
+  };
+  return `${JSON.stringify(payload, null, 2)}
+`;
+}
+function assertFreshUntil(value, now, label, warningMs = EXPIRY_WARNING_MS) {
+  const expiresAt = new Date(value).getTime();
+  invariant2(Number.isFinite(expiresAt), `${label} expiry is invalid`);
+  invariant2(expiresAt > now.getTime(), `${label} has expired`);
+  if (expiresAt - now.getTime() <= warningMs) {
+    throw new FreshnessWarning(`${label} expires within 30 days: ${value}`);
+  }
+}
+function collectFreshnessWarning(value, now, label, warningMs = EXPIRY_WARNING_MS) {
+  try {
+    assertFreshUntil(value, now, label, warningMs);
+    return void 0;
+  } catch (error) {
+    if (error instanceof FreshnessWarning) return error;
+    throw error;
+  }
+}
+function zBase32(bytes) {
+  let bits2 = 0;
+  let accumulator = 0;
+  let result = "";
+  for (const byte of bytes) {
+    accumulator = accumulator << 8 | byte;
+    bits2 += 8;
+    while (bits2 >= 5) {
+      bits2 -= 5;
+      result += ZBASE32_ALPHABET[accumulator >>> bits2 & 31];
+    }
+  }
+  if (bits2 > 0) result += ZBASE32_ALPHABET[accumulator << 5 - bits2 & 31];
+  return result;
+}
+async function readAndPinOpenPgpKey(armoredKey, expectedFingerprint) {
+  let key;
+  try {
+    key = await readKey({ armoredKey });
+  } catch (error) {
+    throw new IntegrityError("unable to parse OpenPGP public key", { cause: error });
+  }
+  const actual = normalizeFingerprint(key.getFingerprint());
+  invariant2(actual === normalizeFingerprint(expectedFingerprint), `OpenPGP fingerprint mismatch: ${actual}`);
+  return key;
+}
+async function assertCurrentOpenPgpKey(key, now = /* @__PURE__ */ new Date(), label = "OpenPGP public key") {
+  try {
+    await key.verifyPrimaryKey(now);
+  } catch (error) {
+    throw new IntegrityError(`${label} is not currently valid`, { cause: error });
+  }
+}
+async function verifyDetachedOpenPgp(payload, armoredSignature, verificationKey) {
+  try {
+    const message = await createMessage({ binary: new TextEncoder().encode(payload) });
+    const signature = await readSignature({ armoredSignature });
+    const verification = await verify({ message, signature, verificationKeys: verificationKey });
+    invariant2(verification.signatures.length > 0, "detached OpenPGP signature is missing");
+    await verification.signatures[0].verified;
+  } catch (error) {
+    if (error instanceof IntegrityError) throw error;
+    throw new IntegrityError("detached OpenPGP signature verification failed", { cause: error });
+  }
+}
+async function verifyGitHubCommit(response, verificationKey) {
+  invariant2(response?.commit?.verification?.verified === true, "GitHub main commit is not verified");
+  const { payload, signature } = response.commit.verification;
+  invariant2(typeof payload === "string" && payload.length > 0, "GitHub commit signature payload is missing");
+  invariant2(
+    typeof signature === "string" && signature.startsWith("-----BEGIN PGP SIGNATURE-----"),
+    "GitHub main commit is not OpenPGP-signed"
+  );
+  await verifyDetachedOpenPgp(payload, signature, verificationKey);
+  return response.sha;
+}
+async function verifyCleartextOpenPgp(armoredMessage, verificationKey) {
+  try {
+    const message = await readCleartextMessage({ cleartextMessage: armoredMessage });
+    const verification = await verify({ message, verificationKeys: verificationKey });
+    invariant2(verification.signatures.length > 0, "cleartext OpenPGP signature is missing");
+    await verification.signatures[0].verified;
+    return message.getText();
+  } catch (error) {
+    if (error instanceof IntegrityError) throw error;
+    throw new IntegrityError("cleartext OpenPGP signature verification failed", { cause: error });
+  }
+}
+async function verifyEthAttestation(attestation, expectedAddress) {
+  invariant2(typeof attestation.message === "string", "Ethereum attestation message is missing");
+  invariant2(typeof attestation.signature === "string", "Ethereum attestation signature is missing");
+  invariant2(typeof attestation.address === "string", "Ethereum attestation address is missing");
+  let recovered;
+  try {
+    recovered = await recoverMessageAddress({
+      message: attestation.message,
+      signature: attestation.signature
+    });
+  } catch (error) {
+    throw new IntegrityError("EIP-191 signature recovery failed", { cause: error });
+  }
+  invariant2(getAddress(attestation.address) === getAddress(expectedAddress), "attestation address changed");
+  invariant2(getAddress(recovered) === getAddress(expectedAddress), `EIP-191 signer mismatch: ${recovered}`);
+  return recovered;
+}
 async function resolveTxtWithRetry(hostname, attempts = DEFAULT_ATTEMPTS) {
   let lastError;
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
@@ -36699,60 +36707,60 @@ function assertExpectedManifestRoots(manifest, expected, now) {
   const canonicalBaseUrl = expected.baseUrl.replace(/\/$/, "");
   const issuedAt = Date.parse(manifest.validity.issuedAt);
   const expiresAt = Date.parse(manifest.validity.expiresAt);
-  invariant(manifest.subject.name === expected.displayName, "identity display name changed");
-  invariant(manifest.subject.canonicalUrl === expected.subject, "canonical subject changed");
-  invariant(manifest.releaseRevision === expected.releaseRevision, "identity release revision changed");
-  invariant(JSON.stringify(manifest.validity) === JSON.stringify(expected.manifest), "manifest validity changed");
-  invariant(Number.isFinite(issuedAt), "identity manifest issuedAt is invalid");
-  invariant(Number.isFinite(expiresAt), "identity manifest expiresAt is invalid");
-  invariant(
+  invariant2(manifest.subject.name === expected.displayName, "identity display name changed");
+  invariant2(manifest.subject.canonicalUrl === expected.subject, "canonical subject changed");
+  invariant2(manifest.releaseRevision === expected.releaseRevision, "identity release revision changed");
+  invariant2(JSON.stringify(manifest.validity) === JSON.stringify(expected.manifest), "manifest validity changed");
+  invariant2(Number.isFinite(issuedAt), "identity manifest issuedAt is invalid");
+  invariant2(Number.isFinite(expiresAt), "identity manifest expiresAt is invalid");
+  invariant2(
     issuedAt <= now.getTime() + FUTURE_CLOCK_SKEW_MS,
     "identity manifest issuedAt is in the future"
   );
-  invariant(expiresAt > issuedAt, "identity manifest expiresAt must be after issuedAt");
-  invariant(JSON.stringify(manifest.identifiers.domains) === JSON.stringify(expected.domains), "manifest domains changed");
-  invariant(
+  invariant2(expiresAt > issuedAt, "identity manifest expiresAt must be after issuedAt");
+  invariant2(JSON.stringify(manifest.identifiers.domains) === JSON.stringify(expected.domains), "manifest domains changed");
+  invariant2(
     normalizeFingerprint(manifest.identifiers.openpgp.fingerprint) === normalizeFingerprint(expected.openpgp.fingerprint),
     "manifest OpenPGP fingerprint changed"
   );
-  invariant(manifest.identifiers.openpgp.uri === expected.openpgp.uri, "manifest OpenPGP URI changed");
-  invariant(manifest.identifiers.openpgp.wkdEmail === expected.openpgp.wkdEmail, "manifest WKD email changed");
-  invariant(
+  invariant2(manifest.identifiers.openpgp.uri === expected.openpgp.uri, "manifest OpenPGP URI changed");
+  invariant2(manifest.identifiers.openpgp.wkdEmail === expected.openpgp.wkdEmail, "manifest WKD email changed");
+  invariant2(
     manifest.identifiers.openpgp.keyUrl === `${canonicalBaseUrl}/pgp-key.asc`,
     "manifest OpenPGP key URL changed"
   );
-  invariant(
+  invariant2(
     getAddress(manifest.identifiers.ethereum.address) === getAddress(expected.ethereum.address),
     "manifest Ethereum address changed"
   );
-  invariant(manifest.identifiers.ethereum.chainId === expected.ethereum.chainId, "manifest Ethereum chain changed");
-  invariant(manifest.identifiers.nostr.hex === expected.nostr.hex, "manifest Nostr key changed");
-  invariant(manifest.identifiers.nostr.npub === expected.nostr.npub, "manifest Nostr npub changed");
-  invariant(manifest.identifiers.nostr.nip05 === expected.nostr.nip05, "manifest NIP-05 changed");
-  invariant(manifest.identifiers.bluesky.did === expected.bluesky.did, "manifest Bluesky DID changed");
-  invariant(manifest.identifiers.bluesky.handle === expected.bluesky.handle, "manifest Bluesky handle changed");
-  invariant(manifest.identifiers.github.handle === expected.github.handle, "manifest GitHub handle changed");
-  invariant(
+  invariant2(manifest.identifiers.ethereum.chainId === expected.ethereum.chainId, "manifest Ethereum chain changed");
+  invariant2(manifest.identifiers.nostr.hex === expected.nostr.hex, "manifest Nostr key changed");
+  invariant2(manifest.identifiers.nostr.npub === expected.nostr.npub, "manifest Nostr npub changed");
+  invariant2(manifest.identifiers.nostr.nip05 === expected.nostr.nip05, "manifest NIP-05 changed");
+  invariant2(manifest.identifiers.bluesky.did === expected.bluesky.did, "manifest Bluesky DID changed");
+  invariant2(manifest.identifiers.bluesky.handle === expected.bluesky.handle, "manifest Bluesky handle changed");
+  invariant2(manifest.identifiers.github.handle === expected.github.handle, "manifest GitHub handle changed");
+  invariant2(
     manifest.identifiers.github.repository === `https://github.com/${expected.github.repository}`,
     "manifest GitHub repository changed"
   );
-  invariant(
+  invariant2(
     manifest.history.url === `${canonicalBaseUrl}/.well-known/identity-history.json`,
     "manifest identity history URL changed"
   );
-  invariant(
+  invariant2(
     manifest.verifier.url === `${canonicalBaseUrl}/.well-known/verify-identity.mjs`,
     "manifest verifier URL changed"
   );
-  invariant(
+  invariant2(
     manifest.thirdPartyAttestations.index.url === `${canonicalBaseUrl}/.well-known/attestations/index.json`,
     "manifest attestation index URL changed"
   );
-  invariant(
+  invariant2(
     manifest.thirdPartyAttestations.policy.url === `${canonicalBaseUrl}/.well-known/attestations/policy.json`,
     "manifest attestation policy URL changed"
   );
-  invariant(
+  invariant2(
     manifest.thirdPartyAttestations.schema === `${canonicalBaseUrl}/.well-known/schemas/third-party-attestation-v1.schema.json`,
     "manifest attestation schema URL changed"
   );
@@ -36760,9 +36768,9 @@ function assertExpectedManifestRoots(manifest, expected, now) {
 }
 function validateSecurityTxtContents(cleartext, expectedBaseUrl, now = /* @__PURE__ */ new Date()) {
   const expires = cleartext.match(/^Expires:\s*(.+)$/m)?.[1]?.trim();
-  invariant(Boolean(expires), "security.txt Expires is missing");
+  invariant2(Boolean(expires), "security.txt Expires is missing");
   const freshnessWarning = collectFreshnessWarning(expires, now, "security.txt");
-  invariant(
+  invariant2(
     cleartext.includes(`Canonical: ${expectedBaseUrl.replace(/\/$/, "")}/.well-known/security.txt`),
     "security.txt Canonical changed"
   );
@@ -36771,33 +36779,33 @@ function validateSecurityTxtContents(cleartext, expectedBaseUrl, now = /* @__PUR
 }
 function assertAttestationLifecycle(record, now, expectedEthereumAddress) {
   const issuedAt = Date.parse(record.claim.issuedAt);
-  invariant(Number.isFinite(issuedAt), `attestation issuedAt is invalid: ${record.id}`);
-  invariant(
+  invariant2(Number.isFinite(issuedAt), `attestation issuedAt is invalid: ${record.id}`);
+  invariant2(
     issuedAt <= now.getTime() + FUTURE_CLOCK_SKEW_MS,
     `attestation issuedAt is in the future: ${record.id}`
   );
   const expiresAt = record.claim.expiresAt ? Date.parse(record.claim.expiresAt) : void 0;
   if (expiresAt !== void 0) {
-    invariant(Number.isFinite(expiresAt), `attestation expiresAt is invalid: ${record.id}`);
-    invariant(expiresAt > issuedAt, `attestation expiresAt must be after issuedAt: ${record.id}`);
+    invariant2(Number.isFinite(expiresAt), `attestation expiresAt is invalid: ${record.id}`);
+    invariant2(expiresAt > issuedAt, `attestation expiresAt must be after issuedAt: ${record.id}`);
   }
   if (record.claim.type === "humanity-witness") {
     const observedAt = Date.parse(record.claim.observedAt);
     const challengeIssuedAt = Date.parse(record.subjectChallenge.issuedAt);
     const challengeExpiresAt = Date.parse(record.subjectChallenge.expiresAt);
-    invariant(Number.isFinite(observedAt), `humanity observation time is invalid: ${record.id}`);
-    invariant(Number.isFinite(challengeIssuedAt), `humanity challenge issuedAt is invalid: ${record.id}`);
-    invariant(Number.isFinite(challengeExpiresAt), `humanity challenge expiresAt is invalid: ${record.id}`);
-    invariant(
+    invariant2(Number.isFinite(observedAt), `humanity observation time is invalid: ${record.id}`);
+    invariant2(Number.isFinite(challengeIssuedAt), `humanity challenge issuedAt is invalid: ${record.id}`);
+    invariant2(Number.isFinite(challengeExpiresAt), `humanity challenge expiresAt is invalid: ${record.id}`);
+    invariant2(
       challengeExpiresAt > challengeIssuedAt,
       `humanity challenge expiresAt must be after its issuedAt: ${record.id}`
     );
-    invariant(
+    invariant2(
       observedAt >= challengeIssuedAt && observedAt <= challengeExpiresAt,
       `humanity observation must occur within the challenge window: ${record.id}`
     );
-    invariant(issuedAt >= observedAt, `humanity attestation predates its observation: ${record.id}`);
-    invariant(
+    invariant2(issuedAt >= observedAt, `humanity attestation predates its observation: ${record.id}`);
+    invariant2(
       record.subjectChallenge.proof.message === humanityChallengeSigningPayload(record),
       `humanity challenge signing payload mismatch: ${record.id}`
     );
@@ -36809,27 +36817,27 @@ function assertAttestationLifecycle(record, now, expectedEthereumAddress) {
     } catch (error) {
       throw new IntegrityError(`humanity challenge address is invalid: ${record.id}`, { cause: error });
     }
-    invariant(
+    invariant2(
       subjectAddress === getAddress(expectedEthereumAddress),
       `humanity witness Ethereum subject changed: ${record.id}`
     );
-    invariant(subjectAddress === challengeAddress, `humanity challenge signer does not match subject: ${record.id}`);
+    invariant2(subjectAddress === challengeAddress, `humanity challenge signer does not match subject: ${record.id}`);
   }
   if (record.status === "active") {
-    invariant(!record.revokedAt && !record.revocationReason, `active attestation has revocation metadata: ${record.id}`);
+    invariant2(!record.revokedAt && !record.revocationReason, `active attestation has revocation metadata: ${record.id}`);
     return record.claim.expiresAt ? collectFreshnessWarning(record.claim.expiresAt, now, `attestation ${record.id}`) : void 0;
   }
   if (record.status === "expired") {
-    invariant(expiresAt !== void 0, `expired attestation has no expiresAt: ${record.id}`);
-    invariant(expiresAt <= now.getTime(), `attestation is marked expired before expiresAt: ${record.id}`);
-    invariant(!record.revokedAt && !record.revocationReason, `expired attestation has revocation metadata: ${record.id}`);
+    invariant2(expiresAt !== void 0, `expired attestation has no expiresAt: ${record.id}`);
+    invariant2(expiresAt <= now.getTime(), `attestation is marked expired before expiresAt: ${record.id}`);
+    invariant2(!record.revokedAt && !record.revocationReason, `expired attestation has revocation metadata: ${record.id}`);
     return;
   }
   const revokedAt = Date.parse(record.revokedAt);
-  invariant(Number.isFinite(revokedAt), `revoked attestation has no valid revokedAt: ${record.id}`);
-  invariant(revokedAt >= issuedAt, `attestation revokedAt predates issuedAt: ${record.id}`);
-  invariant(revokedAt <= now.getTime() + FUTURE_CLOCK_SKEW_MS, `attestation revokedAt is in the future: ${record.id}`);
-  invariant(
+  invariant2(Number.isFinite(revokedAt), `revoked attestation has no valid revokedAt: ${record.id}`);
+  invariant2(revokedAt >= issuedAt, `attestation revokedAt predates issuedAt: ${record.id}`);
+  invariant2(revokedAt <= now.getTime() + FUTURE_CLOCK_SKEW_MS, `attestation revokedAt is in the future: ${record.id}`);
+  invariant2(
     typeof record.revocationReason === "string" && record.revocationReason.trim().length > 0,
     `revoked attestation has no revocation reason: ${record.id}`
   );
@@ -36861,7 +36869,7 @@ async function verifyThirdPartyAttestationRecord(record, {
     } catch (error) {
       throw new IntegrityError(`EIP-191 issuer identifier is not an Ethereum address: ${record.id}`, { cause: error });
     }
-    invariant(
+    invariant2(
       issuerAddress === getAddress(record.proof.address),
       `attestation issuer does not match EIP-191 signer: ${record.id}`
     );
@@ -36874,16 +36882,16 @@ async function verifyThirdPartyAttestationRecord(record, {
       record.proof.address
     );
   } else {
-    invariant(
+    invariant2(
       record.issuer.identifier.toLowerCase() === openPgpUri(record.proof.signerFingerprint),
       `attestation issuer does not match OpenPGP signer: ${record.id}`
     );
-    invariant(typeof loadText === "function", "OpenPGP attestation verification requires a resource loader");
+    invariant2(typeof loadText === "function", "OpenPGP attestation verification requires a resource loader");
     const issuerKeyText = await loadText(record.proof.publicKeyUrl);
     const issuerKey = await readAndPinOpenPgpKey(issuerKeyText, record.proof.signerFingerprint);
     const signedStatement = await loadText(record.proof.artifactUrl);
     const statement = await verifyCleartextOpenPgp(signedStatement, issuerKey);
-    invariant(
+    invariant2(
       statement.replaceAll("\r\n", "\n").trimEnd() === signingPayload.trimEnd(),
       `attestation signing payload mismatch: ${record.id}`
     );
@@ -36902,33 +36910,33 @@ function validateThirdPartyAttestationMetadata(record, {
   const freshnessWarning = assertAttestationLifecycle(record, now, expectedEthereumAddress);
   const signingPayload = attestationSigningPayload(record);
   if (record.proof.type === "eip191") {
-    invariant(record.proof.message === signingPayload, `attestation signing payload mismatch: ${record.id}`);
+    invariant2(record.proof.message === signingPayload, `attestation signing payload mismatch: ${record.id}`);
   }
   return { freshnessWarning, signingPayload };
 }
 async function verifyThirdPartyRegistry({ http, manifest, expected, now }) {
   const indexText = await http.text(manifest.thirdPartyAttestations.index.url);
-  invariant(sha2563(indexText) === manifest.thirdPartyAttestations.index.sha256, "attestation index hash mismatch");
+  invariant2(sha2563(indexText) === manifest.thirdPartyAttestations.index.sha256, "attestation index hash mismatch");
   const index2 = JSON.parse(indexText);
   validateWithSchema("thirdPartyAttestationIndex", index2);
-  invariant(index2.subject === expected.subject, "attestation index subject changed");
+  invariant2(index2.subject === expected.subject, "attestation index subject changed");
   const attestationIds = /* @__PURE__ */ new Set();
   const policyText = await http.text(manifest.thirdPartyAttestations.policy.url);
-  invariant(sha2563(policyText) === manifest.thirdPartyAttestations.policy.sha256, "attestation policy hash mismatch");
+  invariant2(sha2563(policyText) === manifest.thirdPartyAttestations.policy.sha256, "attestation policy hash mismatch");
   JSON.parse(policyText);
   const freshnessWarnings = [];
   for (const entry of index2.attestations) {
-    invariant(!attestationIds.has(entry.id), `duplicate attestation index entry: ${entry.id}`);
+    invariant2(!attestationIds.has(entry.id), `duplicate attestation index entry: ${entry.id}`);
     attestationIds.add(entry.id);
-    invariant(
+    invariant2(
       entry.url === `${expected.baseUrl.replace(/\/$/, "")}/.well-known/attestations/records/${entry.id}.json`,
       `attestation record URL changed: ${entry.id}`
     );
     const recordText = await http.text(entry.url);
-    invariant(sha2563(recordText) === entry.sha256, `attestation hash mismatch: ${entry.id}`);
+    invariant2(sha2563(recordText) === entry.sha256, `attestation hash mismatch: ${entry.id}`);
     const record = JSON.parse(recordText);
-    invariant(record.id === entry.id, `attestation id mismatch: ${entry.id}`);
-    invariant(record.status === entry.status, `attestation status mismatch: ${entry.id}`);
+    invariant2(record.id === entry.id, `attestation id mismatch: ${entry.id}`);
+    invariant2(record.status === entry.status, `attestation status mismatch: ${entry.id}`);
     await verifyThirdPartyAttestationRecord(record, {
       loadText: http.text,
       now,
@@ -36943,12 +36951,12 @@ async function verifyThirdPartyRegistry({ http, manifest, expected, now }) {
 }
 function assertHistoryEvents(history, expected) {
   validateWithSchema("identityHistory", history);
-  invariant(history.subject === expected.subject, "identity history subject changed");
+  invariant2(history.subject === expected.subject, "identity history subject changed");
   const ids = /* @__PURE__ */ new Set();
   let previousDate = "";
   for (const event of history.events) {
-    invariant(!ids.has(event.id), `duplicate history event: ${event.id}`);
-    invariant(event.effectiveAt >= previousDate, "identity history is not chronological");
+    invariant2(!ids.has(event.id), `duplicate history event: ${event.id}`);
+    invariant2(event.effectiveAt >= previousDate, "identity history is not chronological");
     ids.add(event.id);
     previousDate = event.effectiveAt;
   }
@@ -36959,19 +36967,19 @@ async function verifyHistoryChain({ current, http, expected }) {
   const seen = /* @__PURE__ */ new Set();
   while (child.previousVersionSha256 !== null) {
     const expectedHash = child.previousVersionSha256;
-    invariant(!seen.has(expectedHash), "identity history chain contains a cycle");
-    invariant(depth < MAX_HISTORY_DEPTH, `identity history chain exceeds ${MAX_HISTORY_DEPTH} versions`);
+    invariant2(!seen.has(expectedHash), "identity history chain contains a cycle");
+    invariant2(depth < MAX_HISTORY_DEPTH, `identity history chain exceeds ${MAX_HISTORY_DEPTH} versions`);
     seen.add(expectedHash);
     const previousText = await http.text(`/.well-known/history/${expectedHash}.json`);
-    invariant(sha2563(previousText) === expectedHash, `identity history checkpoint hash mismatch: ${expectedHash}`);
+    invariant2(sha2563(previousText) === expectedHash, `identity history checkpoint hash mismatch: ${expectedHash}`);
     const previous = JSON.parse(previousText);
     assertHistoryEvents(previous, expected);
-    invariant(
+    invariant2(
       previous.events.length <= child.events.length,
       `identity history checkpoint has more events than its successor: ${expectedHash}`
     );
     for (let index2 = 0; index2 < previous.events.length; index2 += 1) {
-      invariant(
+      invariant2(
         JSON.stringify(previous.events[index2]) === JSON.stringify(child.events[index2]),
         `identity history rewrote event ${previous.events[index2].id}`
       );
@@ -37027,7 +37035,7 @@ async function runVerification({
   results.push(await check("identity-history", async () => {
     const manifest = await getTrustedManifest();
     const historyText = await http.text(manifest.history.url);
-    invariant(sha2563(historyText) === manifest.history.sha256, "identity history hash mismatch");
+    invariant2(sha2563(historyText) === manifest.history.sha256, "identity history hash mismatch");
     const history = JSON.parse(historyText);
     assertHistoryEvents(history, expected);
     const checkpointCount = await verifyHistoryChain({ current: history, http, expected });
@@ -37036,8 +37044,8 @@ async function runVerification({
   results.push(await check("public-verifier", async () => {
     const manifest = await getTrustedManifest();
     const verifier = await http.binary(manifest.verifier.url);
-    invariant(sha2563(verifier) === manifest.verifier.sha256, "public verifier hash mismatch");
-    invariant(verifier.byteLength > 1e3, "public verifier is unexpectedly small");
+    invariant2(sha2563(verifier) === manifest.verifier.sha256, "public verifier hash mismatch");
+    invariant2(verifier.byteLength > 1e3, "public verifier is unexpectedly small");
     return `sha256:${manifest.verifier.sha256}`;
   }));
   results.push(await check("third-party-attestation-registry", async () => verifyThirdPartyRegistry({
@@ -37049,8 +37057,8 @@ async function runVerification({
   results.push(await check("openpgp-to-ethereum-proof", async () => {
     const statement = await http.text("/proofs/statement.txt.asc");
     const cleartext = await verifyCleartextOpenPgp(statement, await getRootKey());
-    invariant(cleartext.includes(expected.ethereum.address), "GPG statement Ethereum address changed");
-    invariant(
+    invariant2(cleartext.includes(expected.ethereum.address), "GPG statement Ethereum address changed");
+    invariant2(
       normalizeFingerprint(cleartext).includes(normalizeFingerprint(expected.openpgp.fingerprint)),
       "GPG statement fingerprint changed"
     );
@@ -37059,7 +37067,7 @@ async function runVerification({
   results.push(await check("ethereum-to-openpgp-proof", async () => {
     const attestation = JSON.parse(await http.text("/proofs/eth-attestation.json"));
     const recovered = await verifyEthAttestation(attestation, expected.ethereum.address);
-    invariant(
+    invariant2(
       normalizeFingerprint(attestation.message).includes(normalizeFingerprint(expected.openpgp.fingerprint)),
       "Ethereum statement fingerprint changed"
     );
@@ -37073,7 +37081,7 @@ async function runVerification({
   }));
   results.push(await check("nostr-nip05", async () => {
     const nostr = JSON.parse(await http.text("/.well-known/nostr.json"));
-    invariant(nostr.names?.[expected.nostr.name] === expected.nostr.hex, "NIP-05 public key changed");
+    invariant2(nostr.names?.[expected.nostr.name] === expected.nostr.hex, "NIP-05 public key changed");
     return `${expected.nostr.nip05} -> ${expected.nostr.hex}`;
   }));
   if (includeExternal) {
@@ -37089,7 +37097,7 @@ async function runVerification({
       } catch (error) {
         throw new IntegrityError("unable to parse WKD key", { cause: error });
       }
-      invariant(
+      invariant2(
         normalizeFingerprint(key.getFingerprint()) === normalizeFingerprint(expected.openpgp.fingerprint),
         "WKD fingerprint mismatch"
       );
@@ -37099,13 +37107,13 @@ async function runVerification({
     results.push(await check("openpgp-dns-proofs", async () => {
       for (const domain of expected.openpgp.dnsProofDomains) {
         const records = await resolveTxtWithRetry(domain);
-        invariant(records.includes(expected.openpgp.uri), `OpenPGP DNS proof missing on ${domain}`);
+        invariant2(records.includes(expected.openpgp.uri), `OpenPGP DNS proof missing on ${domain}`);
       }
       return `${expected.openpgp.dnsProofDomains.length} domain proof(s)`;
     }));
     results.push(await check("bluesky-domain-handle", async () => {
       const records = await resolveTxtWithRetry(`_atproto.${expected.bluesky.handle}`);
-      invariant(records.includes(`did=${expected.bluesky.did}`), "Bluesky DID TXT record changed");
+      invariant2(records.includes(`did=${expected.bluesky.did}`), "Bluesky DID TXT record changed");
       return expected.bluesky.did;
     }));
     results.push(await check("github-main-signature", async () => {
@@ -37117,7 +37125,7 @@ async function runVerification({
     }, { availabilityIsWarning: true }));
     results.push(await check("keyoxide-profile", async () => {
       const page = await http.text(`https://keyoxide.org/${expected.openpgp.fingerprint.toLowerCase()}`);
-      invariant(page.length > 1e3, "Keyoxide profile response is unexpectedly small");
+      invariant2(page.length > 1e3, "Keyoxide profile response is unexpectedly small");
       return "profile reachable; DNS proofs verified independently";
     }, { availabilityIsWarning: true }));
   }
@@ -37126,7 +37134,7 @@ async function runVerification({
       http.binary("/pgp-key.asc.ots"),
       http.binary("/.well-known/security.txt.ots")
     ]);
-    invariant(files.every((file) => file.byteLength > 30), "OpenTimestamps artifact is missing or truncated");
+    invariant2(files.every((file) => file.byteLength > 30), "OpenTimestamps artifact is missing or truncated");
     return `${files.length} timestamp artifact(s) present; cryptographic OTS verification is out of scope`;
   }));
   const counts = results.reduce(
@@ -37138,7 +37146,7 @@ async function runVerification({
     subject: expected.subject,
     checkedAt: now.toISOString(),
     baseUrl,
-    artifactDir: artifactDir ? resolve(artifactDir) : null,
+    artifactDir: artifactDir ? resolve2(artifactDir) : null,
     externalChecks: includeExternal,
     status: counts.fail > 0 ? "failed" : counts.warn > 0 ? "degraded" : "healthy",
     counts,

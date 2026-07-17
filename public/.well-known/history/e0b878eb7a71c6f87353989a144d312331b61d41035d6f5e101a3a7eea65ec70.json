@@ -3,7 +3,7 @@
   "schemaVersion": 1,
   "subject": "https://yusuke-hayashi.com",
   "updatedAt": "2026-07-17",
-  "previousVersionSha256": "e0b878eb7a71c6f87353989a144d312331b61d41035d6f5e101a3a7eea65ec70",
+  "previousVersionSha256": "484ff2bee1278eef8d74f46b931564ab7cbcf4f117518da6ea3664627001e5fb",
   "events": [
     {
       "id": "2026-07-12/openpgp-key-rotation",
@@ -82,19 +82,6 @@
         "https://yusuke-hayashi.com/.well-known/attestations/policy.json",
         "https://yusuke-hayashi.com/.well-known/schemas/third-party-attestation-v1.schema.json",
         "https://yusuke-hayashi.com/.well-known/verify-identity.mjs"
-      ]
-    },
-    {
-      "id": "2026-07-17/verifier-release-3",
-      "effectiveAt": "2026-07-17",
-      "type": "proof-published",
-      "summary": "Verifier release 3 separated HTTP transport and error responsibilities without changing trust rules; operator checks added independent monitoring and exact OpenTimestamps proof binding.",
-      "identifiers": {
-        "releaseRevision": "3"
-      },
-      "evidence": [
-        "https://yusuke-hayashi.com/.well-known/verify-identity.mjs",
-        "https://yusuke-hayashi.com/identity"
       ]
     }
   ]
