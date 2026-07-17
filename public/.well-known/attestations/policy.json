@@ -5,7 +5,8 @@
   "acceptedClaimTypes": [
     "identity-witness",
     "professional-relationship",
-    "key-transition-witness"
+    "key-transition-witness",
+    "humanity-witness"
   ],
   "acceptedProofTypes": [
     "openpgp-clearsign",
@@ -16,6 +17,9 @@
     "issuer.identifier must equal the EIP-191 address or the openpgp4fpr URI derived from the proof signer.",
     "The statement must be specific, time-bounded where appropriate, and publishable with the issuer's consent.",
     "Active records must not be expired; revoked records must retain a public timestamp and reason.",
+    "A humanity-witness must describe an in-person observation and include a fresh subject EIP-191 challenge whose window contains observedAt.",
+    "The humanity subject challenge must bind the record id, canonical URL, OpenPGP fingerprint, published Ethereum address, nonce, and validity window.",
+    "A humanity-witness is local, time-bounded evidence and must not claim global uniqueness, civil identity, reputation, authorship, or control of assets.",
     "The attestation must not disclose private contact details, confidential work, wallet balances, or asset-storage addresses.",
     "Publication requires manual review; schema validity alone is not sufficient."
   ],

@@ -15,7 +15,8 @@
       "required": ["canonicalUrl", "openpgpFingerprint"],
       "properties": {
         "canonicalUrl": { "const": "https://yusuke-hayashi.com" },
-        "openpgpFingerprint": { "const": "B22B98ABB2D503307AB6A3160718EFA6506BB669" }
+        "openpgpFingerprint": { "const": "B22B98ABB2D503307AB6A3160718EFA6506BB669" },
+        "ethereumAddress": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" }
       }
     },
     "issuer": {
@@ -34,11 +35,34 @@
       "required": ["type", "statement", "issuedAt"],
       "properties": {
         "type": {
-          "enum": ["identity-witness", "professional-relationship", "key-transition-witness"]
+          "enum": ["identity-witness", "professional-relationship", "key-transition-witness", "humanity-witness"]
         },
         "statement": { "type": "string", "minLength": 20, "maxLength": 2000 },
+        "observedAt": { "type": "string", "format": "date-time" },
+        "verificationMethod": { "enum": ["in-person"] },
         "issuedAt": { "type": "string", "format": "date-time" },
         "expiresAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "subjectChallenge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nonce", "issuedAt", "expiresAt", "proof"],
+      "properties": {
+        "nonce": { "type": "string", "pattern": "^0x[a-f0-9]{64}$" },
+        "issuedAt": { "type": "string", "format": "date-time" },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "address", "message", "signature"],
+          "properties": {
+            "type": { "const": "eip191" },
+            "address": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+            "message": { "type": "string", "minLength": 20 },
+            "signature": { "type": "string", "pattern": "^0x[a-fA-F0-9]{130}$" }
+          }
+        }
       }
     },
     "proof": {
@@ -76,6 +100,25 @@
     "revocationReason": { "type": "string", "minLength": 1, "maxLength": 500 }
   },
   "allOf": [
+    {
+      "if": {
+        "properties": {
+          "claim": {
+            "properties": { "type": { "const": "humanity-witness" } },
+            "required": ["type"]
+          }
+        },
+        "required": ["claim"]
+      },
+      "then": {
+        "required": ["subjectChallenge"],
+        "properties": {
+          "subject": { "required": ["ethereumAddress"] },
+          "claim": { "required": ["observedAt", "verificationMethod", "expiresAt"] }
+        }
+      },
+      "else": { "not": { "required": ["subjectChallenge"] } }
+    },
     {
       "if": {
         "properties": { "status": { "const": "revoked" } },

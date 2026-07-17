@@ -2,8 +2,8 @@
   "$schema": "https://yusuke-hayashi.com/.well-known/schemas/identity-history-v1.schema.json",
   "schemaVersion": 1,
   "subject": "https://yusuke-hayashi.com",
-  "updatedAt": "2026-07-17",
-  "previousVersionSha256": "484ff2bee1278eef8d74f46b931564ab7cbcf4f117518da6ea3664627001e5fb",
+  "updatedAt": "2026-07-14",
+  "previousVersionSha256": "527de654b5e10740b5a98a16f2cf2edaf808296fc8cac5c3cbc1dc68cbe46774",
   "events": [
     {
       "id": "2026-07-12/openpgp-key-rotation",
@@ -66,21 +66,6 @@
         "releaseRevision": "1"
       },
       "evidence": [
-        "https://yusuke-hayashi.com/.well-known/verify-identity.mjs"
-      ]
-    },
-    {
-      "id": "2026-07-17/humanity-witness-framework",
-      "effectiveAt": "2026-07-17",
-      "type": "proof-published",
-      "summary": "Verifier release 2 added a time-bounded in-person humanity-witness claim with fresh subject challenge and independent issuer signature verification; no witness record was issued by this framework release.",
-      "identifiers": {
-        "releaseRevision": "2",
-        "humanityWitnessRecords": "0"
-      },
-      "evidence": [
-        "https://yusuke-hayashi.com/.well-known/attestations/policy.json",
-        "https://yusuke-hayashi.com/.well-known/schemas/third-party-attestation-v1.schema.json",
         "https://yusuke-hayashi.com/.well-known/verify-identity.mjs"
       ]
     }
