@@ -88,14 +88,24 @@ curl -sO https://yusuke-hayashi.com/proofs/statement.txt.asc
 gpg --verify statement.txt.asc
 cast wallet verify --address ${ETH_ADDRESS} "<message>" "<signature>"`;
 
+const VERIFY_BOOTSTRAP = `# Obtain this fingerprint out of band, then compare it locally
+EXPECTED_FINGERPRINT=B22B98ABB2D503307AB6A3160718EFA6506BB669
+gpg --locate-keys yusuke@haya.company
+ACTUAL_FINGERPRINT="$(gpg --with-colons --fingerprint yusuke@haya.company \\
+  | awk -F: '$1 == "fpr" { print $10; exit }')"
+test "$ACTUAL_FINGERPRINT" = "$EXPECTED_FINGERPRINT"`;
+
 const VERIFY_MACHINE = `# Verify the machine-readable identity root via WKD
 gpg --locate-keys yusuke@haya.company
 curl -sO https://yusuke-hayashi.com/.well-known/identity.json
 curl -sO https://yusuke-hayashi.com/.well-known/identity.json.asc
 gpg --verify identity.json.asc identity.json
 
-# Run all public checks (Node.js 22+; inspect the file before executing)
+# Verify the downloaded CLI hash before executing it (Node.js 22+)
 curl -sO https://yusuke-hayashi.com/.well-known/verify-identity.mjs
+EXPECTED_SHA256="$(node -p 'JSON.parse(require("fs").readFileSync("identity.json")).verifier.sha256')"
+ACTUAL_SHA256="$(shasum -a 256 verify-identity.mjs | awk '{ print $1 }')"
+test "$ACTUAL_SHA256" = "$EXPECTED_SHA256"
 node verify-identity.mjs`;
 ---
 
@@ -166,7 +176,18 @@ node verify-identity.mjs`;
       <h2 class="heading">Verify it yourself</h2>
 
       <p class="bodyText">
-        Two minutes, no trust required. Details live on{" "}
+        Start from an OpenPGP fingerprint obtained through a channel you already
+        trust. No site can establish trust in itself merely by serving its own
+        key and verifier. Compare the fingerprint through an in-person exchange,
+        a previously signed document, or multiple separately controlled routes
+        such as WKD, DNS, and the signed GitHub history.
+      </p>
+
+      <CodeBlock code={VERIFY_BOOTSTRAP} />
+
+      <p class="bodyText">
+        Once that root is pinned, the remaining checks take about two minutes.
+        Details live on{" "}
         <a href="/keys">/keys</a> and <a href="/proofs">/proofs</a>; the{" "}
         <a href="/siwe">SIWE demo</a> shows the same Ethereum signature scheme working
         live in your browser.
