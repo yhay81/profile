@@ -133,6 +133,36 @@ node verify-identity.mjs`;
         }
       </div>
 
+      <h2 class="heading">Humanity status</h2>
+
+      <aside
+        class="humanityStatus reveal"
+        aria-labelledby="humanity-status-title"
+      >
+        <div class="statusHeading">
+          <h3 id="humanity-status-title">Awaiting an independent witness</h3>
+          <span class="statusBadge">0 active records</span>
+        </div>
+        <p>
+          The verification framework is live, but no one has issued a humanity
+          attestation for me yet. It requires an in-person observation, a fresh
+          challenge signed by this identity address, and a separate signature
+          from the witness. It proves that limited event—not global uniqueness,
+          legal identity, reputation, or human authorship.
+        </p>
+        <p>
+          I have also not published a Human Passport score on any of its seven
+          supported chains as checked on 2026-07-17, so I do not present it here
+          as public evidence.
+        </p>
+        <div class="statusLinks">
+          <a href="/.well-known/attestations/index.json">public registry ↗</a>
+          <a href="/.well-known/attestations/policy.json"
+            >verification policy ↗</a
+          >
+        </div>
+      </aside>
+
       <h2 class="heading">Verify it yourself</h2>
 
       <p class="bodyText">
@@ -215,6 +245,65 @@ node verify-identity.mjs`;
     &:hover,
     &:focus-visible {
       color: var(--color-accent);
+    }
+  }
+
+  .humanityStatus {
+    display: grid;
+    gap: 12px;
+    padding: 20px;
+    background: color-mix(in oklab, var(--surface-raised) 92%, transparent);
+    border: 1px solid var(--border-subtle);
+    border-left: 3px solid var(--color-accent);
+    border-radius: var(--radius-md);
+
+    p {
+      margin: 0;
+      font-size: var(--text-sm);
+      line-height: 1.7;
+      color: var(--color-text);
+    }
+  }
+
+  .statusHeading {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    align-items: center;
+    justify-content: space-between;
+
+    h3 {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      color: var(--color-text-strong);
+      letter-spacing: 0.03em;
+    }
+  }
+
+  .statusBadge {
+    padding: 4px 8px;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-accent);
+    border: 1px solid color-mix(in oklab, var(--color-accent) 45%, transparent);
+    border-radius: 999px;
+  }
+
+  .statusLinks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+
+    a {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-text-strong);
+
+      &:hover,
+      &:focus-visible {
+        color: var(--color-accent);
+      }
     }
   }
 </style>

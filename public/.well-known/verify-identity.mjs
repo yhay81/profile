@@ -35916,7 +35916,7 @@ var expected_identity_default = {
   baseUrl: "https://yusuke-hayashi.com",
   subject: "https://yusuke-hayashi.com",
   displayName: "Yusuke Hayashi",
-  releaseRevision: 1,
+  releaseRevision: 2,
   domains: [
     "yusuke-hayashi.com",
     "haya.company",
@@ -36198,7 +36198,8 @@ var third_party_attestation_v1_schema_default = {
       required: ["canonicalUrl", "openpgpFingerprint"],
       properties: {
         canonicalUrl: { const: "https://yusuke-hayashi.com" },
-        openpgpFingerprint: { const: "B22B98ABB2D503307AB6A3160718EFA6506BB669" }
+        openpgpFingerprint: { const: "B22B98ABB2D503307AB6A3160718EFA6506BB669" },
+        ethereumAddress: { type: "string", pattern: "^0x[a-fA-F0-9]{40}$" }
       }
     },
     issuer: {
@@ -36217,11 +36218,34 @@ var third_party_attestation_v1_schema_default = {
       required: ["type", "statement", "issuedAt"],
       properties: {
         type: {
-          enum: ["identity-witness", "professional-relationship", "key-transition-witness"]
+          enum: ["identity-witness", "professional-relationship", "key-transition-witness", "humanity-witness"]
         },
         statement: { type: "string", minLength: 20, maxLength: 2e3 },
+        observedAt: { type: "string", format: "date-time" },
+        verificationMethod: { enum: ["in-person"] },
         issuedAt: { type: "string", format: "date-time" },
         expiresAt: { type: "string", format: "date-time" }
+      }
+    },
+    subjectChallenge: {
+      type: "object",
+      additionalProperties: false,
+      required: ["nonce", "issuedAt", "expiresAt", "proof"],
+      properties: {
+        nonce: { type: "string", pattern: "^0x[a-f0-9]{64}$" },
+        issuedAt: { type: "string", format: "date-time" },
+        expiresAt: { type: "string", format: "date-time" },
+        proof: {
+          type: "object",
+          additionalProperties: false,
+          required: ["type", "address", "message", "signature"],
+          properties: {
+            type: { const: "eip191" },
+            address: { type: "string", pattern: "^0x[a-fA-F0-9]{40}$" },
+            message: { type: "string", minLength: 20 },
+            signature: { type: "string", pattern: "^0x[a-fA-F0-9]{130}$" }
+          }
+        }
       }
     },
     proof: {
@@ -36261,6 +36285,25 @@ var third_party_attestation_v1_schema_default = {
   allOf: [
     {
       if: {
+        properties: {
+          claim: {
+            properties: { type: { const: "humanity-witness" } },
+            required: ["type"]
+          }
+        },
+        required: ["claim"]
+      },
+      then: {
+        required: ["subjectChallenge"],
+        properties: {
+          subject: { required: ["ethereumAddress"] },
+          claim: { required: ["observedAt", "verificationMethod", "expiresAt"] }
+        }
+      },
+      else: { not: { required: ["subjectChallenge"] } }
+    },
+    {
+      if: {
         properties: { status: { const: "revoked" } },
         required: ["status"]
       },
@@ -36296,6 +36339,7 @@ var MAX_HISTORY_DEPTH = 50;
 var MAX_REDIRECTS = 5;
 var REDIRECT_STATUSES = /* @__PURE__ */ new Set([301, 302, 303, 307, 308]);
 var ATTESTATION_SIGNING_CONTEXT = "https://yusuke-hayashi.com/.well-known/attestations/signing-payload/v1";
+var HUMANITY_CHALLENGE_CONTEXT = "https://yusuke-hayashi.com/.well-known/attestations/humanity-challenge/v1";
 var ajv = new import_ajv.default({ allErrors: true, allowUnionTypes: true, strict: false });
 (0, import_ajv_formats.default)(ajv);
 var validators = {
@@ -36363,20 +36407,56 @@ function attestationSigningPayload(record) {
     statement: record.claim.statement,
     issuedAt: record.claim.issuedAt
   };
+  if (record.claim.observedAt !== void 0) claim.observedAt = record.claim.observedAt;
+  if (record.claim.verificationMethod !== void 0) claim.verificationMethod = record.claim.verificationMethod;
   if (record.claim.expiresAt !== void 0) claim.expiresAt = record.claim.expiresAt;
+  const subject = {
+    canonicalUrl: record.subject.canonicalUrl,
+    openpgpFingerprint: record.subject.openpgpFingerprint
+  };
+  if (record.subject.ethereumAddress !== void 0) subject.ethereumAddress = record.subject.ethereumAddress;
   const payload = {
     context: ATTESTATION_SIGNING_CONTEXT,
     schemaVersion: record.schemaVersion,
     id: record.id,
-    subject: {
-      canonicalUrl: record.subject.canonicalUrl,
-      openpgpFingerprint: record.subject.openpgpFingerprint
-    },
+    subject,
     issuer,
     claim,
     proofType: record.proof.type
   };
+  if (record.subjectChallenge !== void 0) {
+    payload.subjectChallenge = {
+      nonce: record.subjectChallenge.nonce,
+      issuedAt: record.subjectChallenge.issuedAt,
+      expiresAt: record.subjectChallenge.expiresAt,
+      proof: {
+        type: record.subjectChallenge.proof.type,
+        address: record.subjectChallenge.proof.address,
+        message: record.subjectChallenge.proof.message,
+        signature: record.subjectChallenge.proof.signature
+      }
+    };
+  }
   if (record.evidence !== void 0) payload.evidence = record.evidence;
+  return `${JSON.stringify(payload, null, 2)}
+`;
+}
+function humanityChallengeSigningPayload(record) {
+  const payload = {
+    context: HUMANITY_CHALLENGE_CONTEXT,
+    id: record.id,
+    purpose: "Prove current control of the published identity address during an attended humanity check. This signature alone is not proof of humanity or global uniqueness.",
+    subject: {
+      canonicalUrl: record.subject.canonicalUrl,
+      openpgpFingerprint: record.subject.openpgpFingerprint,
+      ethereumAddress: record.subject.ethereumAddress
+    },
+    challenge: {
+      nonce: record.subjectChallenge.nonce,
+      issuedAt: record.subjectChallenge.issuedAt,
+      expiresAt: record.subjectChallenge.expiresAt
+    }
+  };
   return `${JSON.stringify(payload, null, 2)}
 `;
 }
@@ -36689,7 +36769,7 @@ function validateSecurityTxtContents(cleartext, expectedBaseUrl, now = /* @__PUR
   if (freshnessWarning) throw freshnessWarning;
   return expires;
 }
-function assertAttestationLifecycle(record, now) {
+function assertAttestationLifecycle(record, now, expectedEthereumAddress) {
   const issuedAt = Date.parse(record.claim.issuedAt);
   invariant(Number.isFinite(issuedAt), `attestation issuedAt is invalid: ${record.id}`);
   invariant(
@@ -36700,6 +36780,40 @@ function assertAttestationLifecycle(record, now) {
   if (expiresAt !== void 0) {
     invariant(Number.isFinite(expiresAt), `attestation expiresAt is invalid: ${record.id}`);
     invariant(expiresAt > issuedAt, `attestation expiresAt must be after issuedAt: ${record.id}`);
+  }
+  if (record.claim.type === "humanity-witness") {
+    const observedAt = Date.parse(record.claim.observedAt);
+    const challengeIssuedAt = Date.parse(record.subjectChallenge.issuedAt);
+    const challengeExpiresAt = Date.parse(record.subjectChallenge.expiresAt);
+    invariant(Number.isFinite(observedAt), `humanity observation time is invalid: ${record.id}`);
+    invariant(Number.isFinite(challengeIssuedAt), `humanity challenge issuedAt is invalid: ${record.id}`);
+    invariant(Number.isFinite(challengeExpiresAt), `humanity challenge expiresAt is invalid: ${record.id}`);
+    invariant(
+      challengeExpiresAt > challengeIssuedAt,
+      `humanity challenge expiresAt must be after its issuedAt: ${record.id}`
+    );
+    invariant(
+      observedAt >= challengeIssuedAt && observedAt <= challengeExpiresAt,
+      `humanity observation must occur within the challenge window: ${record.id}`
+    );
+    invariant(issuedAt >= observedAt, `humanity attestation predates its observation: ${record.id}`);
+    invariant(
+      record.subjectChallenge.proof.message === humanityChallengeSigningPayload(record),
+      `humanity challenge signing payload mismatch: ${record.id}`
+    );
+    let subjectAddress;
+    let challengeAddress;
+    try {
+      subjectAddress = getAddress(record.subject.ethereumAddress);
+      challengeAddress = getAddress(record.subjectChallenge.proof.address);
+    } catch (error) {
+      throw new IntegrityError(`humanity challenge address is invalid: ${record.id}`, { cause: error });
+    }
+    invariant(
+      subjectAddress === getAddress(expectedEthereumAddress),
+      `humanity witness Ethereum subject changed: ${record.id}`
+    );
+    invariant(subjectAddress === challengeAddress, `humanity challenge signer does not match subject: ${record.id}`);
   }
   if (record.status === "active") {
     invariant(!record.revokedAt && !record.revocationReason, `active attestation has revocation metadata: ${record.id}`);
@@ -36723,9 +36837,23 @@ function assertAttestationLifecycle(record, now) {
 async function verifyThirdPartyAttestationRecord(record, {
   loadText,
   now = /* @__PURE__ */ new Date(),
-  onWarning
+  onWarning,
+  expectedEthereumAddress = expected_identity_default.ethereum.address
 } = {}) {
-  const { freshnessWarning, signingPayload } = validateThirdPartyAttestationMetadata(record, { now });
+  const { freshnessWarning, signingPayload } = validateThirdPartyAttestationMetadata(record, {
+    now,
+    expectedEthereumAddress
+  });
+  if (record.claim.type === "humanity-witness") {
+    await verifyEthAttestation(
+      {
+        address: record.subjectChallenge.proof.address,
+        message: record.subjectChallenge.proof.message,
+        signature: record.subjectChallenge.proof.signature
+      },
+      record.subject.ethereumAddress
+    );
+  }
   if (record.proof.type === "eip191") {
     let issuerAddress;
     try {
@@ -36766,9 +36894,12 @@ async function verifyThirdPartyAttestationRecord(record, {
   }
   return record.proof.type;
 }
-function validateThirdPartyAttestationMetadata(record, { now = /* @__PURE__ */ new Date() } = {}) {
+function validateThirdPartyAttestationMetadata(record, {
+  now = /* @__PURE__ */ new Date(),
+  expectedEthereumAddress = expected_identity_default.ethereum.address
+} = {}) {
   validateWithSchema("thirdPartyAttestation", record);
-  const freshnessWarning = assertAttestationLifecycle(record, now);
+  const freshnessWarning = assertAttestationLifecycle(record, now, expectedEthereumAddress);
   const signingPayload = attestationSigningPayload(record);
   if (record.proof.type === "eip191") {
     invariant(record.proof.message === signingPayload, `attestation signing payload mismatch: ${record.id}`);
@@ -36801,7 +36932,8 @@ async function verifyThirdPartyRegistry({ http, manifest, expected, now }) {
     await verifyThirdPartyAttestationRecord(record, {
       loadText: http.text,
       now,
-      onWarning: (warning) => freshnessWarnings.push(warning)
+      onWarning: (warning) => freshnessWarnings.push(warning),
+      expectedEthereumAddress: expected.ethereum.address
     });
   }
   if (freshnessWarnings.length > 0) {
