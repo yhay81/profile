@@ -1070,10 +1070,10 @@ var require_util = __commonJS({
     var codegen_1 = require_codegen();
     var code_1 = require_code();
     function toHash(arr) {
-      const hash = {};
+      const hash2 = {};
       for (const item of arr)
-        hash[item] = true;
-      return hash;
+        hash2[item] = true;
+      return hash2;
     }
     exports.toHash = toHash;
     function alwaysValidSchema(it, schema) {
@@ -6898,6 +6898,117 @@ var require_dist = __commonJS({
   }
 });
 
+// node_modules/abitype/dist/esm/regex.js
+function execTyped(regex, string) {
+  const match = regex.exec(string);
+  return match?.groups;
+}
+var init_regex = __esm({
+  "node_modules/abitype/dist/esm/regex.js"() {
+  }
+});
+
+// node_modules/abitype/dist/esm/human-readable/formatAbiParameter.js
+function formatAbiParameter(abiParameter) {
+  let type = abiParameter.type;
+  if (tupleRegex.test(abiParameter.type) && "components" in abiParameter) {
+    type = "(";
+    const length = abiParameter.components.length;
+    for (let i2 = 0; i2 < length; i2++) {
+      const component = abiParameter.components[i2];
+      type += formatAbiParameter(component);
+      if (i2 < length - 1)
+        type += ", ";
+    }
+    const result = execTyped(tupleRegex, abiParameter.type);
+    type += `)${result?.array || ""}`;
+    return formatAbiParameter({
+      ...abiParameter,
+      type
+    });
+  }
+  if ("indexed" in abiParameter && abiParameter.indexed)
+    type = `${type} indexed`;
+  if (abiParameter.name)
+    return `${type} ${abiParameter.name}`;
+  return type;
+}
+var tupleRegex;
+var init_formatAbiParameter = __esm({
+  "node_modules/abitype/dist/esm/human-readable/formatAbiParameter.js"() {
+    init_regex();
+    tupleRegex = /^tuple(?<array>(\[(\d*)\])*)$/;
+  }
+});
+
+// node_modules/abitype/dist/esm/human-readable/formatAbiParameters.js
+function formatAbiParameters(abiParameters) {
+  let params = "";
+  const length = abiParameters.length;
+  for (let i2 = 0; i2 < length; i2++) {
+    const abiParameter = abiParameters[i2];
+    params += formatAbiParameter(abiParameter);
+    if (i2 !== length - 1)
+      params += ", ";
+  }
+  return params;
+}
+var init_formatAbiParameters = __esm({
+  "node_modules/abitype/dist/esm/human-readable/formatAbiParameters.js"() {
+    init_formatAbiParameter();
+  }
+});
+
+// node_modules/abitype/dist/esm/human-readable/formatAbiItem.js
+function formatAbiItem(abiItem) {
+  if (abiItem.type === "function")
+    return `function ${abiItem.name}(${formatAbiParameters(abiItem.inputs)})${abiItem.stateMutability && abiItem.stateMutability !== "nonpayable" ? ` ${abiItem.stateMutability}` : ""}${abiItem.outputs?.length ? ` returns (${formatAbiParameters(abiItem.outputs)})` : ""}`;
+  if (abiItem.type === "event")
+    return `event ${abiItem.name}(${formatAbiParameters(abiItem.inputs)})`;
+  if (abiItem.type === "error")
+    return `error ${abiItem.name}(${formatAbiParameters(abiItem.inputs)})`;
+  if (abiItem.type === "constructor")
+    return `constructor(${formatAbiParameters(abiItem.inputs)})${abiItem.stateMutability === "payable" ? " payable" : ""}`;
+  if (abiItem.type === "fallback")
+    return `fallback() external${abiItem.stateMutability === "payable" ? " payable" : ""}`;
+  return "receive() external payable";
+}
+var init_formatAbiItem = __esm({
+  "node_modules/abitype/dist/esm/human-readable/formatAbiItem.js"() {
+    init_formatAbiParameters();
+  }
+});
+
+// node_modules/abitype/dist/esm/exports/index.js
+var init_exports = __esm({
+  "node_modules/abitype/dist/esm/exports/index.js"() {
+    init_formatAbiItem();
+  }
+});
+
+// node_modules/viem/_esm/utils/abi/formatAbiItem.js
+function formatAbiItem2(abiItem, { includeName = false } = {}) {
+  if (abiItem.type !== "function" && abiItem.type !== "event" && abiItem.type !== "error")
+    throw new InvalidDefinitionTypeError(abiItem.type);
+  return `${abiItem.name}(${formatAbiParams(abiItem.inputs, { includeName })})`;
+}
+function formatAbiParams(params, { includeName = false } = {}) {
+  if (!params)
+    return "";
+  return params.map((param) => formatAbiParam(param, { includeName })).join(includeName ? ", " : ",");
+}
+function formatAbiParam(param, { includeName }) {
+  if (param.type.startsWith("tuple")) {
+    return `(${formatAbiParams(param.components, { includeName })})${param.type.slice("tuple".length)}`;
+  }
+  return param.type + (includeName && param.name ? ` ${param.name}` : "");
+}
+var init_formatAbiItem2 = __esm({
+  "node_modules/viem/_esm/utils/abi/formatAbiItem.js"() {
+    init_abi();
+  }
+});
+
 // node_modules/viem/_esm/utils/data/isHex.js
 function isHex(value, { strict = true } = {}) {
   if (!value)
@@ -6944,7 +7055,7 @@ var init_base = __esm({
   "node_modules/viem/_esm/errors/base.js"() {
     init_version();
     errorConfig = {
-      getDocsUrl: ({ docsBaseUrl, docsPath = "", docsSlug }) => docsPath ? `${docsBaseUrl ?? "https://viem.sh"}${docsPath}${docsSlug ? `#${docsSlug}` : ""}` : void 0,
+      getDocsUrl: ({ docsBaseUrl, docsPath: docsPath3 = "", docsSlug }) => docsPath3 ? `${docsBaseUrl ?? "https://viem.sh"}${docsPath3}${docsSlug ? `#${docsSlug}` : ""}` : void 0,
       version: `viem@${version}`
     };
     BaseError = class _BaseError extends Error {
@@ -6956,12 +7067,12 @@ var init_base = __esm({
             return args.cause.message;
           return args.details;
         })();
-        const docsPath = (() => {
+        const docsPath3 = (() => {
           if (args.cause instanceof _BaseError)
             return args.cause.docsPath || args.docsPath;
           return args.docsPath;
         })();
-        const docsUrl = errorConfig.getDocsUrl?.({ ...args, docsPath });
+        const docsUrl = errorConfig.getDocsUrl?.({ ...args, docsPath: docsPath3 });
         const message = [
           shortMessage || "An error occurred.",
           "",
@@ -7008,7 +7119,7 @@ var init_base = __esm({
           value: "BaseError"
         });
         this.details = details;
-        this.docsPath = docsPath;
+        this.docsPath = docsPath3;
         this.metaMessages = args.metaMessages;
         this.name = args.name ?? this.name;
         this.shortMessage = shortMessage;
@@ -7021,11 +7132,157 @@ var init_base = __esm({
   }
 });
 
+// node_modules/viem/_esm/errors/abi.js
+var AbiDecodingDataSizeTooSmallError, AbiDecodingZeroDataError, AbiEncodingArrayLengthMismatchError, AbiEncodingBytesSizeMismatchError, AbiEncodingLengthMismatchError, AbiFunctionNotFoundError, AbiFunctionOutputsNotFoundError, AbiItemAmbiguityError, InvalidAbiEncodingTypeError, InvalidAbiDecodingTypeError, InvalidArrayError, InvalidDefinitionTypeError;
+var init_abi = __esm({
+  "node_modules/viem/_esm/errors/abi.js"() {
+    init_formatAbiItem2();
+    init_size();
+    init_base();
+    AbiDecodingDataSizeTooSmallError = class extends BaseError {
+      constructor({ data, params, size: size2 }) {
+        super([`Data size of ${size2} bytes is too small for given parameters.`].join("\n"), {
+          metaMessages: [
+            `Params: (${formatAbiParams(params, { includeName: true })})`,
+            `Data:   ${data} (${size2} bytes)`
+          ],
+          name: "AbiDecodingDataSizeTooSmallError"
+        });
+        Object.defineProperty(this, "data", {
+          enumerable: true,
+          configurable: true,
+          writable: true,
+          value: void 0
+        });
+        Object.defineProperty(this, "params", {
+          enumerable: true,
+          configurable: true,
+          writable: true,
+          value: void 0
+        });
+        Object.defineProperty(this, "size", {
+          enumerable: true,
+          configurable: true,
+          writable: true,
+          value: void 0
+        });
+        this.data = data;
+        this.params = params;
+        this.size = size2;
+      }
+    };
+    AbiDecodingZeroDataError = class extends BaseError {
+      constructor({ cause } = {}) {
+        super('Cannot decode zero data ("0x") with ABI parameters.', {
+          name: "AbiDecodingZeroDataError",
+          cause
+        });
+      }
+    };
+    AbiEncodingArrayLengthMismatchError = class extends BaseError {
+      constructor({ expectedLength, givenLength, type }) {
+        super([
+          `ABI encoding array length mismatch for type ${type}.`,
+          `Expected length: ${expectedLength}`,
+          `Given length: ${givenLength}`
+        ].join("\n"), { name: "AbiEncodingArrayLengthMismatchError" });
+      }
+    };
+    AbiEncodingBytesSizeMismatchError = class extends BaseError {
+      constructor({ expectedSize, value }) {
+        super(`Size of bytes "${value}" (bytes${size(value)}) does not match expected size (bytes${expectedSize}).`, { name: "AbiEncodingBytesSizeMismatchError" });
+      }
+    };
+    AbiEncodingLengthMismatchError = class extends BaseError {
+      constructor({ expectedLength, givenLength }) {
+        super([
+          "ABI encoding params/values length mismatch.",
+          `Expected length (params): ${expectedLength}`,
+          `Given length (values): ${givenLength}`
+        ].join("\n"), { name: "AbiEncodingLengthMismatchError" });
+      }
+    };
+    AbiFunctionNotFoundError = class extends BaseError {
+      constructor(functionName, { docsPath: docsPath3 } = {}) {
+        super([
+          `Function ${functionName ? `"${functionName}" ` : ""}not found on ABI.`,
+          "Make sure you are using the correct ABI and that the function exists on it."
+        ].join("\n"), {
+          docsPath: docsPath3,
+          name: "AbiFunctionNotFoundError"
+        });
+      }
+    };
+    AbiFunctionOutputsNotFoundError = class extends BaseError {
+      constructor(functionName, { docsPath: docsPath3 }) {
+        super([
+          `Function "${functionName}" does not contain any \`outputs\` on ABI.`,
+          "Cannot decode function result without knowing what the parameter types are.",
+          "Make sure you are using the correct ABI and that the function exists on it."
+        ].join("\n"), {
+          docsPath: docsPath3,
+          name: "AbiFunctionOutputsNotFoundError"
+        });
+      }
+    };
+    AbiItemAmbiguityError = class extends BaseError {
+      constructor(x2, y) {
+        super("Found ambiguous types in overloaded ABI items.", {
+          metaMessages: [
+            `\`${x2.type}\` in \`${formatAbiItem2(x2.abiItem)}\`, and`,
+            `\`${y.type}\` in \`${formatAbiItem2(y.abiItem)}\``,
+            "",
+            "These types encode differently and cannot be distinguished at runtime.",
+            "Remove one of the ambiguous items in the ABI."
+          ],
+          name: "AbiItemAmbiguityError"
+        });
+      }
+    };
+    InvalidAbiEncodingTypeError = class extends BaseError {
+      constructor(type, { docsPath: docsPath3 }) {
+        super([
+          `Type "${type}" is not a valid encoding type.`,
+          "Please provide a valid ABI type."
+        ].join("\n"), { docsPath: docsPath3, name: "InvalidAbiEncodingType" });
+      }
+    };
+    InvalidAbiDecodingTypeError = class extends BaseError {
+      constructor(type, { docsPath: docsPath3 }) {
+        super([
+          `Type "${type}" is not a valid decoding type.`,
+          "Please provide a valid ABI type."
+        ].join("\n"), { docsPath: docsPath3, name: "InvalidAbiDecodingType" });
+      }
+    };
+    InvalidArrayError = class extends BaseError {
+      constructor(value) {
+        super([`Value "${value}" is not a valid array.`].join("\n"), {
+          name: "InvalidArrayError"
+        });
+      }
+    };
+    InvalidDefinitionTypeError = class extends BaseError {
+      constructor(type) {
+        super([
+          `"${type}" is not a valid definition type.`,
+          'Valid types: "function", "event", "error"'
+        ].join("\n"), { name: "InvalidDefinitionTypeError" });
+      }
+    };
+  }
+});
+
 // node_modules/viem/_esm/errors/data.js
-var SizeExceedsPaddingSizeError;
+var SliceOffsetOutOfBoundsError, SizeExceedsPaddingSizeError;
 var init_data = __esm({
   "node_modules/viem/_esm/errors/data.js"() {
     init_base();
+    SliceOffsetOutOfBoundsError = class extends BaseError {
+      constructor({ offset, position, size: size2 }) {
+        super(`Slice ${position === "start" ? "starting" : "ending"} at offset "${offset}" is out-of-bounds (size: ${size2}).`, { name: "SliceOffsetOutOfBoundsError" });
+      }
+    };
     SizeExceedsPaddingSizeError = class extends BaseError {
       constructor({ size: size2, targetSize, type }) {
         super(`${type.charAt(0).toUpperCase()}${type.slice(1).toLowerCase()} size (${size2}) exceeds padding size (${targetSize}).`, { name: "SizeExceedsPaddingSizeError" });
@@ -7075,7 +7332,7 @@ var init_pad = __esm({
 });
 
 // node_modules/viem/_esm/errors/encoding.js
-var IntegerOutOfRangeError, SizeOverflowError;
+var IntegerOutOfRangeError, InvalidBytesBooleanError, SizeOverflowError;
 var init_encoding = __esm({
   "node_modules/viem/_esm/errors/encoding.js"() {
     init_base();
@@ -7084,11 +7341,41 @@ var init_encoding = __esm({
         super(`Number "${value}" is not in safe ${size2 ? `${size2 * 8}-bit ${signed ? "signed" : "unsigned"} ` : ""}integer range ${max2 ? `(${min} to ${max2})` : `(above ${min})`}`, { name: "IntegerOutOfRangeError" });
       }
     };
+    InvalidBytesBooleanError = class extends BaseError {
+      constructor(bytes) {
+        super(`Bytes value "${bytes}" is not a valid boolean. The bytes array must contain a single byte of either a 0 or 1 value.`, {
+          name: "InvalidBytesBooleanError"
+        });
+      }
+    };
     SizeOverflowError = class extends BaseError {
       constructor({ givenSize, maxSize }) {
         super(`Size cannot exceed ${maxSize} bytes. Given size: ${givenSize} bytes.`, { name: "SizeOverflowError" });
       }
     };
+  }
+});
+
+// node_modules/viem/_esm/utils/data/trim.js
+function trim(hexOrBytes, { dir = "left" } = {}) {
+  let data = typeof hexOrBytes === "string" ? hexOrBytes.replace("0x", "") : hexOrBytes;
+  let sliceLength = 0;
+  for (let i2 = 0; i2 < data.length - 1; i2++) {
+    if (data[dir === "left" ? i2 : data.length - i2 - 1].toString() === "0")
+      sliceLength++;
+    else
+      break;
+  }
+  data = dir === "left" ? data.slice(sliceLength) : data.slice(0, data.length - sliceLength);
+  if (typeof hexOrBytes === "string") {
+    if (data.length === 1 && dir === "right")
+      data = `${data}0`;
+    return `0x${data.length % 2 === 1 ? `0${data}` : data}`;
+  }
+  return data;
+}
+var init_trim = __esm({
+  "node_modules/viem/_esm/utils/data/trim.js"() {
   }
 });
 
@@ -7640,6 +7927,105 @@ var init_keccak256 = __esm({
   }
 });
 
+// node_modules/viem/_esm/utils/hash/hashSignature.js
+function hashSignature(sig) {
+  return hash(sig);
+}
+var hash;
+var init_hashSignature = __esm({
+  "node_modules/viem/_esm/utils/hash/hashSignature.js"() {
+    init_toBytes();
+    init_keccak256();
+    hash = (value) => keccak256(toBytes2(value));
+  }
+});
+
+// node_modules/viem/_esm/utils/hash/normalizeSignature.js
+function normalizeSignature(signature) {
+  let active = true;
+  let current = "";
+  let level = 0;
+  let result = "";
+  let valid = false;
+  for (let i2 = 0; i2 < signature.length; i2++) {
+    const char = signature[i2];
+    if (["(", ")", ","].includes(char))
+      active = true;
+    if (char === "(")
+      level++;
+    if (char === ")")
+      level--;
+    if (!active)
+      continue;
+    if (level === 0) {
+      if (char === " " && ["event", "function", ""].includes(result))
+        result = "";
+      else {
+        result += char;
+        if (char === ")") {
+          valid = true;
+          break;
+        }
+      }
+      continue;
+    }
+    if (char === " ") {
+      if (signature[i2 - 1] !== "," && current !== "," && current !== ",(") {
+        current = "";
+        active = false;
+      }
+      continue;
+    }
+    result += char;
+    current += char;
+  }
+  if (!valid)
+    throw new BaseError("Unable to normalize signature.");
+  return result;
+}
+var init_normalizeSignature = __esm({
+  "node_modules/viem/_esm/utils/hash/normalizeSignature.js"() {
+    init_base();
+  }
+});
+
+// node_modules/viem/_esm/utils/hash/toSignature.js
+var toSignature;
+var init_toSignature = __esm({
+  "node_modules/viem/_esm/utils/hash/toSignature.js"() {
+    init_exports();
+    init_normalizeSignature();
+    toSignature = (def) => {
+      const def_ = (() => {
+        if (typeof def === "string")
+          return def;
+        return formatAbiItem(def);
+      })();
+      return normalizeSignature(def_);
+    };
+  }
+});
+
+// node_modules/viem/_esm/utils/hash/toSignatureHash.js
+function toSignatureHash(fn) {
+  return hashSignature(toSignature(fn));
+}
+var init_toSignatureHash = __esm({
+  "node_modules/viem/_esm/utils/hash/toSignatureHash.js"() {
+    init_hashSignature();
+    init_toSignature();
+  }
+});
+
+// node_modules/viem/_esm/utils/hash/toEventSelector.js
+var toEventSelector;
+var init_toEventSelector = __esm({
+  "node_modules/viem/_esm/utils/hash/toEventSelector.js"() {
+    init_toSignatureHash();
+    toEventSelector = toSignatureHash;
+  }
+});
+
 // node_modules/viem/_esm/errors/address.js
 var InvalidAddressError;
 var init_address = __esm({
@@ -7702,13 +8088,13 @@ function checksumAddress(address_, chainId) {
   if (checksumAddressCache.has(`${address_}.${chainId}`))
     return checksumAddressCache.get(`${address_}.${chainId}`);
   const hexAddress = chainId ? `${chainId}${address_.toLowerCase()}` : address_.substring(2).toLowerCase();
-  const hash = keccak256(stringToBytes(hexAddress), "bytes");
+  const hash2 = keccak256(stringToBytes(hexAddress), "bytes");
   const address = (chainId ? hexAddress.substring(`${chainId}0x`.length) : hexAddress).split("");
   for (let i2 = 0; i2 < 40; i2 += 2) {
-    if (hash[i2 >> 1] >> 4 >= 8 && address[i2]) {
+    if (hash2[i2 >> 1] >> 4 >= 8 && address[i2]) {
       address[i2] = address[i2].toUpperCase();
     }
-    if ((hash[i2 >> 1] & 15) >= 8 && address[i2 + 1]) {
+    if ((hash2[i2 >> 1] & 15) >= 8 && address[i2 + 1]) {
       address[i2 + 1] = address[i2 + 1].toUpperCase();
     }
   }
@@ -7785,6 +8171,942 @@ function concatHex(values) {
 }
 var init_concat = __esm({
   "node_modules/viem/_esm/utils/data/concat.js"() {
+  }
+});
+
+// node_modules/viem/_esm/utils/data/slice.js
+function slice2(value, start, end, { strict } = {}) {
+  if (isHex(value, { strict: false }))
+    return sliceHex(value, start, end, {
+      strict
+    });
+  return sliceBytes(value, start, end, {
+    strict
+  });
+}
+function assertStartOffset(value, start) {
+  if (typeof start === "number" && start > 0 && start > size(value) - 1)
+    throw new SliceOffsetOutOfBoundsError({
+      offset: start,
+      position: "start",
+      size: size(value)
+    });
+}
+function assertEndOffset(value, start, end) {
+  if (typeof start === "number" && typeof end === "number" && size(value) !== end - start) {
+    throw new SliceOffsetOutOfBoundsError({
+      offset: end,
+      position: "end",
+      size: size(value)
+    });
+  }
+}
+function sliceBytes(value_, start, end, { strict } = {}) {
+  assertStartOffset(value_, start);
+  const value = value_.slice(start, end);
+  if (strict)
+    assertEndOffset(value, start, end);
+  return value;
+}
+function sliceHex(value_, start, end, { strict } = {}) {
+  assertStartOffset(value_, start);
+  const value = `0x${value_.replace("0x", "").slice((start ?? 0) * 2, (end ?? value_.length) * 2)}`;
+  if (strict)
+    assertEndOffset(value, start, end);
+  return value;
+}
+var init_slice = __esm({
+  "node_modules/viem/_esm/utils/data/slice.js"() {
+    init_data();
+    init_isHex();
+    init_size();
+  }
+});
+
+// node_modules/viem/_esm/utils/regex.js
+var integerRegex;
+var init_regex2 = __esm({
+  "node_modules/viem/_esm/utils/regex.js"() {
+    integerRegex = /^(u?int)(8|16|24|32|40|48|56|64|72|80|88|96|104|112|120|128|136|144|152|160|168|176|184|192|200|208|216|224|232|240|248|256)?$/;
+  }
+});
+
+// node_modules/viem/_esm/utils/abi/encodeAbiParameters.js
+function encodeAbiParameters(params, values) {
+  if (params.length !== values.length)
+    throw new AbiEncodingLengthMismatchError({
+      expectedLength: params.length,
+      givenLength: values.length
+    });
+  const preparedParams = prepareParams({
+    params,
+    values
+  });
+  return encodeParams(preparedParams);
+}
+function prepareParams({ params, values }) {
+  const preparedParams = [];
+  for (let i2 = 0; i2 < params.length; i2++) {
+    preparedParams.push(prepareParam({ param: params[i2], value: values[i2] }));
+  }
+  return preparedParams;
+}
+function prepareParam({ param, value }) {
+  const arrayComponents = getArrayComponents(param.type);
+  if (arrayComponents) {
+    const [length, type] = arrayComponents;
+    return encodeArray(value, { length, param: { ...param, type } });
+  }
+  if (param.type === "tuple") {
+    return encodeTuple(value, {
+      param
+    });
+  }
+  if (param.type === "address") {
+    return encodeAddress(value);
+  }
+  if (param.type === "bool") {
+    return encodeBool(value);
+  }
+  if (param.type.startsWith("uint") || param.type.startsWith("int")) {
+    const signed = param.type.startsWith("int");
+    const [, , size2 = "256"] = integerRegex.exec(param.type) ?? [];
+    return encodeNumber(value, {
+      signed,
+      size: Number(size2)
+    });
+  }
+  if (param.type.startsWith("bytes")) {
+    return encodeBytes(value, { param });
+  }
+  if (param.type === "string") {
+    return encodeString(value);
+  }
+  throw new InvalidAbiEncodingTypeError(param.type, {
+    docsPath: "/docs/contract/encodeAbiParameters"
+  });
+}
+function encodeParams(preparedParams) {
+  let staticSize = 0;
+  for (let i2 = 0; i2 < preparedParams.length; i2++) {
+    const { dynamic, encoded } = preparedParams[i2];
+    if (dynamic)
+      staticSize += 32;
+    else
+      staticSize += size(encoded);
+  }
+  const staticParams = [];
+  const dynamicParams = [];
+  let dynamicSize = 0;
+  for (let i2 = 0; i2 < preparedParams.length; i2++) {
+    const { dynamic, encoded } = preparedParams[i2];
+    if (dynamic) {
+      staticParams.push(numberToHex(staticSize + dynamicSize, { size: 32 }));
+      dynamicParams.push(encoded);
+      dynamicSize += size(encoded);
+    } else {
+      staticParams.push(encoded);
+    }
+  }
+  return concatHex([...staticParams, ...dynamicParams]);
+}
+function encodeAddress(value) {
+  if (!isAddress(value))
+    throw new InvalidAddressError({ address: value });
+  return { dynamic: false, encoded: padHex(value.toLowerCase()) };
+}
+function encodeArray(value, { length, param }) {
+  const dynamic = length === null;
+  if (!Array.isArray(value))
+    throw new InvalidArrayError(value);
+  if (!dynamic && value.length !== length)
+    throw new AbiEncodingArrayLengthMismatchError({
+      expectedLength: length,
+      givenLength: value.length,
+      type: `${param.type}[${length}]`
+    });
+  let dynamicChild = value.length === 0 && isDynamicType(param);
+  const preparedParams = [];
+  for (let i2 = 0; i2 < value.length; i2++) {
+    const preparedParam = prepareParam({ param, value: value[i2] });
+    if (preparedParam.dynamic)
+      dynamicChild = true;
+    preparedParams.push(preparedParam);
+  }
+  if (dynamic || dynamicChild) {
+    const data = encodeParams(preparedParams);
+    if (dynamic) {
+      const length2 = numberToHex(preparedParams.length, { size: 32 });
+      return {
+        dynamic: true,
+        encoded: concatHex([length2, data])
+      };
+    }
+    if (dynamicChild)
+      return { dynamic: true, encoded: data };
+  }
+  return {
+    dynamic: false,
+    encoded: concatHex(preparedParams.map(({ encoded }) => encoded))
+  };
+}
+function encodeBytes(value, { param }) {
+  const [, paramSize] = param.type.split("bytes");
+  const bytesSize = size(value);
+  if (!paramSize) {
+    let value_ = value;
+    if (bytesSize % 32 !== 0)
+      value_ = padHex(value_, {
+        dir: "right",
+        size: Math.ceil((value.length - 2) / 2 / 32) * 32
+      });
+    return {
+      dynamic: true,
+      encoded: concatHex([
+        padHex(numberToHex(bytesSize, { size: 32 })),
+        value_
+      ])
+    };
+  }
+  if (bytesSize !== Number.parseInt(paramSize, 10))
+    throw new AbiEncodingBytesSizeMismatchError({
+      expectedSize: Number.parseInt(paramSize, 10),
+      value
+    });
+  return { dynamic: false, encoded: padHex(value, { dir: "right" }) };
+}
+function encodeBool(value) {
+  if (typeof value !== "boolean")
+    throw new BaseError(`Invalid boolean value: "${value}" (type: ${typeof value}). Expected: \`true\` or \`false\`.`);
+  return { dynamic: false, encoded: padHex(boolToHex(value)) };
+}
+function encodeNumber(value, { signed, size: size2 = 256 }) {
+  if (typeof size2 === "number") {
+    const max2 = 2n ** (BigInt(size2) - (signed ? 1n : 0n)) - 1n;
+    const min = signed ? -max2 - 1n : 0n;
+    if (value > max2 || value < min)
+      throw new IntegerOutOfRangeError({
+        max: max2.toString(),
+        min: min.toString(),
+        signed,
+        size: size2 / 8,
+        value: value.toString()
+      });
+  }
+  return {
+    dynamic: false,
+    encoded: numberToHex(value, {
+      size: 32,
+      signed
+    })
+  };
+}
+function encodeString(value) {
+  const hexValue = stringToHex(value);
+  const partsLength = Math.ceil(size(hexValue) / 32);
+  const parts = [];
+  for (let i2 = 0; i2 < partsLength; i2++) {
+    parts.push(padHex(slice2(hexValue, i2 * 32, (i2 + 1) * 32), {
+      dir: "right"
+    }));
+  }
+  return {
+    dynamic: true,
+    encoded: concatHex([
+      padHex(numberToHex(size(hexValue), { size: 32 })),
+      ...parts
+    ])
+  };
+}
+function encodeTuple(value, { param }) {
+  let dynamic = false;
+  const preparedParams = [];
+  for (let i2 = 0; i2 < param.components.length; i2++) {
+    const param_ = param.components[i2];
+    const index2 = Array.isArray(value) ? i2 : param_.name;
+    const preparedParam = prepareParam({
+      param: param_,
+      value: value[index2]
+    });
+    preparedParams.push(preparedParam);
+    if (preparedParam.dynamic)
+      dynamic = true;
+  }
+  return {
+    dynamic,
+    encoded: dynamic ? encodeParams(preparedParams) : concatHex(preparedParams.map(({ encoded }) => encoded))
+  };
+}
+function getArrayComponents(type) {
+  const matches = type.match(/^(.*)\[(\d+)?\]$/);
+  return matches ? (
+    // Return `null` if the array is dynamic.
+    [matches[2] ? Number(matches[2]) : null, matches[1]]
+  ) : void 0;
+}
+function isDynamicType(param) {
+  const { type } = param;
+  if (type === "string")
+    return true;
+  if (type === "bytes")
+    return true;
+  if (type.endsWith("[]"))
+    return true;
+  if (type === "tuple")
+    return param.components.some(isDynamicType);
+  const arrayComponents = getArrayComponents(type);
+  if (arrayComponents)
+    return isDynamicType({ ...param, type: arrayComponents[1] });
+  return false;
+}
+var init_encodeAbiParameters = __esm({
+  "node_modules/viem/_esm/utils/abi/encodeAbiParameters.js"() {
+    init_abi();
+    init_address();
+    init_base();
+    init_encoding();
+    init_isAddress();
+    init_concat();
+    init_pad();
+    init_size();
+    init_slice();
+    init_toHex();
+    init_regex2();
+  }
+});
+
+// node_modules/viem/_esm/utils/hash/toFunctionSelector.js
+var toFunctionSelector;
+var init_toFunctionSelector = __esm({
+  "node_modules/viem/_esm/utils/hash/toFunctionSelector.js"() {
+    init_slice();
+    init_toSignatureHash();
+    toFunctionSelector = (fn) => slice2(toSignatureHash(fn), 0, 4);
+  }
+});
+
+// node_modules/viem/_esm/utils/abi/getAbiItem.js
+function getAbiItem(parameters) {
+  const { abi, args = [], name } = parameters;
+  const isSelector = isHex(name, { strict: false });
+  const abiItems = abi.filter((abiItem) => {
+    if (isSelector) {
+      if (abiItem.type === "function")
+        return toFunctionSelector(abiItem) === name;
+      if (abiItem.type === "event")
+        return toEventSelector(abiItem) === name;
+      return false;
+    }
+    return "name" in abiItem && abiItem.name === name;
+  });
+  if (abiItems.length === 0)
+    return void 0;
+  if (abiItems.length === 1)
+    return abiItems[0];
+  let matchedAbiItem;
+  for (const abiItem of abiItems) {
+    if (!("inputs" in abiItem))
+      continue;
+    if (!args || args.length === 0) {
+      if (!abiItem.inputs || abiItem.inputs.length === 0)
+        return abiItem;
+      continue;
+    }
+    if (!abiItem.inputs)
+      continue;
+    if (abiItem.inputs.length === 0)
+      continue;
+    if (abiItem.inputs.length !== args.length)
+      continue;
+    const matched = args.every((arg, index2) => {
+      const abiParameter = "inputs" in abiItem && abiItem.inputs[index2];
+      if (!abiParameter)
+        return false;
+      return isArgOfType(arg, abiParameter);
+    });
+    if (matched) {
+      if (matchedAbiItem && "inputs" in matchedAbiItem && matchedAbiItem.inputs) {
+        const ambiguousTypes = getAmbiguousTypes(abiItem.inputs, matchedAbiItem.inputs, args);
+        if (ambiguousTypes)
+          throw new AbiItemAmbiguityError({
+            abiItem,
+            type: ambiguousTypes[0]
+          }, {
+            abiItem: matchedAbiItem,
+            type: ambiguousTypes[1]
+          });
+      }
+      matchedAbiItem = abiItem;
+    }
+  }
+  if (matchedAbiItem)
+    return matchedAbiItem;
+  return abiItems[0];
+}
+function isArgOfType(arg, abiParameter) {
+  const argType = typeof arg;
+  const abiParameterType = abiParameter.type;
+  switch (abiParameterType) {
+    case "address":
+      return isAddress(arg, { strict: false });
+    case "bool":
+      return argType === "boolean";
+    case "function":
+      return argType === "string";
+    case "string":
+      return argType === "string";
+    default: {
+      if (abiParameterType === "tuple" && "components" in abiParameter)
+        return Object.values(abiParameter.components).every((component, index2) => {
+          return argType === "object" && isArgOfType(Object.values(arg)[index2], component);
+        });
+      if (/^u?int(8|16|24|32|40|48|56|64|72|80|88|96|104|112|120|128|136|144|152|160|168|176|184|192|200|208|216|224|232|240|248|256)?$/.test(abiParameterType))
+        return argType === "number" || argType === "bigint";
+      if (/^bytes([1-9]|1[0-9]|2[0-9]|3[0-2])?$/.test(abiParameterType))
+        return argType === "string" || arg instanceof Uint8Array;
+      if (/[a-z]+[1-9]{0,3}(\[[0-9]{0,}\])+$/.test(abiParameterType)) {
+        return Array.isArray(arg) && arg.every((x2) => isArgOfType(x2, {
+          ...abiParameter,
+          // Pop off `[]` or `[M]` from end of type
+          type: abiParameterType.replace(/(\[[0-9]{0,}\])$/, "")
+        }));
+      }
+      return false;
+    }
+  }
+}
+function getAmbiguousTypes(sourceParameters, targetParameters, args) {
+  for (const parameterIndex in sourceParameters) {
+    const sourceParameter = sourceParameters[parameterIndex];
+    const targetParameter = targetParameters[parameterIndex];
+    if (sourceParameter.type === "tuple" && targetParameter.type === "tuple" && "components" in sourceParameter && "components" in targetParameter)
+      return getAmbiguousTypes(sourceParameter.components, targetParameter.components, args[parameterIndex]);
+    const types = [sourceParameter.type, targetParameter.type];
+    const ambiguous = (() => {
+      if (types.includes("address") && types.includes("bytes20"))
+        return true;
+      if (types.includes("address") && types.includes("string"))
+        return isAddress(args[parameterIndex], { strict: false });
+      if (types.includes("address") && types.includes("bytes"))
+        return isAddress(args[parameterIndex], { strict: false });
+      return false;
+    })();
+    if (ambiguous)
+      return types;
+  }
+  return;
+}
+var init_getAbiItem = __esm({
+  "node_modules/viem/_esm/utils/abi/getAbiItem.js"() {
+    init_abi();
+    init_isHex();
+    init_isAddress();
+    init_toEventSelector();
+    init_toFunctionSelector();
+  }
+});
+
+// node_modules/viem/_esm/utils/abi/prepareEncodeFunctionData.js
+function prepareEncodeFunctionData(parameters) {
+  const { abi, args, functionName } = parameters;
+  let abiItem = abi[0];
+  if (functionName) {
+    const item = getAbiItem({
+      abi,
+      args,
+      name: functionName
+    });
+    if (!item)
+      throw new AbiFunctionNotFoundError(functionName, { docsPath });
+    abiItem = item;
+  }
+  if (abiItem.type !== "function")
+    throw new AbiFunctionNotFoundError(void 0, { docsPath });
+  return {
+    abi: [abiItem],
+    functionName: toFunctionSelector(formatAbiItem2(abiItem))
+  };
+}
+var docsPath;
+var init_prepareEncodeFunctionData = __esm({
+  "node_modules/viem/_esm/utils/abi/prepareEncodeFunctionData.js"() {
+    init_abi();
+    init_toFunctionSelector();
+    init_formatAbiItem2();
+    init_getAbiItem();
+    docsPath = "/docs/contract/encodeFunctionData";
+  }
+});
+
+// node_modules/viem/_esm/utils/abi/encodeFunctionData.js
+function encodeFunctionData(parameters) {
+  const { args } = parameters;
+  const { abi, functionName } = (() => {
+    if (parameters.abi.length === 1 && parameters.functionName?.startsWith("0x"))
+      return parameters;
+    return prepareEncodeFunctionData(parameters);
+  })();
+  const abiItem = abi[0];
+  const signature = functionName;
+  const data = "inputs" in abiItem && abiItem.inputs ? encodeAbiParameters(abiItem.inputs, args ?? []) : void 0;
+  return concatHex([signature, data ?? "0x"]);
+}
+var init_encodeFunctionData = __esm({
+  "node_modules/viem/_esm/utils/abi/encodeFunctionData.js"() {
+    init_concat();
+    init_encodeAbiParameters();
+    init_prepareEncodeFunctionData();
+  }
+});
+
+// node_modules/viem/_esm/errors/cursor.js
+var NegativeOffsetError, PositionOutOfBoundsError, RecursiveReadLimitExceededError;
+var init_cursor = __esm({
+  "node_modules/viem/_esm/errors/cursor.js"() {
+    init_base();
+    NegativeOffsetError = class extends BaseError {
+      constructor({ offset }) {
+        super(`Offset \`${offset}\` cannot be negative.`, {
+          name: "NegativeOffsetError"
+        });
+      }
+    };
+    PositionOutOfBoundsError = class extends BaseError {
+      constructor({ length, position }) {
+        super(`Position \`${position}\` is out of bounds (\`0 < position < ${length}\`).`, { name: "PositionOutOfBoundsError" });
+      }
+    };
+    RecursiveReadLimitExceededError = class extends BaseError {
+      constructor({ count, limit }) {
+        super(`Recursive read limit of \`${limit}\` exceeded (recursive read count: \`${count}\`).`, { name: "RecursiveReadLimitExceededError" });
+      }
+    };
+  }
+});
+
+// node_modules/viem/_esm/utils/cursor.js
+function createCursor(bytes, { recursiveReadLimit = 8192 } = {}) {
+  const cursor = Object.create(staticCursor);
+  cursor.bytes = bytes;
+  cursor.dataView = new DataView(bytes.buffer ?? bytes, bytes.byteOffset, bytes.byteLength);
+  cursor.positionReadCount = /* @__PURE__ */ new Map();
+  cursor.recursiveReadLimit = recursiveReadLimit;
+  return cursor;
+}
+var staticCursor;
+var init_cursor2 = __esm({
+  "node_modules/viem/_esm/utils/cursor.js"() {
+    init_cursor();
+    staticCursor = {
+      bytes: new Uint8Array(),
+      dataView: new DataView(new ArrayBuffer(0)),
+      position: 0,
+      positionReadCount: /* @__PURE__ */ new Map(),
+      recursiveReadCount: 0,
+      recursiveReadLimit: Number.POSITIVE_INFINITY,
+      assertReadLimit() {
+        if (this.recursiveReadCount >= this.recursiveReadLimit)
+          throw new RecursiveReadLimitExceededError({
+            count: this.recursiveReadCount + 1,
+            limit: this.recursiveReadLimit
+          });
+      },
+      assertPosition(position) {
+        if (position < 0 || position > this.bytes.length - 1)
+          throw new PositionOutOfBoundsError({
+            length: this.bytes.length,
+            position
+          });
+      },
+      decrementPosition(offset) {
+        if (offset < 0)
+          throw new NegativeOffsetError({ offset });
+        const position = this.position - offset;
+        this.assertPosition(position);
+        this.position = position;
+      },
+      getReadCount(position) {
+        return this.positionReadCount.get(position || this.position) || 0;
+      },
+      incrementPosition(offset) {
+        if (offset < 0)
+          throw new NegativeOffsetError({ offset });
+        const position = this.position + offset;
+        this.assertPosition(position);
+        this.position = position;
+      },
+      inspectByte(position_) {
+        const position = position_ ?? this.position;
+        this.assertPosition(position);
+        return this.bytes[position];
+      },
+      inspectBytes(length, position_) {
+        const position = position_ ?? this.position;
+        this.assertPosition(position + length - 1);
+        return this.bytes.subarray(position, position + length);
+      },
+      inspectUint8(position_) {
+        const position = position_ ?? this.position;
+        this.assertPosition(position);
+        return this.bytes[position];
+      },
+      inspectUint16(position_) {
+        const position = position_ ?? this.position;
+        this.assertPosition(position + 1);
+        return this.dataView.getUint16(position);
+      },
+      inspectUint24(position_) {
+        const position = position_ ?? this.position;
+        this.assertPosition(position + 2);
+        return (this.dataView.getUint16(position) << 8) + this.dataView.getUint8(position + 2);
+      },
+      inspectUint32(position_) {
+        const position = position_ ?? this.position;
+        this.assertPosition(position + 3);
+        return this.dataView.getUint32(position);
+      },
+      pushByte(byte) {
+        this.assertPosition(this.position);
+        this.bytes[this.position] = byte;
+        this.position++;
+      },
+      pushBytes(bytes) {
+        this.assertPosition(this.position + bytes.length - 1);
+        this.bytes.set(bytes, this.position);
+        this.position += bytes.length;
+      },
+      pushUint8(value) {
+        this.assertPosition(this.position);
+        this.bytes[this.position] = value;
+        this.position++;
+      },
+      pushUint16(value) {
+        this.assertPosition(this.position + 1);
+        this.dataView.setUint16(this.position, value);
+        this.position += 2;
+      },
+      pushUint24(value) {
+        this.assertPosition(this.position + 2);
+        this.dataView.setUint16(this.position, value >> 8);
+        this.dataView.setUint8(this.position + 2, value & ~4294967040);
+        this.position += 3;
+      },
+      pushUint32(value) {
+        this.assertPosition(this.position + 3);
+        this.dataView.setUint32(this.position, value);
+        this.position += 4;
+      },
+      readByte() {
+        this.assertReadLimit();
+        this._touch();
+        const value = this.inspectByte();
+        this.position++;
+        return value;
+      },
+      readBytes(length, size2) {
+        this.assertReadLimit();
+        this._touch();
+        const value = this.inspectBytes(length);
+        this.position += size2 ?? length;
+        return value;
+      },
+      readUint8() {
+        this.assertReadLimit();
+        this._touch();
+        const value = this.inspectUint8();
+        this.position += 1;
+        return value;
+      },
+      readUint16() {
+        this.assertReadLimit();
+        this._touch();
+        const value = this.inspectUint16();
+        this.position += 2;
+        return value;
+      },
+      readUint24() {
+        this.assertReadLimit();
+        this._touch();
+        const value = this.inspectUint24();
+        this.position += 3;
+        return value;
+      },
+      readUint32() {
+        this.assertReadLimit();
+        this._touch();
+        const value = this.inspectUint32();
+        this.position += 4;
+        return value;
+      },
+      get remaining() {
+        return this.bytes.length - this.position;
+      },
+      setPosition(position) {
+        const oldPosition = this.position;
+        this.assertPosition(position);
+        this.position = position;
+        return () => this.position = oldPosition;
+      },
+      _touch() {
+        if (this.recursiveReadLimit === Number.POSITIVE_INFINITY)
+          return;
+        const count = this.getReadCount();
+        this.positionReadCount.set(this.position, count + 1);
+        if (count > 0)
+          this.recursiveReadCount++;
+      }
+    };
+  }
+});
+
+// node_modules/viem/_esm/utils/encoding/fromBytes.js
+function bytesToBigInt(bytes, opts = {}) {
+  if (typeof opts.size !== "undefined")
+    assertSize(bytes, { size: opts.size });
+  const hex = bytesToHex2(bytes, opts);
+  return hexToBigInt(hex, opts);
+}
+function bytesToBool(bytes_, opts = {}) {
+  let bytes = bytes_;
+  if (typeof opts.size !== "undefined") {
+    assertSize(bytes, { size: opts.size });
+    bytes = trim(bytes);
+  }
+  if (bytes.length > 1 || bytes[0] > 1)
+    throw new InvalidBytesBooleanError(bytes);
+  return Boolean(bytes[0]);
+}
+function bytesToNumber(bytes, opts = {}) {
+  if (typeof opts.size !== "undefined")
+    assertSize(bytes, { size: opts.size });
+  const hex = bytesToHex2(bytes, opts);
+  return hexToNumber2(hex, opts);
+}
+function bytesToString(bytes_, opts = {}) {
+  let bytes = bytes_;
+  if (typeof opts.size !== "undefined") {
+    assertSize(bytes, { size: opts.size });
+    bytes = trim(bytes, { dir: "right" });
+  }
+  return new TextDecoder().decode(bytes);
+}
+var init_fromBytes = __esm({
+  "node_modules/viem/_esm/utils/encoding/fromBytes.js"() {
+    init_encoding();
+    init_trim();
+    init_fromHex();
+    init_toHex();
+  }
+});
+
+// node_modules/viem/_esm/utils/abi/decodeAbiParameters.js
+function decodeAbiParameters(params, data) {
+  const bytes = typeof data === "string" ? hexToBytes2(data) : data;
+  const cursor = createCursor(bytes);
+  if (size(bytes) === 0 && params.length > 0)
+    throw new AbiDecodingZeroDataError();
+  if (size(data) && size(data) < 32)
+    throw new AbiDecodingDataSizeTooSmallError({
+      data: typeof data === "string" ? data : bytesToHex2(data),
+      params,
+      size: size(data)
+    });
+  let consumed = 0;
+  const values = [];
+  for (let i2 = 0; i2 < params.length; ++i2) {
+    const param = params[i2];
+    if (consumed < bytes.length)
+      cursor.setPosition(consumed);
+    const [data2, consumed_] = decodeParameter(cursor, param, {
+      staticPosition: 0
+    });
+    consumed += consumed_;
+    values.push(data2);
+  }
+  return values;
+}
+function decodeParameter(cursor, param, { staticPosition }) {
+  const arrayComponents = getArrayComponents(param.type);
+  if (arrayComponents) {
+    const [length, type] = arrayComponents;
+    return decodeArray(cursor, { ...param, type }, { length, staticPosition });
+  }
+  if (param.type === "tuple")
+    return decodeTuple(cursor, param, { staticPosition });
+  if (param.type === "address")
+    return decodeAddress(cursor);
+  if (param.type === "bool")
+    return decodeBool(cursor);
+  if (param.type.startsWith("bytes"))
+    return decodeBytes(cursor, param, { staticPosition });
+  if (param.type.startsWith("uint") || param.type.startsWith("int"))
+    return decodeNumber(cursor, param);
+  if (param.type === "string")
+    return decodeString(cursor, { staticPosition });
+  throw new InvalidAbiDecodingTypeError(param.type, {
+    docsPath: "/docs/contract/decodeAbiParameters"
+  });
+}
+function decodeAddress(cursor) {
+  const value = cursor.readBytes(32);
+  return [checksumAddress(bytesToHex2(sliceBytes(value, -20))), 32];
+}
+function decodeArray(cursor, param, { length, staticPosition }) {
+  if (length === null) {
+    const offset = bytesToNumber(cursor.readBytes(sizeOfOffset));
+    const start = staticPosition + offset;
+    const startOfData = start + sizeOfLength;
+    cursor.setPosition(start);
+    const length2 = bytesToNumber(cursor.readBytes(sizeOfLength));
+    const dynamicChild = hasDynamicChild(param);
+    let consumed2 = 0;
+    const value2 = [];
+    for (let i2 = 0; i2 < length2; ++i2) {
+      cursor.setPosition(startOfData + (dynamicChild ? i2 * 32 : consumed2));
+      const [data, consumed_] = decodeParameter(cursor, param, {
+        staticPosition: startOfData
+      });
+      consumed2 += consumed_;
+      value2.push(data);
+      if (consumed_ === 0) {
+        cursor.assertReadLimit();
+        cursor._touch();
+      }
+    }
+    cursor.setPosition(staticPosition + 32);
+    return [value2, 32];
+  }
+  if (hasDynamicChild(param)) {
+    const offset = bytesToNumber(cursor.readBytes(sizeOfOffset));
+    const start = staticPosition + offset;
+    const value2 = [];
+    for (let i2 = 0; i2 < length; ++i2) {
+      cursor.setPosition(start + i2 * 32);
+      const [data] = decodeParameter(cursor, param, {
+        staticPosition: start
+      });
+      value2.push(data);
+    }
+    cursor.setPosition(staticPosition + 32);
+    return [value2, 32];
+  }
+  let consumed = 0;
+  const value = [];
+  for (let i2 = 0; i2 < length; ++i2) {
+    const [data, consumed_] = decodeParameter(cursor, param, {
+      staticPosition: staticPosition + consumed
+    });
+    consumed += consumed_;
+    value.push(data);
+    if (consumed_ === 0) {
+      cursor.assertReadLimit();
+      cursor._touch();
+    }
+  }
+  return [value, consumed];
+}
+function decodeBool(cursor) {
+  return [bytesToBool(cursor.readBytes(32), { size: 32 }), 32];
+}
+function decodeBytes(cursor, param, { staticPosition }) {
+  const [_, size2] = param.type.split("bytes");
+  if (!size2) {
+    const offset = bytesToNumber(cursor.readBytes(32));
+    cursor.setPosition(staticPosition + offset);
+    const length = bytesToNumber(cursor.readBytes(32));
+    if (length === 0) {
+      cursor.setPosition(staticPosition + 32);
+      return ["0x", 32];
+    }
+    const data = cursor.readBytes(length);
+    cursor.setPosition(staticPosition + 32);
+    return [bytesToHex2(data), 32];
+  }
+  const value = bytesToHex2(cursor.readBytes(Number.parseInt(size2, 10), 32));
+  return [value, 32];
+}
+function decodeNumber(cursor, param) {
+  const signed = param.type.startsWith("int");
+  const size2 = Number.parseInt(param.type.split("int")[1] || "256", 10);
+  const value = cursor.readBytes(32);
+  return [
+    size2 > 48 ? bytesToBigInt(value, { signed }) : bytesToNumber(value, { signed }),
+    32
+  ];
+}
+function decodeTuple(cursor, param, { staticPosition }) {
+  const hasUnnamedChild = param.components.length === 0 || param.components.some(({ name }) => !name);
+  const value = hasUnnamedChild ? [] : {};
+  let consumed = 0;
+  if (hasDynamicChild(param)) {
+    const offset = bytesToNumber(cursor.readBytes(sizeOfOffset));
+    const start = staticPosition + offset;
+    for (let i2 = 0; i2 < param.components.length; ++i2) {
+      const component = param.components[i2];
+      cursor.setPosition(start + consumed);
+      const [data, consumed_] = decodeParameter(cursor, component, {
+        staticPosition: start
+      });
+      consumed += consumed_;
+      value[hasUnnamedChild ? i2 : component?.name] = data;
+    }
+    cursor.setPosition(staticPosition + 32);
+    return [value, 32];
+  }
+  for (let i2 = 0; i2 < param.components.length; ++i2) {
+    const component = param.components[i2];
+    const [data, consumed_] = decodeParameter(cursor, component, {
+      staticPosition
+    });
+    value[hasUnnamedChild ? i2 : component?.name] = data;
+    consumed += consumed_;
+  }
+  return [value, consumed];
+}
+function decodeString(cursor, { staticPosition }) {
+  const offset = bytesToNumber(cursor.readBytes(32));
+  const start = staticPosition + offset;
+  cursor.setPosition(start);
+  const length = bytesToNumber(cursor.readBytes(32));
+  if (length === 0) {
+    cursor.setPosition(staticPosition + 32);
+    return ["", 32];
+  }
+  const data = cursor.readBytes(length, 32);
+  const value = bytesToString(trim(data));
+  cursor.setPosition(staticPosition + 32);
+  return [value, 32];
+}
+function hasDynamicChild(param) {
+  const { type } = param;
+  if (type === "string")
+    return true;
+  if (type === "bytes")
+    return true;
+  if (type.endsWith("[]"))
+    return true;
+  if (type === "tuple")
+    return param.components?.some(hasDynamicChild);
+  const arrayComponents = getArrayComponents(param.type);
+  if (arrayComponents && hasDynamicChild({ ...param, type: arrayComponents[1] }))
+    return true;
+  return false;
+}
+var sizeOfLength, sizeOfOffset;
+var init_decodeAbiParameters = __esm({
+  "node_modules/viem/_esm/utils/abi/decodeAbiParameters.js"() {
+    init_abi();
+    init_getAddress();
+    init_cursor2();
+    init_size();
+    init_slice();
+    init_trim();
+    init_fromBytes();
+    init_toBytes();
+    init_toHex();
+    init_encodeAbiParameters();
+    sizeOfLength = 32;
+    sizeOfOffset = 32;
   }
 });
 
@@ -8067,24 +9389,24 @@ var init_hmac = __esm({
   "node_modules/@noble/hashes/esm/hmac.js"() {
     init_utils();
     HMAC2 = class extends Hash2 {
-      constructor(hash, _key) {
+      constructor(hash2, _key) {
         super();
         this.finished = false;
         this.destroyed = false;
-        ahash2(hash);
+        ahash2(hash2);
         const key = toBytes3(_key);
-        this.iHash = hash.create();
+        this.iHash = hash2.create();
         if (typeof this.iHash.update !== "function")
           throw new Error("Expected instance of class which extends utils.Hash");
         this.blockLen = this.iHash.blockLen;
         this.outputLen = this.iHash.outputLen;
         const blockLen = this.blockLen;
         const pad3 = new Uint8Array(blockLen);
-        pad3.set(key.length > blockLen ? hash.create().update(key).digest() : key);
+        pad3.set(key.length > blockLen ? hash2.create().update(key).digest() : key);
         for (let i2 = 0; i2 < pad3.length; i2++)
           pad3[i2] ^= 54;
         this.iHash.update(pad3);
-        this.oHash = hash.create();
+        this.oHash = hash2.create();
         for (let i2 = 0; i2 < pad3.length; i2++)
           pad3[i2] ^= 54 ^ 92;
         this.oHash.update(pad3);
@@ -8130,8 +9452,8 @@ var init_hmac = __esm({
         this.iHash.destroy();
       }
     };
-    hmac2 = (hash, key, message) => new HMAC2(hash, key).update(message).digest();
-    hmac2.create = (hash, key) => new HMAC2(hash, key);
+    hmac2 = (hash2, key, message) => new HMAC2(hash2, key).update(message).digest();
+    hmac2.create = (hash2, key) => new HMAC2(hash2, key);
   }
 });
 
@@ -9551,14 +10873,14 @@ function weierstrass2(curveDef) {
   function prepSig(msgHash, privateKey, opts = defaultSigOpts) {
     if (["recovered", "canonical"].some((k) => k in opts))
       throw new Error("sign() legacy options not supported");
-    const { hash, randomBytes: randomBytes3 } = CURVE;
+    const { hash: hash2, randomBytes: randomBytes3 } = CURVE;
     let { lowS, prehash, extraEntropy: ent } = opts;
     if (lowS == null)
       lowS = true;
     msgHash = ensureBytes2("msgHash", msgHash);
     validateSigVerOpts(opts);
     if (prehash)
-      msgHash = ensureBytes2("prehashed msgHash", hash(msgHash));
+      msgHash = ensureBytes2("prehashed msgHash", hash2(msgHash));
     const h1int = bits2int_modN(msgHash);
     const d = normPrivateKeyToScalar(privateKey);
     const seedArgs = [int2octets(d), int2octets(h1int)];
@@ -9881,15 +11203,15 @@ var init_weierstrass = __esm({
 });
 
 // node_modules/@noble/curves/esm/_shortw_utils.js
-function getHash(hash) {
+function getHash(hash2) {
   return {
-    hash,
-    hmac: (key, ...msgs) => hmac2(hash, key, concatBytes2(...msgs)),
+    hash: hash2,
+    hmac: (key, ...msgs) => hmac2(hash2, key, concatBytes2(...msgs)),
     randomBytes: randomBytes2
   };
 }
 function createCurve2(curveDef, defHash) {
-  const create = (hash) => weierstrass2({ ...curveDef, ...getHash(hash) });
+  const create = (hash2) => weierstrass2({ ...curveDef, ...getHash(hash2) });
   return { ...create(defHash), create };
 }
 var init_shortw_utils = __esm({
@@ -9967,7 +11289,7 @@ function hash_to_field(msg, count, options) {
     k: "isSafeInteger",
     hash: "hash"
   });
-  const { p, k, m, hash, expand, DST: _DST } = options;
+  const { p, k, m, hash: hash2, expand, DST: _DST } = options;
   abytes3(msg);
   anum(count);
   const DST = typeof _DST === "string" ? utf8ToBytes3(_DST) : _DST;
@@ -9976,9 +11298,9 @@ function hash_to_field(msg, count, options) {
   const len_in_bytes = count * m * L2;
   let prb;
   if (expand === "xmd") {
-    prb = expand_message_xmd(msg, DST, len_in_bytes, hash);
+    prb = expand_message_xmd(msg, DST, len_in_bytes, hash2);
   } else if (expand === "xof") {
-    prb = expand_message_xof(msg, DST, len_in_bytes, k, hash);
+    prb = expand_message_xof(msg, DST, len_in_bytes, k, hash2);
   } else if (expand === "_internal_pass") {
     prb = msg;
   } else {
@@ -10283,6 +11605,37 @@ var init_secp256k1 = __esm({
     }))();
     hashToCurve = /* @__PURE__ */ (() => secp256k1_hasher.hashToCurve)();
     encodeToCurve = /* @__PURE__ */ (() => secp256k1_hasher.encodeToCurve)();
+  }
+});
+
+// node_modules/viem/_esm/utils/abi/decodeFunctionResult.js
+function decodeFunctionResult(parameters) {
+  const { abi, args, functionName, data } = parameters;
+  let abiItem = abi[0];
+  if (functionName) {
+    const item = getAbiItem({ abi, args, name: functionName });
+    if (!item)
+      throw new AbiFunctionNotFoundError(functionName, { docsPath: docsPath2 });
+    abiItem = item;
+  }
+  if (abiItem.type !== "function")
+    throw new AbiFunctionNotFoundError(void 0, { docsPath: docsPath2 });
+  if (!abiItem.outputs)
+    throw new AbiFunctionOutputsNotFoundError(abiItem.name, { docsPath: docsPath2 });
+  const values = decodeAbiParameters(abiItem.outputs, data);
+  if (values && values.length > 1)
+    return values;
+  if (values && values.length === 1)
+    return values[0];
+  return void 0;
+}
+var docsPath2;
+var init_decodeFunctionResult = __esm({
+  "node_modules/viem/_esm/utils/abi/decodeFunctionResult.js"() {
+    init_abi();
+    init_decodeAbiParameters();
+    init_getAbiItem();
+    docsPath2 = "/docs/contract/decodeFunctionResult";
   }
 });
 
@@ -12646,10 +13999,10 @@ function unarmor(input) {
 }
 function armor(messageType, body, partIndex, partTotal, customComment, emitChecksum = false, config$1 = config) {
   let text;
-  let hash;
+  let hash2;
   if (messageType === enums.armor.signed) {
     text = body.text;
-    hash = body.hash;
+    hash2 = body.hash;
     body = body.data;
   }
   const maybeBodyClone = emitChecksum && passiveClone(body);
@@ -12671,7 +14024,7 @@ function armor(messageType, body, partIndex, partTotal, customComment, emitCheck
       break;
     case enums.armor.signed:
       result.push("-----BEGIN PGP SIGNED MESSAGE-----\n");
-      result.push(hash ? `Hash: ${hash}
+      result.push(hash2 ? `Hash: ${hash2}
 
 ` : "\n");
       result.push(text.replace(/^-/mg, "- -"));
@@ -13624,26 +14977,26 @@ function nobleHash(nobleHashName, webCryptoHashName) {
     const { nobleHashes: nobleHashes2 } = await Promise.resolve().then(function() {
       return noble_hashes;
     });
-    const hash = nobleHashes2.get(nobleHashName);
-    if (!hash)
+    const hash2 = nobleHashes2.get(nobleHashName);
+    if (!hash2)
       throw new Error("Unsupported hash");
-    return hash;
+    return hash2;
   };
   return async function(data) {
     if (isArrayStream(data)) {
       data = await readToEnd(data);
     }
     if (util.isStream(data)) {
-      const hash = await getNobleHash();
-      const hashInstance = hash.create();
+      const hash2 = await getNobleHash();
+      const hashInstance = hash2.create();
       return transform(data, (value) => {
         hashInstance.update(value);
       }, () => hashInstance.digest());
     } else if (webCrypto$8 && webCryptoHashName) {
       return new Uint8Array(await webCrypto$8.digest(webCryptoHashName, data));
     } else {
-      const hash = await getNobleHash();
-      return hash(data);
+      const hash2 = await getNobleHash();
+      return hash2(data);
     }
   };
 }
@@ -15724,11 +17077,11 @@ async function unwrap(algo, key, wrappedData) {
 }
 async function computeHKDF(hashAlgo, inputKey, salt, info, outLen) {
   const webCrypto2 = util.getWebCrypto();
-  const hash = enums.read(enums.webHash, hashAlgo);
-  if (!hash)
+  const hash2 = enums.read(enums.webHash, hashAlgo);
+  if (!hash2)
     throw new Error("Hash algo not supported with HKDF");
   const importedKey = await webCrypto2.importKey("raw", inputKey, "HKDF", false, ["deriveBits"]);
-  const bits2 = await webCrypto2.deriveBits({ name: "HKDF", hash, salt, info }, importedKey, outLen * 8);
+  const bits2 = await webCrypto2.deriveBits({ name: "HKDF", hash: hash2, salt, info }, importedKey, outLen * 8);
   return new Uint8Array(bits2);
 }
 var HKDF_INFO = {
@@ -16161,13 +17514,13 @@ var CurveWithOID = class {
 };
 async function generate$1(curveName) {
   const curve = new CurveWithOID(curveName);
-  const { oid, hash, cipher } = curve;
+  const { oid, hash: hash2, cipher } = curve;
   const keyPair = await curve.genKeyPair();
   return {
     oid,
     Q: keyPair.publicKey,
     secret: util.leftPad(keyPair.privateKey, curve.payloadSize),
-    hash,
+    hash: hash2,
     cipher
   };
 }
@@ -16799,8 +18152,8 @@ var KDFParams = class {
    */
   constructor(data) {
     if (data) {
-      const { hash, cipher } = data;
-      this.hash = hash;
+      const { hash: hash2, cipher } = data;
+      this.hash = hash2;
       this.cipher = cipher;
     } else {
       this.hash = null;
@@ -17140,12 +18493,12 @@ function generateParams(algo, bits2, oid) {
         publicParams: { oid: new OID(oid2), Q }
       }));
     case enums.publicKey.ecdh:
-      return generate$1(oid).then(({ oid: oid2, Q, secret, hash, cipher }) => ({
+      return generate$1(oid).then(({ oid: oid2, Q, secret, hash: hash2, cipher }) => ({
         privateParams: { d: secret },
         publicParams: {
           oid: new OID(oid2),
           Q,
-          kdfParams: new KDFParams({ hash, cipher })
+          kdfParams: new KDFParams({ hash: hash2, cipher })
         }
       }));
     case enums.publicKey.ed25519:
@@ -17749,7 +19102,7 @@ async function OCB(cipher, key) {
     }
     maxNtz = newMaxNtz;
   }
-  function hash(adata) {
+  function hash2(adata) {
     if (!adata.length) {
       return zeroBlock;
     }
@@ -17801,7 +19154,7 @@ async function OCB(cipher, key) {
       xorMut(checksum, xorInput);
       pos += text.length;
     }
-    const tag = xorMut(encipher(xorMut(xorMut(checksum, offset), mask.$)), hash(adata));
+    const tag = xorMut(encipher(xorMut(xorMut(checksum, offset), mask.$)), hash2(adata));
     ct.set(tag, pos);
     return ct;
   }
@@ -18155,7 +19508,7 @@ var Argon2S2K = class {
       argon2Promise = argon2Promise || loadArgonWasmModule();
       const argon2 = await argon2Promise;
       const passwordBytes = util.encodeUTF8(passphrase);
-      const hash = argon2({
+      const hash2 = argon2({
         version: ARGON2_VERSION,
         type: ARGON2_TYPE,
         password: passwordBytes,
@@ -18170,7 +19523,7 @@ var Argon2S2K = class {
         argon2Promise.catch(() => {
         });
       }
-      return hash;
+      return hash2;
     } catch (e) {
       if (e.message && (e.message.includes("Unable to grow instance memory") || // Chrome
       e.message.includes("failed to grow memory") || // Firefox
@@ -19548,10 +20901,10 @@ var SignaturePacket = class _SignaturePacket {
     this.unhashedSubpackets = [];
     this.signatureData = util.concat(arr);
     const toHash = this.toHash(this.signatureType, data, detached);
-    const hash = await this.hash(this.signatureType, data, toHash, detached);
-    this.signedHashValue = slice(clone(hash), 0, 2);
-    const signed = async () => sign$1(this.publicKeyAlgorithm, this.hashAlgorithm, key.publicParams, key.privateParams, toHash, await readToEnd(hash));
-    if (util.isStream(hash)) {
+    const hash2 = await this.hash(this.signatureType, data, toHash, detached);
+    this.signedHashValue = slice(clone(hash2), 0, 2);
+    const signed = async () => sign$1(this.publicKeyAlgorithm, this.hashAlgorithm, key.publicParams, key.privateParams, toHash, await readToEnd(hash2));
+    if (util.isStream(hash2)) {
       this.params = signed();
     } else {
       this.params = await signed();
@@ -19957,19 +21310,19 @@ var SignaturePacket = class _SignaturePacket {
     const skipVerify = this[verified] && !isMessageSignature;
     if (!skipVerify) {
       let toHash;
-      let hash;
+      let hash2;
       if (this.hashed) {
-        hash = await this.hashed;
+        hash2 = await this.hashed;
       } else {
         toHash = this.toHash(signatureType, data, detached);
-        hash = await this.hash(signatureType, data, toHash);
+        hash2 = await this.hash(signatureType, data, toHash);
       }
-      hash = await readToEnd(hash);
-      if (this.signedHashValue[0] !== hash[0] || this.signedHashValue[1] !== hash[1]) {
+      hash2 = await readToEnd(hash2);
+      if (this.signedHashValue[0] !== hash2[0] || this.signedHashValue[1] !== hash2[1]) {
         throw new Error("Signed digest did not match");
       }
       this.params = await this.params;
-      this[verified] = await verify$1(this.publicKeyAlgorithm, this.hashAlgorithm, this.params, key.publicParams, toHash, hash);
+      this[verified] = await verify$1(this.publicKeyAlgorithm, this.hashAlgorithm, this.params, key.publicParams, toHash, hash2);
       if (!this[verified]) {
         throw new Error("Signature verification failed");
       }
@@ -20750,8 +22103,8 @@ var SymEncryptedIntegrityProtectedDataPacket = class _SymEncryptedIntegrityProte
       const prefix = await getPrefixRandom(sessionKeyAlgorithm);
       const mdc = new Uint8Array([211, 20]);
       const tohash = util.concat([prefix, bytes, mdc]);
-      const hash = await computeDigest(enums.hash.sha1, passiveClone(tohash));
-      const plaintext = util.concat([tohash, hash]);
+      const hash2 = await computeDigest(enums.hash.sha1, passiveClone(tohash));
+      const plaintext = util.concat([tohash, hash2]);
       this.encrypted = await encrypt$1(sessionKeyAlgorithm, key, plaintext, new Uint8Array(blockSize));
     }
     return true;
@@ -20787,8 +22140,8 @@ var SymEncryptedIntegrityProtectedDataPacket = class _SymEncryptedIntegrityProte
       const verifyHash = Promise.all([
         readToEnd(await computeDigest(enums.hash.sha1, passiveClone(tohash))),
         readToEnd(realHash)
-      ]).then(([hash, mdc]) => {
-        if (!util.equalsUint8Array(hash, mdc)) {
+      ]).then(([hash2, mdc]) => {
+        if (!util.equalsUint8Array(hash2, mdc)) {
           throw new Error("Modification detected.");
         }
         return new Uint8Array();
@@ -21775,8 +23128,8 @@ var SecretKeyPacket = class extends PublicKeyPacket {
     } else {
       const cleartextWithHash = await decrypt$1(this.symmetric, key, this.keyMaterial, this.iv);
       cleartext = cleartextWithHash.subarray(0, -20);
-      const hash = await computeDigest(enums.hash.sha1, cleartext);
-      if (!util.equalsUint8Array(hash, cleartextWithHash.subarray(-20))) {
+      const hash2 = await computeDigest(enums.hash.sha1, cleartext);
+      if (!util.equalsUint8Array(hash2, cleartextWithHash.subarray(-20))) {
         throw new Error("Incorrect key passphrase");
       }
     }
@@ -24375,9 +25728,9 @@ var CleartextMessage = class _CleartextMessage {
    */
   armor(config$1 = config) {
     const emitHeaderAndChecksum = this.signature.packets.some((packet) => packet.version !== 6);
-    const hash = emitHeaderAndChecksum ? Array.from(new Set(this.signature.packets.map((packet) => enums.read(enums.hash, packet.hashAlgorithm).toUpperCase()))).join() : null;
+    const hash2 = emitHeaderAndChecksum ? Array.from(new Set(this.signature.packets.map((packet) => enums.read(enums.hash, packet.hashAlgorithm).toUpperCase()))).join() : null;
     const body = {
-      hash,
+      hash: hash2,
       text: this.text,
       data: this.signature.packets.write()
     };
@@ -25761,24 +27114,24 @@ var sha224$1 = /* @__PURE__ */ createHasher(() => new SHA224());
 var sha512$1 = /* @__PURE__ */ createHasher(() => new SHA512());
 var sha384$1 = /* @__PURE__ */ createHasher(() => new SHA384());
 var HMAC = class extends Hash {
-  constructor(hash, _key) {
+  constructor(hash2, _key) {
     super();
     this.finished = false;
     this.destroyed = false;
-    ahash(hash);
+    ahash(hash2);
     const key = toBytes(_key);
-    this.iHash = hash.create();
+    this.iHash = hash2.create();
     if (typeof this.iHash.update !== "function")
       throw new Error("Expected instance of class which extends utils.Hash");
     this.blockLen = this.iHash.blockLen;
     this.outputLen = this.iHash.outputLen;
     const blockLen = this.blockLen;
     const pad3 = new Uint8Array(blockLen);
-    pad3.set(key.length > blockLen ? hash.create().update(key).digest() : key);
+    pad3.set(key.length > blockLen ? hash2.create().update(key).digest() : key);
     for (let i2 = 0; i2 < pad3.length; i2++)
       pad3[i2] ^= 54;
     this.iHash.update(pad3);
-    this.oHash = hash.create();
+    this.oHash = hash2.create();
     for (let i2 = 0; i2 < pad3.length; i2++)
       pad3[i2] ^= 54 ^ 92;
     this.oHash.update(pad3);
@@ -25824,8 +27177,8 @@ var HMAC = class extends Hash {
     this.iHash.destroy();
   }
 };
-var hmac = (hash, key, message) => new HMAC(hash, key).update(message).digest();
-hmac.create = (hash, key) => new HMAC(hash, key);
+var hmac = (hash2, key, message) => new HMAC(hash2, key).update(message).digest();
+hmac.create = (hash2, key) => new HMAC(hash2, key);
 var _0n$4 = BigInt(0);
 var _1n$5 = BigInt(1);
 function negateCt(condition, item) {
@@ -26790,8 +28143,8 @@ function ecdh(Point2, ecdhOpts = {}) {
   };
   return Object.freeze({ getPublicKey, getSharedSecret, keygen, Point: Point2, utils, lengths });
 }
-function ecdsa(Point2, hash, ecdsaOpts = {}) {
-  ahash(hash);
+function ecdsa(Point2, hash2, ecdsaOpts = {}) {
+  ahash(hash2);
   _validateObject(ecdsaOpts, {}, {
     hmac: "function",
     lowS: "boolean",
@@ -26800,7 +28153,7 @@ function ecdsa(Point2, hash, ecdsaOpts = {}) {
     bits2int_modN: "function"
   });
   const randomBytes$1 = ecdsaOpts.randomBytes || randomBytes;
-  const hmac$1 = ecdsaOpts.hmac || ((key, ...msgs) => hmac(hash, key, concatBytes(...msgs)));
+  const hmac$1 = ecdsaOpts.hmac || ((key, ...msgs) => hmac(hash2, key, concatBytes(...msgs)));
   const { Fp: Fp2, Fn: Fn2 } = Point2;
   const { ORDER: CURVE_ORDER, BITS: fnBits } = Fn2;
   const { keygen, getPublicKey, getSharedSecret, utils, lengths } = ecdh(Point2, ecdsaOpts);
@@ -26943,7 +28296,7 @@ function ecdsa(Point2, hash, ecdsaOpts = {}) {
   }
   function validateMsgAndHash(message, prehash) {
     _abytes2(message, void 0, "message");
-    return prehash ? _abytes2(hash(message), void 0, "prehashed message") : message;
+    return prehash ? _abytes2(hash2(message), void 0, "prehashed message") : message;
   }
   function prepSig(message, privateKey, opts) {
     if (["recovered", "canonical"].some((k) => k in opts))
@@ -26984,7 +28337,7 @@ function ecdsa(Point2, hash, ecdsaOpts = {}) {
   function sign(message, secretKey, opts = {}) {
     message = ensureBytes("message", message);
     const { seed, k2sig } = prepSig(message, secretKey, opts);
-    const drbg = createHmacDrbg(hash.outputLen, Fn2.BYTES, hmac$1);
+    const drbg = createHmacDrbg(hash2.outputLen, Fn2.BYTES, hmac$1);
     const sig = drbg(seed, k2sig);
     return sig;
   }
@@ -27058,7 +28411,7 @@ function ecdsa(Point2, hash, ecdsaOpts = {}) {
     verify: verify2,
     recoverPublicKey: recoverPublicKey2,
     Signature: Signature2,
-    hash
+    hash: hash2
   });
 }
 function _weierstrass_legacy_opts_to_new(c) {
@@ -27109,13 +28462,13 @@ function _ecdsa_new_output_to_legacy(c, _ecdsa) {
   });
 }
 function weierstrass(c) {
-  const { CURVE, curveOpts, hash, ecdsaOpts } = _ecdsa_legacy_opts_to_new(c);
+  const { CURVE, curveOpts, hash: hash2, ecdsaOpts } = _ecdsa_legacy_opts_to_new(c);
   const Point2 = weierstrassN(CURVE, curveOpts);
-  const signs = ecdsa(Point2, hash, ecdsaOpts);
+  const signs = ecdsa(Point2, hash2, ecdsaOpts);
   return _ecdsa_new_output_to_legacy(c, signs);
 }
 function createCurve(curveDef, defHash) {
-  const create = (hash) => weierstrass({ ...curveDef, hash });
+  const create = (hash2) => weierstrass({ ...curveDef, hash: hash2 });
   return { ...create(defHash), create };
 }
 var p256_CURVE = {
@@ -27643,8 +28996,8 @@ function eddsa(Point2, cHash, eddsaOpts = {}) {
       throw new Error("Contexts/pre-hash are not supported");
     return data;
   });
-  function modN_LE(hash) {
-    return Fn2.create(bytesToNumberLE(hash));
+  function modN_LE(hash2) {
+    return Fn2.create(bytesToNumberLE(hash2));
   }
   function getPrivateScalar(key) {
     const len = lengths.secretKey;
@@ -27813,9 +29166,9 @@ function _eddsa_new_output_to_legacy(c, eddsa2) {
   return legacy;
 }
 function twistedEdwards(c) {
-  const { CURVE, curveOpts, hash, eddsaOpts } = _eddsa_legacy_opts_to_new(c);
+  const { CURVE, curveOpts, hash: hash2, eddsaOpts } = _eddsa_legacy_opts_to_new(c);
   const Point2 = edwards(CURVE, curveOpts);
-  const EDDSA = eddsa(Point2, hash, eddsaOpts);
+  const EDDSA = eddsa(Point2, hash2, eddsaOpts);
   return _eddsa_new_output_to_legacy(c, EDDSA);
 }
 var _0n = BigInt(0);
@@ -34934,12 +36287,12 @@ function G2(wasmContext, X2, Y2, R) {
   );
   return R;
 }
-function* makePRNG(wasmContext, pass, lane, slice2, m_, totalPasses, segmentLength, segmentOffset) {
+function* makePRNG(wasmContext, pass, lane, slice3, m_, totalPasses, segmentLength, segmentOffset) {
   wasmContext.refs.prngTmp.fill(0);
   const Z2 = wasmContext.refs.prngTmp.subarray(0, 6 * 8);
   LE64(Z2, pass, 0);
   LE64(Z2, lane, 8);
-  LE64(Z2, slice2, 16);
+  LE64(Z2, slice3, 16);
   LE64(Z2, m_, 24);
   LE64(Z2, totalPasses, 32);
   LE64(Z2, TYPE, 40);
@@ -35840,8 +37193,8 @@ init_isHex();
 init_size();
 init_fromHex();
 init_toHex();
-async function recoverPublicKey({ hash, signature }) {
-  const hashHex = isHex(hash) ? hash : toHex(hash);
+async function recoverPublicKey({ hash: hash2, signature }) {
+  const hashHex = isHex(hash2) ? hash2 : toHex(hash2);
   const { secp256k1: secp256k13 } = await Promise.resolve().then(() => (init_secp256k1(), secp256k1_exports));
   const signature_ = (() => {
     if (typeof signature === "object" && "r" in signature && "s" in signature) {
@@ -35871,8 +37224,43 @@ function toRecoveryBit(yParityOrV) {
 }
 
 // node_modules/viem/_esm/utils/signature/recoverAddress.js
-async function recoverAddress({ hash, signature }) {
-  return publicKeyToAddress(await recoverPublicKey({ hash, signature }));
+async function recoverAddress({ hash: hash2, signature }) {
+  return publicKeyToAddress(await recoverPublicKey({ hash: hash2, signature }));
+}
+
+// node_modules/viem/_esm/utils/ens/namehash.js
+init_concat();
+init_toBytes();
+init_toHex();
+init_keccak256();
+
+// node_modules/viem/_esm/utils/ens/encodedLabelToLabelhash.js
+init_isHex();
+function encodedLabelToLabelhash(label) {
+  if (label.length !== 66)
+    return null;
+  if (label.indexOf("[") !== 0)
+    return null;
+  if (label.indexOf("]") !== 65)
+    return null;
+  const hash2 = `0x${label.slice(1, 65)}`;
+  if (!isHex(hash2))
+    return null;
+  return hash2;
+}
+
+// node_modules/viem/_esm/utils/ens/namehash.js
+function namehash(name) {
+  let result = new Uint8Array(32).fill(0);
+  if (!name)
+    return bytesToHex2(result);
+  const labels = name.split(".");
+  for (let i2 = labels.length - 1; i2 >= 0; i2 -= 1) {
+    const hashFromEncodedLabel = encodedLabelToLabelhash(labels[i2]);
+    const hashed = hashFromEncodedLabel ? toBytes2(hashFromEncodedLabel) : keccak256(stringToBytes(labels[i2]), "bytes");
+    result = keccak256(concat2([result, hashed]), "bytes");
+  }
+  return bytesToHex2(result);
 }
 
 // node_modules/viem/_esm/utils/signature/hashMessage.js
@@ -35908,14 +37296,18 @@ async function recoverMessageAddress({ message, signature }) {
 }
 
 // node_modules/viem/_esm/index.js
+init_decodeFunctionResult();
+init_encodeFunctionData();
 init_getAddress();
+init_toHex();
+init_keccak256();
 
 // config/expected-identity.json
 var expected_identity_default = {
   baseUrl: "https://yusuke-hayashi.com",
   subject: "https://yusuke-hayashi.com",
   displayName: "Yusuke Hayashi",
-  releaseRevision: 3,
+  releaseRevision: 4,
   domains: [
     "yusuke-hayashi.com",
     "haya.company",
@@ -35939,7 +37331,17 @@ var expected_identity_default = {
   },
   ethereum: {
     chainId: 1,
-    address: "0x1C049D25D368bFD50c74df68c919a12aDc48C079"
+    address: "0x1C049D25D368bFD50c74df68c919a12aDc48C079",
+    ens: {
+      name: "yhay81.eth",
+      registrationExpiresAt: "2027-07-18T09:27:23.000Z",
+      textRecords: {
+        "com.github": "yhay81",
+        url: "https://yusuke-hayashi.com",
+        "key.pgp": "openpgp4fpr:b22b98abb2d503307ab6a3160718efa6506bb669",
+        description: "Yusuke Hayashi - software engineer. OpenPGP: B22B98ABB2D503307AB6A3160718EFA6506BB669"
+      }
+    }
   },
   nostr: {
     name: "yusuke",
@@ -36004,11 +37406,11 @@ var identity_history_v1_schema_default = {
   }
 };
 
-// schemas/identity-manifest-v2.schema.json
-var identity_manifest_v2_schema_default = {
+// schemas/identity-manifest-v3.schema.json
+var identity_manifest_v3_schema_default = {
   $schema: "http://json-schema.org/draft-07/schema#",
-  $id: "https://yusuke-hayashi.com/.well-known/schemas/identity-manifest-v2.schema.json",
-  title: "Yusuke Hayashi identity manifest v2",
+  $id: "https://yusuke-hayashi.com/.well-known/schemas/identity-manifest-v3.schema.json",
+  title: "Yusuke Hayashi identity manifest v3",
   type: "object",
   additionalProperties: false,
   required: [
@@ -36024,8 +37426,8 @@ var identity_manifest_v2_schema_default = {
     "thirdPartyAttestations"
   ],
   properties: {
-    $schema: { const: "https://yusuke-hayashi.com/.well-known/schemas/identity-manifest-v2.schema.json" },
-    schemaVersion: { const: 2 },
+    $schema: { const: "https://yusuke-hayashi.com/.well-known/schemas/identity-manifest-v3.schema.json" },
+    schemaVersion: { const: 3 },
     releaseRevision: { type: "integer", minimum: 1 },
     subject: {
       type: "object",
@@ -36080,10 +37482,30 @@ var identity_manifest_v2_schema_default = {
         ethereum: {
           type: "object",
           additionalProperties: false,
-          required: ["chainId", "address"],
+          required: ["chainId", "address", "ens"],
           properties: {
             chainId: { const: 1 },
-            address: { type: "string", pattern: "^0x[a-fA-F0-9]{40}$" }
+            address: { type: "string", pattern: "^0x[a-fA-F0-9]{40}$" },
+            ens: {
+              type: "object",
+              additionalProperties: false,
+              required: ["name", "registrationExpiresAt", "textRecords"],
+              properties: {
+                name: { type: "string", pattern: "^[a-z0-9-]+\\.eth$" },
+                registrationExpiresAt: { type: "string", format: "date-time" },
+                textRecords: {
+                  type: "object",
+                  additionalProperties: false,
+                  required: ["com.github", "url", "key.pgp", "description"],
+                  properties: {
+                    "com.github": { type: "string", minLength: 1 },
+                    url: { type: "string", format: "uri" },
+                    "key.pgp": { type: "string", pattern: "^openpgp4fpr:[a-f0-9]{40}$" },
+                    description: { type: "string", minLength: 1 }
+                  }
+                }
+              }
+            }
           }
         },
         nostr: {
@@ -36323,7 +37745,7 @@ var third_party_attestation_v1_schema_default = {
 // src/data.mjs
 var schemas = {
   identityHistory: identity_history_v1_schema_default,
-  identityManifest: identity_manifest_v2_schema_default,
+  identityManifest: identity_manifest_v3_schema_default,
   thirdPartyAttestation: third_party_attestation_v1_schema_default,
   thirdPartyAttestationIndex: third_party_attestation_index_v1_schema_default
 };
@@ -36471,6 +37893,60 @@ var ZBASE32_ALPHABET = "ybndrfg8ejkmcpqxot1uwisza345h769";
 var EXPIRY_WARNING_MS = 30 * 24 * 60 * 60 * 1e3;
 var FUTURE_CLOCK_SKEW_MS = 5 * 60 * 1e3;
 var MAX_HISTORY_DEPTH = 50;
+var ENS_REGISTRY = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
+var ENS_BASE_REGISTRAR = "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85";
+var ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+var ENS_REGISTRY_ABI = [
+  {
+    type: "function",
+    name: "resolver",
+    stateMutability: "view",
+    inputs: [{ name: "node", type: "bytes32" }],
+    outputs: [{ name: "resolver", type: "address" }]
+  }
+];
+var ENS_BASE_REGISTRAR_ABI = [
+  {
+    type: "function",
+    name: "ownerOf",
+    stateMutability: "view",
+    inputs: [{ name: "tokenId", type: "uint256" }],
+    outputs: [{ name: "owner", type: "address" }]
+  },
+  {
+    type: "function",
+    name: "nameExpires",
+    stateMutability: "view",
+    inputs: [{ name: "tokenId", type: "uint256" }],
+    outputs: [{ name: "expires", type: "uint256" }]
+  }
+];
+var ENS_RESOLVER_ABI = [
+  {
+    type: "function",
+    name: "addr",
+    stateMutability: "view",
+    inputs: [{ name: "node", type: "bytes32" }],
+    outputs: [{ name: "address", type: "address" }]
+  },
+  {
+    type: "function",
+    name: "name",
+    stateMutability: "view",
+    inputs: [{ name: "node", type: "bytes32" }],
+    outputs: [{ name: "name", type: "string" }]
+  },
+  {
+    type: "function",
+    name: "text",
+    stateMutability: "view",
+    inputs: [
+      { name: "node", type: "bytes32" },
+      { name: "key", type: "string" }
+    ],
+    outputs: [{ name: "value", type: "string" }]
+  }
+];
 var ATTESTATION_SIGNING_CONTEXT = "https://yusuke-hayashi.com/.well-known/attestations/signing-payload/v1";
 var HUMANITY_CHALLENGE_CONTEXT = "https://yusuke-hayashi.com/.well-known/attestations/humanity-challenge/v1";
 var ajv = new import_ajv.default({ allErrors: true, allowUnionTypes: true, strict: false });
@@ -36734,6 +38210,10 @@ function assertExpectedManifestRoots(manifest, expected, now) {
     "manifest Ethereum address changed"
   );
   invariant2(manifest.identifiers.ethereum.chainId === expected.ethereum.chainId, "manifest Ethereum chain changed");
+  invariant2(
+    JSON.stringify(manifest.identifiers.ethereum.ens) === JSON.stringify(expected.ethereum.ens),
+    "manifest ENS identity changed"
+  );
   invariant2(manifest.identifiers.nostr.hex === expected.nostr.hex, "manifest Nostr key changed");
   invariant2(manifest.identifiers.nostr.npub === expected.nostr.npub, "manifest Nostr npub changed");
   invariant2(manifest.identifiers.nostr.nip05 === expected.nostr.nip05, "manifest NIP-05 changed");
@@ -36776,6 +38256,135 @@ function validateSecurityTxtContents(cleartext, expectedBaseUrl, now = /* @__PUR
   );
   if (freshnessWarning) throw freshnessWarning;
   return expires;
+}
+function createEnsRpcClient(rpcUrl, { attempts = DEFAULT_ATTEMPTS } = {}) {
+  const resolverPromises = /* @__PURE__ */ new Map();
+  async function readContract({ address, abi, functionName, args }) {
+    const data = encodeFunctionData({ abi, functionName, args });
+    let lastError;
+    for (let attempt = 1; attempt <= attempts; attempt += 1) {
+      try {
+        const response = await fetch(rpcUrl, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            jsonrpc: "2.0",
+            id: 1,
+            method: "eth_call",
+            params: [{ to: address, data }, "latest"]
+          }),
+          signal: AbortSignal.timeout(1e4)
+        });
+        if (!response.ok) throw new Error(`Ethereum RPC returned HTTP ${response.status}`);
+        const payload = await response.json();
+        if (payload.error) throw new Error(`Ethereum RPC error ${payload.error.code}: ${payload.error.message}`);
+        return decodeFunctionResult({ abi, functionName, data: payload.result });
+      } catch (error) {
+        lastError = error;
+        if (attempt < attempts) await delay(250 * 2 ** (attempt - 1));
+      }
+    }
+    throw lastError;
+  }
+  function getResolver(name) {
+    if (!resolverPromises.has(name)) {
+      resolverPromises.set(name, readContract({
+        address: ENS_REGISTRY,
+        abi: ENS_REGISTRY_ABI,
+        functionName: "resolver",
+        args: [namehash(name)]
+      }));
+    }
+    return resolverPromises.get(name);
+  }
+  return {
+    readContract,
+    async getEnsAddress({ name }) {
+      const resolver = await getResolver(name);
+      if (getAddress(resolver) === ZERO_ADDRESS) return null;
+      return readContract({
+        address: resolver,
+        abi: ENS_RESOLVER_ABI,
+        functionName: "addr",
+        args: [namehash(name)]
+      });
+    },
+    async getEnsName({ address }) {
+      const reverseName = `${address.slice(2).toLowerCase()}.addr.reverse`;
+      const resolver = await getResolver(reverseName);
+      if (getAddress(resolver) === ZERO_ADDRESS) return null;
+      return readContract({
+        address: resolver,
+        abi: ENS_RESOLVER_ABI,
+        functionName: "name",
+        args: [namehash(reverseName)]
+      });
+    },
+    async getEnsText({ name, key }) {
+      const resolver = await getResolver(name);
+      if (getAddress(resolver) === ZERO_ADDRESS) return null;
+      return readContract({
+        address: resolver,
+        abi: ENS_RESOLVER_ABI,
+        functionName: "text",
+        args: [namehash(name), key]
+      });
+    }
+  };
+}
+async function verifyEnsIdentity({
+  client,
+  expected = expected_identity_default,
+  now = /* @__PURE__ */ new Date()
+} = {}) {
+  invariant2(Boolean(client), "ENS verification requires an Ethereum client");
+  const ens = expected.ethereum.ens;
+  invariant2(Boolean(ens), "expected ENS identity is missing");
+  const label = ens.name.replace(/\.eth$/i, "");
+  const tokenId = BigInt(keccak256(stringToHex(label)));
+  const textEntries = Object.entries(ens.textRecords);
+  let forwardAddress;
+  let reverseName;
+  let owner;
+  let expiresAt;
+  let textValues;
+  try {
+    [forwardAddress, reverseName, owner, expiresAt, textValues] = await Promise.all([
+      client.getEnsAddress({ name: ens.name }),
+      client.getEnsName({ address: getAddress(expected.ethereum.address) }),
+      client.readContract({
+        address: ENS_BASE_REGISTRAR,
+        abi: ENS_BASE_REGISTRAR_ABI,
+        functionName: "ownerOf",
+        args: [tokenId]
+      }),
+      client.readContract({
+        address: ENS_BASE_REGISTRAR,
+        abi: ENS_BASE_REGISTRAR_ABI,
+        functionName: "nameExpires",
+        args: [tokenId]
+      }),
+      Promise.all(textEntries.map(([key]) => client.getEnsText({ name: ens.name, key })))
+    ]);
+  } catch (error) {
+    throw new AvailabilityError(`unable to query ENS identity ${ens.name}`, { cause: error });
+  }
+  invariant2(Boolean(forwardAddress), `ENS forward address is missing: ${ens.name}`);
+  invariant2(
+    getAddress(forwardAddress) === getAddress(expected.ethereum.address),
+    `ENS forward address changed: ${ens.name}`
+  );
+  invariant2(reverseName === ens.name, `ENS reverse name changed for ${expected.ethereum.address}`);
+  invariant2(getAddress(owner) === getAddress(expected.ethereum.address), `ENS registrant changed: ${ens.name}`);
+  const actualExpiresAt = new Date(Number(expiresAt) * 1e3).toISOString();
+  invariant2(actualExpiresAt === ens.registrationExpiresAt, `ENS registration expiry changed: ${ens.name}`);
+  for (let index2 = 0; index2 < textEntries.length; index2 += 1) {
+    const [key, expectedValue] = textEntries[index2];
+    invariant2(textValues[index2] === expectedValue, `ENS text record changed: ${ens.name} ${key}`);
+  }
+  const freshnessWarning = collectFreshnessWarning(ens.registrationExpiresAt, now, `ENS registration ${ens.name}`);
+  if (freshnessWarning) throw freshnessWarning;
+  return `${ens.name} -> ${getAddress(forwardAddress)}; expires ${ens.registrationExpiresAt}`;
 }
 function assertAttestationLifecycle(record, now, expectedEthereumAddress) {
   const issuedAt = Date.parse(record.claim.issuedAt);
@@ -36994,7 +38603,8 @@ async function runVerification({
   expected = expected_identity_default,
   now = /* @__PURE__ */ new Date(),
   artifactDir,
-  includeExternal = true
+  includeExternal = true,
+  ethereumRpcUrl = process.env.ETH_RPC_URL ?? "https://ethereum-rpc.publicnode.com"
 } = {}) {
   const http = createHttpClient(baseUrl, { artifactDir, canonicalBaseUrl: expected.baseUrl });
   const getManifestText = once(() => http.text("/.well-known/identity.json"));
@@ -37085,6 +38695,11 @@ async function runVerification({
     return `${expected.nostr.nip05} -> ${expected.nostr.hex}`;
   }));
   if (includeExternal) {
+    results.push(await check("ens-binding", async () => verifyEnsIdentity({
+      client: createEnsRpcClient(ethereumRpcUrl),
+      expected,
+      now
+    })));
     results.push(await check("wkd", async () => {
       const [localPart, domain] = expected.openpgp.wkdEmail.toLowerCase().split("@");
       const digest = createHash2("sha1").update(localPart).digest();

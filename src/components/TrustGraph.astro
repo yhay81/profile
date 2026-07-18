@@ -1,7 +1,7 @@
 ---
 /**
  * トラストグラフ図解: GitHub / ドメイン / メール / OpenPGP 鍵 / Ethereum が
- * どの証明で結ばれているかを 1 枚の SVG で示す。
+ * ENSを含め、どの証明で結ばれているかを 1 枚の SVG で示す。
  * 色はサイトのデザイントークン(CSS 変数)を参照する。
  */
 ---
@@ -17,7 +17,8 @@
     <desc id="trust-graph-desc">
       GitHub, my domains, and my email addresses are each linked to my OpenPGP
       key by verifiable proofs; the key and my Ethereum account are linked by a
-      bidirectional cross-attestation.
+      bidirectional cross-attestation, with yhay81.eth resolving to the same
+      Ethereum account in both directions.
     </desc>
 
     <!-- edges -->
@@ -67,8 +68,8 @@
 
     <g class="node">
       <rect height="56" rx="10" width="240" x="260" y="384"></rect>
-      <text class="nodeTitle" x="380" y="408">Ethereum account</text>
-      <text class="nodeSub" x="380" y="428">0x1C04…C079</text>
+      <text class="nodeTitle" x="380" y="408">Ethereum / ENS</text>
+      <text class="nodeSub" x="380" y="428">yhay81.eth ⇄ 0x1C04…C079</text>
     </g>
   </svg>
   <figcaption class="caption">

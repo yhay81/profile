@@ -5,7 +5,7 @@ import CodeBlock from "@/components/CodeBlock.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 import TrustGraph from "@/components/TrustGraph.astro";
 import Base from "@/layouts/Base.astro";
-import { ETH_ADDRESS, KEYOXIDE_URL, PROFILE_NAME } from "@/lib/site";
+import { ENS_NAME, ETH_ADDRESS, KEYOXIDE_URL, PROFILE_NAME } from "@/lib/site";
 
 const title = `Verifiable Identity | ${PROFILE_NAME}`;
 const description =
@@ -49,6 +49,14 @@ const PROOF_CARDS: ProofCard[] = [
     external: false,
   },
   {
+    pair: "ENS ⇄ Ethereum",
+    method:
+      "On-chain forward + primary reverse resolution with monitored text records",
+    href: `https://app.ens.domains/${ENS_NAME}`,
+    linkText: ENS_NAME,
+    external: true,
+  },
+  {
     pair: "This site ⇄ me",
     method: "PGP-signed security.txt, timestamped on Bitcoin (OTS)",
     href: "/.well-known/security.txt",
@@ -86,7 +94,11 @@ open ${KEYOXIDE_URL}
 # 2. Verify the PGP ⇄ Ethereum cross-attestation
 curl -sO https://yusuke-hayashi.com/proofs/statement.txt.asc
 gpg --verify statement.txt.asc
-cast wallet verify --address ${ETH_ADDRESS} "<message>" "<signature>"`;
+cast wallet verify --address ${ETH_ADDRESS} "<message>" "<signature>"
+
+# 3. Verify ENS forward and primary reverse resolution
+cast resolve-name ${ENS_NAME}
+cast lookup-address ${ETH_ADDRESS}`;
 
 const VERIFY_BOOTSTRAP = `# Obtain this fingerprint out of band, then compare it locally
 EXPECTED_FINGERPRINT=B22B98ABB2D503307AB6A3160718EFA6506BB669
@@ -204,9 +216,8 @@ node verify-identity.mjs`;
         pins every public identifier, the hash of its{" "}
         <a href="/.well-known/identity-history.json">append-only history</a>,
         and the exact verifier bundle. A scheduled health check uses the same
-        verifier to detect broken signatures, DNS drift, and expired proofs. The{
-          " "
-        }
+        verifier to detect broken signatures, DNS/ENS drift, and expired proofs.
+        The{" "}
         <a href="/integrity">release ledger</a> separately binds every deployed byte
         to its source commit.
       </p>
@@ -214,7 +225,9 @@ node verify-identity.mjs`;
       <CodeBlock code={VERIFY_MACHINE} />
 
       <p class="updated">
-        ENS is an optional naming adapter and is not required for verification.
+        <a href={`https://app.ens.domains/${ENS_NAME}`}>{ENS_NAME}</a> resolves to
+        this identity account in both directions. ENS remains an optional naming adapter
+        rather than the root of trust.
       </p>
     </section>
   </main>

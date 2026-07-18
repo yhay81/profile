@@ -2,8 +2,8 @@
   "$schema": "https://yusuke-hayashi.com/.well-known/schemas/identity-history-v1.schema.json",
   "schemaVersion": 1,
   "subject": "https://yusuke-hayashi.com",
-  "updatedAt": "2026-07-18",
-  "previousVersionSha256": "c59d69ee41fb037fe52fb3e0ac8923ac024564107fd000e6a220177fb7809fbd",
+  "updatedAt": "2026-07-17",
+  "previousVersionSha256": "e0b878eb7a71c6f87353989a144d312331b61d41035d6f5e101a3a7eea65ec70",
   "events": [
     {
       "id": "2026-07-12/openpgp-key-rotation",
@@ -95,22 +95,6 @@
       "evidence": [
         "https://yusuke-hayashi.com/.well-known/verify-identity.mjs",
         "https://yusuke-hayashi.com/identity"
-      ]
-    },
-    {
-      "id": "2026-07-18/ens-name-registered",
-      "effectiveAt": "2026-07-18",
-      "type": "identifier-linked",
-      "summary": "The yhay81.eth name was registered for one year with matching forward and reverse resolution and public GitHub, URL, and OpenPGP text records.",
-      "identifiers": {
-        "ensName": "yhay81.eth",
-        "ethereumAddress": "0x1C049D25D368bFD50c74df68c919a12aDc48C079",
-        "registrationExpiresAt": "2027-07-18T09:27:23.000Z",
-        "releaseRevision": "4"
-      },
-      "evidence": [
-        "https://etherscan.io/tx/0x9b35b5ea112fac9bdecddcac219b9ac92e33015b1ee210e7f2a9210e7c2caff4",
-        "https://app.ens.domains/yhay81.eth"
       ]
     }
   ]

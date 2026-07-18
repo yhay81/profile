@@ -9,6 +9,7 @@ export const PGP_FINGERPRINT_SPACED =
   "B22B 98AB B2D5 0330 7AB6 A316 0718 EFA6 506B B669";
 export const PGP_FINGERPRINT_HEX = "b22b98abb2d503307ab6a3160718efa6506bb669";
 export const ETH_ADDRESS = "0x1C049D25D368bFD50c74df68c919a12aDc48C079";
+export const ENS_NAME = "yhay81.eth";
 export const KEYOXIDE_URL = `https://keyoxide.org/${PGP_FINGERPRINT_HEX}`;
 
 export type IconName =
