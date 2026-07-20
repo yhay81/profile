@@ -2,8 +2,8 @@
   "$schema": "https://yusuke-hayashi.com/.well-known/schemas/identity-history-v1.schema.json",
   "schemaVersion": 1,
   "subject": "https://yusuke-hayashi.com",
-  "updatedAt": "2026-07-20",
-  "previousVersionSha256": "63027ecbbb22c6833b320ce175d233f367cd20e295e0068cd14250c390c12363",
+  "updatedAt": "2026-07-18",
+  "previousVersionSha256": "c59d69ee41fb037fe52fb3e0ac8923ac024564107fd000e6a220177fb7809fbd",
   "events": [
     {
       "id": "2026-07-12/openpgp-key-rotation",
@@ -110,25 +110,6 @@
       },
       "evidence": [
         "https://etherscan.io/tx/0x9b35b5ea112fac9bdecddcac219b9ac92e33015b1ee210e7f2a9210e7c2caff4",
-        "https://app.ens.domains/yhay81.eth"
-      ]
-    },
-    {
-      "id": "2026-07-20/ens-profile-and-contenthash-published",
-      "effectiveAt": "2026-07-20",
-      "type": "proof-published",
-      "summary": "ENS contenthash now names an immutable IPFS identity capsule, with IPFS avatar and public X and LinkedIn profile records; the signed verifier monitors every value.",
-      "identifiers": {
-        "ensName": "yhay81.eth",
-        "contentHash": "ipfs://bafybeia7ayng6ol5j2e7uzqub4httj6mqbx2jel7zflwhfn7gaslzetwmu",
-        "avatar": "ipfs://bafybeia7ayng6ol5j2e7uzqub4httj6mqbx2jel7zflwhfn7gaslzetwmu/me.webp",
-        "twitterHandle": "yhay81",
-        "linkedinHandle": "yhay81",
-        "releaseRevision": "5"
-      },
-      "evidence": [
-        "https://etherscan.io/tx/0xa04628b362817c92a929fc10e1c18082371c7616b145417a75a38969fc0e4423",
-        "https://ipfs.io/ipfs/bafybeia7ayng6ol5j2e7uzqub4httj6mqbx2jel7zflwhfn7gaslzetwmu/",
         "https://app.ens.domains/yhay81.eth"
       ]
     }

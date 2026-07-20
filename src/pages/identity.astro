@@ -5,7 +5,13 @@ import CodeBlock from "@/components/CodeBlock.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 import TrustGraph from "@/components/TrustGraph.astro";
 import Base from "@/layouts/Base.astro";
-import { ENS_NAME, ETH_ADDRESS, KEYOXIDE_URL, PROFILE_NAME } from "@/lib/site";
+import {
+  ENS_NAME,
+  ETH_ADDRESS,
+  IPFS_IDENTITY_GATEWAY,
+  KEYOXIDE_URL,
+  PROFILE_NAME,
+} from "@/lib/site";
 
 const title = `Verifiable Identity | ${PROFILE_NAME}`;
 const description =
@@ -51,9 +57,17 @@ const PROOF_CARDS: ProofCard[] = [
   {
     pair: "ENS ⇄ Ethereum",
     method:
-      "On-chain forward + primary reverse resolution with monitored text records",
+      "On-chain forward + primary reverse resolution with monitored profile records",
     href: `https://app.ens.domains/${ENS_NAME}`,
     linkText: ENS_NAME,
+    external: true,
+  },
+  {
+    pair: "ENS ⇄ IPFS",
+    method:
+      "On-chain contenthash naming an immutable identity capsule and avatar",
+    href: IPFS_IDENTITY_GATEWAY,
+    linkText: "open IPFS capsule",
     external: true,
   },
   {
@@ -226,8 +240,12 @@ node verify-identity.mjs`;
 
       <p class="updated">
         <a href={`https://app.ens.domains/${ENS_NAME}`}>{ENS_NAME}</a> resolves to
-        this identity account in both directions. ENS remains an optional naming adapter
-        rather than the root of trust.
+        this identity account in both directions. Its contenthash names an{" "}
+        <a href={IPFS_IDENTITY_GATEWAY} rel="noreferrer" target="_blank">
+          immutable IPFS capsule
+        </a>, while the signed HTTPS manifest remains the current revocation and
+        monitoring surface. ENS remains an optional naming adapter rather than
+        the root of trust.
       </p>
     </section>
   </main>

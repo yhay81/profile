@@ -3,7 +3,7 @@ import "@/styles/article.css";
 
 import SectionHeader from "@/components/SectionHeader.astro";
 import Base from "@/layouts/Base.astro";
-import { ETH_ADDRESS, PROFILE_NAME } from "@/lib/site";
+import { ENS_NAME, ETH_ADDRESS, PROFILE_NAME } from "@/lib/site";
 
 const title = `Sign-In with Ethereum Demo | ${PROFILE_NAME}`;
 const description =
@@ -23,14 +23,17 @@ const description =
         Connects a wallet, constructs an EIP-4361 message, requests a{" "}
         <code class="inlineCode">personal_sign</code>, and verifies the
         signature entirely client-side — this site is static; there is no
-        backend to trust. Nothing is sent anywhere. This page is also the only
-        one on this site that ships JavaScript beyond a few lines for the
-        email-copy button.
+        backend to trust. After verification, a primary ENS name is resolved
+        through the wallet and forward-confirmed on Ethereum mainnet. Nothing is
+        sent to an additional RPC service. This page is also the only one on
+        this site that ships JavaScript beyond a few lines for the email-copy
+        button.
       </p>
 
       <button
         class="signButton"
         data-known-address={ETH_ADDRESS}
+        data-known-ens={ENS_NAME}
         id="siwe-button"
         type="button"
       >
@@ -46,10 +49,18 @@ const description =
         <ul class="itemList">
           <li>
             Address: <code class="inlineCode" id="siwe-address"></code>
-            <span class="badge" hidden id="siwe-badge">
+            <span class="badge" hidden id="siwe-address-badge">
               same address as the GPG cross-attestation
             </span>
           </li>
+          <li>
+            Primary ENS:
+            <code class="inlineCode" id="siwe-ens-name">Not checked</code>
+            <span class="badge" hidden id="siwe-ens-badge">
+              reverse + forward verified
+            </span>
+          </li>
+          <li class="ensNote" hidden id="siwe-ens-note"></li>
           <li>Chain ID: <span id="siwe-chain"></span></li>
           <li>Issued at: <span id="siwe-issued"></span></li>
         </ul>
@@ -71,7 +82,12 @@ const description =
   const messageEl = document.querySelector<HTMLPreElement>("#siwe-message");
   const resultEl = document.querySelector<HTMLDivElement>("#siwe-result");
   const addressEl = document.querySelector<HTMLElement>("#siwe-address");
-  const badgeEl = document.querySelector<HTMLElement>("#siwe-badge");
+  const addressBadgeEl = document.querySelector<HTMLElement>(
+    "#siwe-address-badge",
+  );
+  const ensNameEl = document.querySelector<HTMLElement>("#siwe-ens-name");
+  const ensBadgeEl = document.querySelector<HTMLElement>("#siwe-ens-badge");
+  const ensNoteEl = document.querySelector<HTMLElement>("#siwe-ens-note");
   const chainEl = document.querySelector<HTMLElement>("#siwe-chain");
   const issuedEl = document.querySelector<HTMLElement>("#siwe-issued");
 
@@ -139,7 +155,8 @@ const description =
         const nonce = crypto.randomUUID().replaceAll("-", "");
         const issuedAt = new Date().toISOString();
         const siweMessage = buildSiweMessage(address, chainId, nonce, issuedAt);
-        const { recoverMessageAddress, stringToHex } = await viemPromise;
+        const { recoverMessageAddress, resolvePrimaryEnsName, stringToHex } =
+          await viemPromise;
         if (messageEl) {
           messageEl.textContent = siweMessage;
           messageEl.hidden = false;
@@ -160,14 +177,51 @@ const description =
         }
 
         if (addressEl) addressEl.textContent = recovered;
-        if (badgeEl) {
-          badgeEl.hidden =
+        if (addressBadgeEl) {
+          addressBadgeEl.hidden =
             recovered.toLowerCase() !==
             (button.dataset.knownAddress ?? "").toLowerCase();
         }
         if (chainEl) chainEl.textContent = String(chainId);
         if (issuedEl) issuedEl.textContent = issuedAt;
         if (resultEl) resultEl.hidden = false;
+
+        if (ensNameEl) ensNameEl.textContent = "Resolving…";
+        if (ensBadgeEl) ensBadgeEl.hidden = true;
+        if (ensNoteEl) ensNoteEl.hidden = true;
+
+        if (chainId !== 1) {
+          if (ensNameEl) ensNameEl.textContent = "Not resolved";
+          if (ensNoteEl) {
+            ensNoteEl.textContent =
+              "ENS lookup is skipped because the wallet is not connected to Ethereum mainnet.";
+            ensNoteEl.hidden = false;
+          }
+        } else {
+          try {
+            const ensName = await resolvePrimaryEnsName(provider, recovered);
+            if (ensNameEl) ensNameEl.textContent = ensName ?? "Not set";
+            if (ensBadgeEl) ensBadgeEl.hidden = ensName === null;
+            if (
+              ensName !== null &&
+              ensName === button.dataset.knownEns &&
+              recovered.toLowerCase() ===
+                (button.dataset.knownAddress ?? "").toLowerCase() &&
+              ensNoteEl
+            ) {
+              ensNoteEl.textContent =
+                "This is the ENS name monitored by this site's signed identity manifest.";
+              ensNoteEl.hidden = false;
+            }
+          } catch {
+            if (ensNameEl) ensNameEl.textContent = "Temporarily unavailable";
+            if (ensNoteEl) {
+              ensNoteEl.textContent =
+                "The signature is valid; only the optional ENS lookup failed.";
+              ensNoteEl.hidden = false;
+            }
+          }
+        }
       } catch (error) {
         showError(error instanceof Error ? error.message : "Sign-in failed.");
       } finally {
@@ -240,5 +294,9 @@ const description =
     color: var(--color-accent);
     border: 1px solid var(--border-accent);
     border-radius: var(--radius-sm);
+  }
+
+  .ensNote {
+    color: var(--color-text-soft);
   }
 </style>

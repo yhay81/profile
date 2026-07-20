@@ -37307,14 +37307,14 @@ var expected_identity_default = {
   baseUrl: "https://yusuke-hayashi.com",
   subject: "https://yusuke-hayashi.com",
   displayName: "Yusuke Hayashi",
-  releaseRevision: 4,
+  releaseRevision: 5,
   domains: [
     "yusuke-hayashi.com",
     "haya.company",
     "haya-inc.co.jp"
   ],
   manifest: {
-    issuedAt: "2026-07-14T00:00:00+09:00",
+    issuedAt: "2026-07-20T09:36:11.000Z",
     expiresAt: "2027-07-13T00:00:00.000Z"
   },
   openpgp: {
@@ -37335,9 +37335,13 @@ var expected_identity_default = {
     ens: {
       name: "yhay81.eth",
       registrationExpiresAt: "2027-07-18T09:27:23.000Z",
+      contentHash: "ipfs://bafybeia7ayng6ol5j2e7uzqub4httj6mqbx2jel7zflwhfn7gaslzetwmu",
       textRecords: {
         "com.github": "yhay81",
+        "com.twitter": "yhay81",
+        "com.linkedin": "yhay81",
         url: "https://yusuke-hayashi.com",
+        avatar: "ipfs://bafybeia7ayng6ol5j2e7uzqub4httj6mqbx2jel7zflwhfn7gaslzetwmu/me.webp",
         "key.pgp": "openpgp4fpr:b22b98abb2d503307ab6a3160718efa6506bb669",
         description: "Yusuke Hayashi - software engineer. OpenPGP: B22B98ABB2D503307AB6A3160718EFA6506BB669"
       }
@@ -37406,11 +37410,11 @@ var identity_history_v1_schema_default = {
   }
 };
 
-// schemas/identity-manifest-v3.schema.json
-var identity_manifest_v3_schema_default = {
+// schemas/identity-manifest-v4.schema.json
+var identity_manifest_v4_schema_default = {
   $schema: "http://json-schema.org/draft-07/schema#",
-  $id: "https://yusuke-hayashi.com/.well-known/schemas/identity-manifest-v3.schema.json",
-  title: "Yusuke Hayashi identity manifest v3",
+  $id: "https://yusuke-hayashi.com/.well-known/schemas/identity-manifest-v4.schema.json",
+  title: "Yusuke Hayashi identity manifest v4",
   type: "object",
   additionalProperties: false,
   required: [
@@ -37426,8 +37430,8 @@ var identity_manifest_v3_schema_default = {
     "thirdPartyAttestations"
   ],
   properties: {
-    $schema: { const: "https://yusuke-hayashi.com/.well-known/schemas/identity-manifest-v3.schema.json" },
-    schemaVersion: { const: 3 },
+    $schema: { const: "https://yusuke-hayashi.com/.well-known/schemas/identity-manifest-v4.schema.json" },
+    schemaVersion: { const: 4 },
     releaseRevision: { type: "integer", minimum: 1 },
     subject: {
       type: "object",
@@ -37489,17 +37493,29 @@ var identity_manifest_v3_schema_default = {
             ens: {
               type: "object",
               additionalProperties: false,
-              required: ["name", "registrationExpiresAt", "textRecords"],
+              required: ["name", "registrationExpiresAt", "contentHash", "textRecords"],
               properties: {
                 name: { type: "string", pattern: "^[a-z0-9-]+\\.eth$" },
                 registrationExpiresAt: { type: "string", format: "date-time" },
+                contentHash: { type: "string", pattern: "^ipfs://b[a-z2-7]+$" },
                 textRecords: {
                   type: "object",
                   additionalProperties: false,
-                  required: ["com.github", "url", "key.pgp", "description"],
+                  required: [
+                    "com.github",
+                    "com.twitter",
+                    "com.linkedin",
+                    "url",
+                    "avatar",
+                    "key.pgp",
+                    "description"
+                  ],
                   properties: {
                     "com.github": { type: "string", minLength: 1 },
+                    "com.twitter": { type: "string", minLength: 1 },
+                    "com.linkedin": { type: "string", minLength: 1 },
                     url: { type: "string", format: "uri" },
+                    avatar: { type: "string", pattern: "^ipfs://b[a-z2-7]+/[a-zA-Z0-9._-]+$" },
                     "key.pgp": { type: "string", pattern: "^openpgp4fpr:[a-f0-9]{40}$" },
                     description: { type: "string", minLength: 1 }
                   }
@@ -37745,7 +37761,7 @@ var third_party_attestation_v1_schema_default = {
 // src/data.mjs
 var schemas = {
   identityHistory: identity_history_v1_schema_default,
-  identityManifest: identity_manifest_v3_schema_default,
+  identityManifest: identity_manifest_v4_schema_default,
   thirdPartyAttestation: third_party_attestation_v1_schema_default,
   thirdPartyAttestationIndex: third_party_attestation_index_v1_schema_default
 };
@@ -37890,6 +37906,7 @@ function createHttpClient(baseUrl, {
 
 // src/verify-identity.mjs
 var ZBASE32_ALPHABET = "ybndrfg8ejkmcpqxot1uwisza345h769";
+var RFC4648_BASE32_ALPHABET = "abcdefghijklmnopqrstuvwxyz234567";
 var EXPIRY_WARNING_MS = 30 * 24 * 60 * 60 * 1e3;
 var FUTURE_CLOCK_SKEW_MS = 5 * 60 * 1e3;
 var MAX_HISTORY_DEPTH = 50;
@@ -37945,6 +37962,13 @@ var ENS_RESOLVER_ABI = [
       { name: "key", type: "string" }
     ],
     outputs: [{ name: "value", type: "string" }]
+  },
+  {
+    type: "function",
+    name: "contenthash",
+    stateMutability: "view",
+    inputs: [{ name: "node", type: "bytes32" }],
+    outputs: [{ name: "value", type: "bytes" }]
   }
 ];
 var ATTESTATION_SIGNING_CONTEXT = "https://yusuke-hayashi.com/.well-known/attestations/signing-payload/v1";
@@ -37959,6 +37983,28 @@ var validators = {
 };
 function invariant2(condition, message) {
   if (!condition) throw new IntegrityError(message);
+}
+function encodeIpfsContentHash(uri) {
+  invariant2(typeof uri === "string" && uri.startsWith("ipfs://b"), "ENS contenthash must be an IPFS CIDv1 URI");
+  const encoded = uri.slice("ipfs://b".length);
+  invariant2(/^[a-z2-7]+$/.test(encoded), "ENS contenthash CID must use lowercase base32");
+  const bytes = [];
+  let accumulator = 0;
+  let bitCount = 0;
+  for (const character of encoded) {
+    const value = RFC4648_BASE32_ALPHABET.indexOf(character);
+    invariant2(value >= 0, `ENS contenthash CID contains an invalid base32 character: ${character}`);
+    accumulator = accumulator << 5 | value;
+    bitCount += 5;
+    while (bitCount >= 8) {
+      bitCount -= 8;
+      bytes.push(accumulator >> bitCount & 255);
+      accumulator &= (1 << bitCount) - 1;
+    }
+  }
+  invariant2(bitCount === 0 || accumulator === 0, "ENS contenthash CID has non-zero base32 padding");
+  invariant2(bytes[0] === 1, "ENS contenthash CID must be CIDv1");
+  return `0xe301${bytes.map((byte) => byte.toString(16).padStart(2, "0")).join("")}`;
 }
 function once(factory) {
   let promise;
@@ -38329,6 +38375,16 @@ function createEnsRpcClient(rpcUrl, { attempts = DEFAULT_ATTEMPTS } = {}) {
         functionName: "text",
         args: [namehash(name), key]
       });
+    },
+    async getEnsContentHash({ name }) {
+      const resolver = await getResolver(name);
+      if (getAddress(resolver) === ZERO_ADDRESS) return null;
+      return readContract({
+        address: resolver,
+        abi: ENS_RESOLVER_ABI,
+        functionName: "contenthash",
+        args: [namehash(name)]
+      });
     }
   };
 }
@@ -38348,8 +38404,9 @@ async function verifyEnsIdentity({
   let owner;
   let expiresAt;
   let textValues;
+  let contentHash;
   try {
-    [forwardAddress, reverseName, owner, expiresAt, textValues] = await Promise.all([
+    [forwardAddress, reverseName, owner, expiresAt, textValues, contentHash] = await Promise.all([
       client.getEnsAddress({ name: ens.name }),
       client.getEnsName({ address: getAddress(expected.ethereum.address) }),
       client.readContract({
@@ -38364,7 +38421,8 @@ async function verifyEnsIdentity({
         functionName: "nameExpires",
         args: [tokenId]
       }),
-      Promise.all(textEntries.map(([key]) => client.getEnsText({ name: ens.name, key })))
+      Promise.all(textEntries.map(([key]) => client.getEnsText({ name: ens.name, key }))),
+      client.getEnsContentHash({ name: ens.name })
     ]);
   } catch (error) {
     throw new AvailabilityError(`unable to query ENS identity ${ens.name}`, { cause: error });
@@ -38382,9 +38440,14 @@ async function verifyEnsIdentity({
     const [key, expectedValue] = textEntries[index2];
     invariant2(textValues[index2] === expectedValue, `ENS text record changed: ${ens.name} ${key}`);
   }
+  invariant2(Boolean(contentHash) && contentHash !== "0x", `ENS contenthash is missing: ${ens.name}`);
+  invariant2(
+    contentHash.toLowerCase() === encodeIpfsContentHash(ens.contentHash),
+    `ENS contenthash changed: ${ens.name}`
+  );
   const freshnessWarning = collectFreshnessWarning(ens.registrationExpiresAt, now, `ENS registration ${ens.name}`);
   if (freshnessWarning) throw freshnessWarning;
-  return `${ens.name} -> ${getAddress(forwardAddress)}; expires ${ens.registrationExpiresAt}`;
+  return `${ens.name} -> ${getAddress(forwardAddress)}; ${ens.contentHash}; expires ${ens.registrationExpiresAt}`;
 }
 function assertAttestationLifecycle(record, now, expectedEthereumAddress) {
   const issuedAt = Date.parse(record.claim.issuedAt);

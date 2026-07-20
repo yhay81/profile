@@ -10,6 +10,9 @@ export const PGP_FINGERPRINT_SPACED =
 export const PGP_FINGERPRINT_HEX = "b22b98abb2d503307ab6a3160718efa6506bb669";
 export const ETH_ADDRESS = "0x1C049D25D368bFD50c74df68c919a12aDc48C079";
 export const ENS_NAME = "yhay81.eth";
+export const IPFS_IDENTITY_CID =
+  "bafybeia7ayng6ol5j2e7uzqub4httj6mqbx2jel7zflwhfn7gaslzetwmu";
+export const IPFS_IDENTITY_GATEWAY = `https://ipfs.io/ipfs/${IPFS_IDENTITY_CID}/`;
 export const KEYOXIDE_URL = `https://keyoxide.org/${PGP_FINGERPRINT_HEX}`;
 
 export type IconName =

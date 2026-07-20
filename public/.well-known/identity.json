@@ -1,13 +1,13 @@
 {
-  "$schema": "https://yusuke-hayashi.com/.well-known/schemas/identity-manifest-v3.schema.json",
-  "schemaVersion": 3,
-  "releaseRevision": 4,
+  "$schema": "https://yusuke-hayashi.com/.well-known/schemas/identity-manifest-v4.schema.json",
+  "schemaVersion": 4,
+  "releaseRevision": 5,
   "subject": {
     "name": "Yusuke Hayashi",
     "canonicalUrl": "https://yusuke-hayashi.com"
   },
   "validity": {
-    "issuedAt": "2026-07-14T00:00:00+09:00",
+    "issuedAt": "2026-07-20T09:36:11.000Z",
     "expiresAt": "2027-07-13T00:00:00.000Z"
   },
   "identifiers": {
@@ -33,9 +33,13 @@
       "ens": {
         "name": "yhay81.eth",
         "registrationExpiresAt": "2027-07-18T09:27:23.000Z",
+        "contentHash": "ipfs://bafybeia7ayng6ol5j2e7uzqub4httj6mqbx2jel7zflwhfn7gaslzetwmu",
         "textRecords": {
           "com.github": "yhay81",
+          "com.twitter": "yhay81",
+          "com.linkedin": "yhay81",
           "url": "https://yusuke-hayashi.com",
+          "avatar": "ipfs://bafybeia7ayng6ol5j2e7uzqub4httj6mqbx2jel7zflwhfn7gaslzetwmu/me.webp",
           "key.pgp": "openpgp4fpr:b22b98abb2d503307ab6a3160718efa6506bb669",
           "description": "Yusuke Hayashi - software engineer. OpenPGP: B22B98ABB2D503307AB6A3160718EFA6506BB669"
         }
@@ -91,11 +95,11 @@
   ],
   "history": {
     "url": "https://yusuke-hayashi.com/.well-known/identity-history.json",
-    "sha256": "63027ecbbb22c6833b320ce175d233f367cd20e295e0068cd14250c390c12363"
+    "sha256": "e72446c8a848d14be539b8ad83731bdaae4fe8c38776164393ee561c630439ff"
   },
   "verifier": {
     "url": "https://yusuke-hayashi.com/.well-known/verify-identity.mjs",
-    "sha256": "0ec34988d9fc067cc220bc2bcfd569225c759b91b2c67df8c92d9140a20bad84"
+    "sha256": "ffe619482f32354565408d877d66d63fa5aca8c25666e79c5fd10ed5b7859899"
   },
   "thirdPartyAttestations": {
     "index": {

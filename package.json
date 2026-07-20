@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build && node scripts/build-integrity.mjs && node scripts/verify-release.mjs --artifact-dir dist",
+    "build:ipfs-capsule": "node scripts/build-ipfs-capsule.mjs",
     "deploy:cloudflare": "wrangler deploy --env=\"\"",
     "preview": "astro preview",
     "check": "pnpm lint:astro && pnpm lint:eslint && pnpm lint:style && pnpm lint:prettier",

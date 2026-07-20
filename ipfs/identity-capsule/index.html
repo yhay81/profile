@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      content="default-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; img-src 'self'; style-src 'unsafe-inline'"
+      http-equiv="Content-Security-Policy"
+    />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <meta content="#10243c" name="theme-color" />
+    <meta
+      content="An immutable IPFS identity capsule for yhay81.eth."
+      name="description"
+    />
+    <link href="https://yusuke-hayashi.com/identity" rel="canonical" />
+    <title>yhay81.eth — Identity Capsule</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0d1e33;
+        --deep: #091626;
+        --line: rgba(217, 230, 255, 0.16);
+        --text: #d9e6ff;
+        --soft: #9eb0ce;
+        --accent: #04ffaa;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        font-family: system-ui, sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(
+            circle at 18% 10%,
+            rgba(70, 177, 255, 0.18),
+            transparent 38rem
+          ),
+          linear-gradient(155deg, var(--bg), var(--deep));
+      }
+
+      main {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(18rem, 28rem);
+        gap: clamp(3rem, 8vw, 8rem);
+        align-items: center;
+        width: min(72rem, calc(100% - 3rem));
+        min-height: 100vh;
+        margin: auto;
+        padding: 5rem 0;
+      }
+
+      .eyebrow,
+      code,
+      .meta,
+      a {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+
+      .eyebrow {
+        margin: 0 0 1.5rem;
+        font-size: 0.75rem;
+        letter-spacing: 0.2em;
+        color: var(--accent);
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(3rem, 10vw, 7.5rem);
+        line-height: 0.9;
+        letter-spacing: -0.07em;
+      }
+
+      .name {
+        margin: 1.5rem 0 0;
+        font-size: clamp(1.2rem, 3vw, 1.8rem);
+        color: var(--soft);
+      }
+
+      .proofs {
+        display: grid;
+        gap: 1.25rem;
+        padding: 0;
+        margin: 3rem 0 0;
+        list-style: none;
+      }
+
+      .proofs li {
+        display: grid;
+        gap: 0.35rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--line);
+      }
+
+      .meta {
+        font-size: 0.7rem;
+        letter-spacing: 0.14em;
+        color: var(--soft);
+        text-transform: uppercase;
+      }
+
+      code {
+        overflow-wrap: anywhere;
+        font-size: clamp(0.72rem, 1.5vw, 0.9rem);
+        color: var(--text);
+      }
+
+      .portrait {
+        position: relative;
+      }
+
+      .portrait::before {
+        position: absolute;
+        inset: -1rem 1rem 1rem -1rem;
+        z-index: -1;
+        content: "";
+        border: 1px solid rgba(4, 255, 170, 0.4);
+      }
+
+      img {
+        display: block;
+        width: 100%;
+        height: auto;
+        filter: saturate(0.82) contrast(1.04);
+      }
+
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem 1.5rem;
+        margin-top: 2rem;
+      }
+
+      a {
+        padding: 0.35rem 0;
+        font-size: 0.8rem;
+        color: var(--text);
+        text-underline-offset: 0.3rem;
+      }
+
+      a:hover,
+      a:focus-visible {
+        color: var(--accent);
+      }
+
+      .note {
+        margin: 2rem 0 0;
+        font-size: 0.82rem;
+        line-height: 1.7;
+        color: var(--soft);
+      }
+
+      @media (max-width: 46rem) {
+        main {
+          grid-template-columns: 1fr;
+          width: min(34rem, calc(100% - 3rem));
+          padding: 5rem 0 4rem;
+        }
+
+        .portrait {
+          grid-row: 1;
+          width: min(17rem, 72vw);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div>
+        <p class="eyebrow">ENS / IPFS identity capsule</p>
+        <h1>yhay81.eth</h1>
+        <p class="name">Yusuke Hayashi</p>
+
+        <ul class="proofs">
+          <li>
+            <span class="meta">Ethereum</span>
+            <code>0x1C049D25D368bFD50c74df68c919a12aDc48C079</code>
+          </li>
+          <li>
+            <span class="meta">OpenPGP fingerprint</span>
+            <code>B22B98ABB2D503307AB6A3160718EFA6506BB669</code>
+          </li>
+        </ul>
+
+        <nav aria-label="Verification links">
+          <a href="https://yusuke-hayashi.com/identity">Verify identity ↗</a>
+          <a href="https://yusuke-hayashi.com/.well-known/identity.json"
+            >Signed manifest ↗</a
+          >
+          <a href="https://github.com/yhay81">GitHub ↗</a>
+        </nav>
+
+        <p class="note">
+          Immutable snapshot issued 2026-07-20. ENS points to this capsule by
+          content hash; current proofs and revocation state remain available at
+          the canonical HTTPS site.
+        </p>
+      </div>
+
+      <div class="portrait">
+        <img
+          alt="Portrait of Yusuke Hayashi"
+          height="700"
+          src="./me.webp"
+          width="700"
+        />
+      </div>
+    </main>
+  </body>
+</html>
