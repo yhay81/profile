@@ -23,6 +23,13 @@ const POLICY_ITEMS = [
   "All git commits and tags are signed (shown as Verified on GitHub).",
 ];
 
+const AI_DELEGATION_ITEMS = [
+  "After the owner reviews and approves the exact content, the agent may run signing commands that use the machine-scoped subkeys (git commits, detached signatures over identity artifacts), regenerate manifests, and run verification and health checks.",
+  "Only the owner performs master-key ceremonies (offline), authorizes publishing to the production site, sends on-chain transactions, and handles seeds, passphrases, revocation material, and physical media.",
+  "The agent is never shown private key material or passphrases; signing requests go through the local GnuPG agent under the owner's control.",
+  "All commits are OpenPGP-signed, so the signed git history doubles as an audit trail of agent-executed operations.",
+];
+
 const OBTAIN_ITEMS = [
   {
     label: "This site",
@@ -111,6 +118,19 @@ const OBTAIN_ITEMS = [
         <a href="/identity">identity overview</a>.
       </p>
 
+      <h2 class="heading">AI-assisted operations</h2>
+
+      <p class="bodyText">
+        Parts of this infrastructure are operated together with an AI coding
+        agent (currently Claude). The delegation boundary is explicit and narrow
+        — the background is in{" "}
+        <a href="/trust-control-plane">A Personal Trust Control Plane</a>:
+      </p>
+
+      <ul class="itemList">
+        {AI_DELEGATION_ITEMS.map((item) => <li>{item}</li>)}
+      </ul>
+
       <h2 class="heading">Previous key</h2>
 
       <p class="bodyText">
@@ -118,7 +138,7 @@ const OBTAIN_ITEMS = [
         (2020–2026) was revoked as superseded by the current key on 2026-07-12.
       </p>
 
-      <p class="updated">Last updated: 2026-07-14</p>
+      <p class="updated">Last updated: 2026-07-21</p>
     </section>
   </main>
 </Base>

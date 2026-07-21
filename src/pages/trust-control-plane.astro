@@ -1,0 +1,356 @@
+---
+import "@/styles/article.css";
+
+import SectionHeader from "@/components/SectionHeader.astro";
+import Base from "@/layouts/Base.astro";
+import { PROFILE_NAME } from "@/lib/site";
+
+const title = `A Personal Trust Control Plane | ${PROFILE_NAME}`;
+const description =
+  "Design notes on making a public identity verifiable, monitorable, and recoverable — without depending on any single platform.";
+---
+
+<Base description={description} path="/trust-control-plane" title={title}>
+  <main>
+    <section>
+      <SectionHeader
+        label="Article"
+        no="2026-07"
+        title="A Personal Trust Control Plane"
+      />
+
+      <p class="lead">
+        How I made my public identity verifiable, monitorable, and recoverable —
+        without depending on any single platform. A clearsigned copy of this
+        article is at{" "}
+        <a href="/trust-control-plane.txt.asc">/trust-control-plane.txt.asc</a>.
+      </p>
+
+      <h2 class="heading">The problem</h2>
+
+      <p class="bodyText">
+        Most of what proves "who I am" as an engineer lives inside platforms: a
+        verified badge here, an OAuth login there, a blue checkmark somewhere
+        else. Each of these works until the platform changes its policy,
+        suspends the account, gets acquired, or shuts down. None of them
+        compose: my GitHub account says nothing cryptographically about my
+        domain, my domain says nothing about my Ethereum address, and if I lost
+        a key tomorrow, none of them would tell you what to trust instead.
+      </p>
+
+      <p class="bodyText">
+        I wanted something that answers four questions, verifiably and durably:
+      </p>
+
+      <ol class="numberList">
+        <li>Who currently controls each public identifier?</li>
+        <li>
+          What is the current canonical state, and how can a third party verify
+          it?
+        </li>
+        <li>What changed over time, and how can earlier states be audited?</li>
+        <li>
+          If a key, device, or account is compromised — or I am unavailable —
+          how do revocation and migration happen?
+        </li>
+      </ol>
+
+      <p class="bodyText">
+        This article describes the system I built to answer them: a
+        <em>personal trust control plane</em>. Not a product, not a protocol
+        proposal — a working setup for one person, with the design decisions and
+        the mistakes made along the way.
+      </p>
+
+      <h2 class="heading">Control plane vs. distribution plane</h2>
+
+      <p class="bodyText">
+        The first structural decision: separate where identity is
+        <em>managed</em> from where it is <em>served</em>.
+      </p>
+
+      <ul class="itemList">
+        <li>
+          A private control-plane repository holds the expected identity
+          definition, signing targets, pre-publication artifacts, verification
+          code, runbooks, and an audit trail of every change. It contains no
+          secrets — no seeds, no private keys, no passphrases. It manages policy
+          and procedure, not key material.
+        </li>
+        <li>
+          A public distribution plane (this website and its public repository)
+          serves what third parties actually fetch: keys, signed manifests,
+          proofs, and a verifier.
+        </li>
+      </ul>
+
+      <p class="bodyText">
+        This separation means the public site can be rebuilt from scratch after
+        a compromise, because the source of truth for "what should be published"
+        never lived there.
+      </p>
+
+      <h2 class="heading">Keys: an offline root and machine-scoped subkeys</h2>
+
+      <p class="bodyText">The OpenPGP layout is deliberately boring:</p>
+
+      <ul class="itemList">
+        <li>
+          An Ed25519 certify-only primary key that stays offline and is used
+          only to manage subkeys and identities.
+        </li>
+        <li>
+          Machine-scoped signing subkeys: each machine holds its own signing
+          subkey's private material, and no private subkey is shared across
+          machines. A compromised laptop means revoking that laptop's subkeys,
+          not rebuilding my identity.
+        </li>
+        <li>Separate encryption and SSH-authentication subkeys.</li>
+      </ul>
+
+      <p class="bodyText">
+        My previous RSA-4096 key (2020–2026) was revoked as
+        <em>superseded</em>, not silently abandoned — the revocation is
+        published through the same channels as the key itself, so verifiers see
+        an explicit transition rather than a dangling old key. The full layout
+        is on the <a href="/keys">key policy page</a>.
+      </p>
+
+      <h2 class="heading">
+        Machine-readable identity, signed and history-linked
+      </h2>
+
+      <p class="bodyText">
+        Human-readable "about" pages rot. The canonical state is instead a
+        machine-readable manifest at a well-known URL:
+      </p>
+
+      <ul class="itemList">
+        <li>
+          <a href="/.well-known/identity.json"
+            ><code class="inlineCode">/.well-known/identity.json</code></a
+          >{" "}— every current identifier (OpenPGP fingerprint, Ethereum
+          address, ENS name, DNS domains, Nostr, Bluesky, GitHub), plus expiry
+          dates, verifier hash, and history references.
+        </li>
+        <li>A detached OpenPGP signature over the exact manifest bytes.</li>
+        <li>
+          An append-only history: every change to the manifest is an event, and
+          old states are published as content-addressed checkpoints, so
+          rewriting the past is detectable.
+        </li>
+        <li>
+          A pinned public verifier: a dependency-free script whose SHA-256 is
+          embedded in the signed manifest. Anyone can run it and check every
+          claim — no API keys, no secrets, no trust in my CI.
+        </li>
+      </ul>
+
+      <h2 class="heading">The trust bootstrap problem</h2>
+
+      <p class="bodyText">
+        There is a circularity trap in self-hosted identity: if you fetch my
+        key, my manifest, <em>and</em> my verifier all from the same website, then
+        an attacker who fully controls the site can hand you a consistent set of lies.
+      </p>
+
+      <p class="bodyText">
+        The bootstrap procedure therefore never treats the site alone as a trust
+        root. A first-time verifier is told to compare the fingerprint across
+        channels with different failure domains — DNS TXT records on two
+        separate domains, WKD on a third domain, the OpenPGP signature on the
+        public repository's main branch — and ideally against an out-of-band
+        copy (a business card, a previously known signature). The verification
+        instructions explicitly record <em>which channel you started from</em>,
+        because the guarantee you get depends on it. Honest limits are part of
+        the design: the procedure documents what it does <em>not</em> prove (legal
+        identity, global uniqueness, device security), not just what it does.
+      </p>
+
+      <h2 class="heading">Bridging OpenPGP and Ethereum</h2>
+
+      <p class="bodyText">
+        Neither PGP nor Ethereum depends on a platform, so they make a good pair
+        — but they know nothing about each other. The bridge is a pair of signed
+        statements: the OpenPGP key signs a statement naming the Ethereum
+        address, and the Ethereum key signs a statement naming the OpenPGP
+        fingerprint. Both are <a href="/proofs">published</a> and re-verified continuously,
+        including signature recovery back to the exact address. Either signature alone
+        would be spoofable by someone who controls just one side; the pair binds them.
+      </p>
+
+      <h2 class="heading">ENS is an adapter, not a foundation</h2>
+
+      <p class="bodyText">
+        This was the decision I got wrong first. The initial plan treated ENS
+        registration as a prerequisite. It is not: ENS is a name-resolution
+        adapter on top of an Ethereum address that must already be verifiable
+        without it. I re-planned around the principle that an ENS or IPFS outage
+        must never block signing, recovery, or attestation, then registered <code
+          class="inlineCode">yhay81.eth</code
+        > later, as an add-on.
+      </p>
+
+      <p class="bodyText">
+        The ENS profile itself is two-layered: the contenthash points to an
+        immutable IPFS capsule (a snapshot that can never silently change),
+        while the capsule points back to the canonical HTTPS site for
+        <em>current</em> revocation state and complete proofs. Immutability where
+        it helps, freshness where it matters.
+      </p>
+
+      <h2 class="heading">
+        Monitoring: checks that state their exact guarantee
+      </h2>
+
+      <p class="bodyText">
+        A weekly healthcheck verifies the whole surface using public information
+        only: manifest signature, history integrity, verifier hash,
+        cross-attestations, WKD, DNS proofs, Nostr, Bluesky, GitHub commit
+        signatures, ENS records, and OpenTimestamps artifacts. Two design rules
+        turned out to matter more than the check count:
+      </p>
+
+      <ol class="numberList">
+        <li>
+          Every check states its exact guarantee. The OpenTimestamps check, for
+          example, reports "timestamp artifacts present" separately from full
+          cryptographic verification, instead of a vague green checkmark. A
+          check that overstates its guarantee is worse than no check.
+        </li>
+        <li>
+          Expiry becomes "degraded" 30 days early. Keys, manifests,
+          security.txt, and ENS registration all expire; the system nags me
+          before third parties see anything broken.
+        </li>
+      </ol>
+
+      <p class="bodyText">
+        The healthcheck runs in CI — but CI is itself a platform dependency, so
+        an independent watchdog runs on my own machine outside GitHub Actions,
+        and verifies the hash of its own installed verifier against the signed
+        manifest (a stale or tampered monitor is itself a failure mode).
+      </p>
+
+      <h2 class="heading">Recovery is a feature, not an afterthought</h2>
+
+      <p class="bodyText">
+        The system assumes keys leak, devices vanish, and people become
+        unavailable. Prepared responses include:
+      </p>
+
+      <ul class="itemList">
+        <li>
+          Scenario-based runbooks: device compromise, subkey vs. master-key
+          leak, Ethereum seed leak (an address cannot be revoked — only migrated
+          from), account takeovers, and death/disaster handover.
+        </li>
+        <li>
+          An offline recovery kit: signed git bundles of both repositories,
+          runbooks, and public evidence, with a checksum manifest and a detached
+          OpenPGP signature. The generator refuses to run on a dirty worktree,
+          so a kit always corresponds to a signed, published state.
+        </li>
+        <li>
+          Envelope separation for physical handover: secrets in one sealed
+          envelope, procedures and contacts in another, so a successor can
+          locate and understand before opening anything sensitive.
+        </li>
+      </ul>
+
+      <h2 class="heading">A maturity model instead of checkboxes</h2>
+
+      <p class="bodyText">
+        The single most useful process decision: no capability is "done". Each
+        one is tracked through five states —
+      </p>
+
+      <p class="bodyText">
+        <code class="inlineCode"
+          >Designed → Implemented → Published → Monitored → Rehearsed</code
+        >
+      </p>
+
+      <p class="bodyText">
+        — and the honest answer is that some of mine currently sit at
+        "implemented but not yet rehearsed", and the status table says so. The
+        same honesty applies to attestations: the framework for third-party
+        attestations exists and is continuously verified, and the health report
+        states plainly that zero real attestations exist yet. A trust system
+        that rounds "framework exists" up to "verified" would be lying about
+        exactly the thing it is supposed to guarantee.
+      </p>
+
+      <h2 class="heading">Delegating operations to an AI, explicitly</h2>
+
+      <p class="bodyText">
+        Much of this infrastructure is operated together with an AI coding
+        agent. That could easily undermine the whole point ("who controls the
+        key?"), so the delegation boundary is explicit and published in the
+        <a href="/keys">key policy</a>:
+      </p>
+
+      <ul class="itemList">
+        <li>
+          After I review and approve exact content, the agent may run signing
+          commands using machine-scoped subkeys, regenerate manifests, and run
+          verification.
+        </li>
+        <li>
+          Only I perform master-key ceremonies, authorize production publishing,
+          send on-chain transactions, and handle secrets and physical media.
+        </li>
+        <li>
+          The agent never sees private key material or passphrases — signing
+          goes through the local key agent.
+        </li>
+        <li>
+          Every commit is OpenPGP-signed, so the git history is also an audit
+          trail of what the agent executed.
+        </li>
+      </ul>
+
+      <p class="bodyText">
+        In 2026, "who controls this identity" increasingly includes "what is
+        delegated to machines". Writing the boundary down — and publishing it —
+        seems more honest than pretending the delegation does not exist.
+      </p>
+
+      <h2 class="heading">What I would tell someone starting this</h2>
+
+      <ol class="numberList">
+        <li>
+          Start from the four questions, not from tools. ENS, Keyoxide, and
+          badges are adapters; control, verifiability, history, and recovery are
+          the actual requirements.
+        </li>
+        <li>
+          Track "implemented", "published", "monitored", and "rehearsed" as
+          different states. The gap between them is where trust systems quietly
+          fail.
+        </li>
+        <li>
+          Make every check state its exact guarantee — including what it does
+          not prove.
+        </li>
+        <li>
+          Plan the exit first. Revocation, migration, and handover are the parts
+          you cannot retrofit after the incident.
+        </li>
+        <li>
+          Keep the non-goals visible. No badge collecting, no single trust
+          score, no premature generalization into a framework nobody asked for.
+        </li>
+      </ol>
+
+      <p class="bodyText">
+        The verification procedure, trust-bootstrap instructions, and public
+        verifier are linked from the <a href="/identity">identity overview</a>.
+        This article is signed with the key it describes:{" "}
+        <a href="/trust-control-plane.txt.asc">clearsigned source</a>.
+      </p>
+
+      <p class="updated">Published: 2026-07-21 · Signed with subkey 828C52C5</p>
+    </section>
+  </main>
+</Base>
