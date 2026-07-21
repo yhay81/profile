@@ -1,0 +1,103 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yusuke-hayashi.com/.well-known/schemas/trust-policy-v1.schema.json",
+  "title": "Yusuke Hayashi trust policy v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "policyVersion",
+    "subject",
+    "issuedAt",
+    "expiresAt",
+    "keys",
+    "roles",
+    "releaseAuthorities"
+  ],
+  "properties": {
+    "$schema": { "const": "https://yusuke-hayashi.com/.well-known/schemas/trust-policy-v1.schema.json" },
+    "schemaVersion": { "const": 1 },
+    "policyVersion": { "type": "integer", "minimum": 1 },
+    "subject": { "const": "https://yusuke-hayashi.com" },
+    "issuedAt": { "type": "string", "format": "date-time" },
+    "expiresAt": { "type": "string", "format": "date-time" },
+    "keys": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "publicKey"],
+        "properties": {
+          "type": { "enum": ["ed25519", "ecdsa-p256-sha256"] },
+          "publicKey": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["format", "encoding", "value"],
+            "properties": {
+              "format": { "const": "spki" },
+              "encoding": { "const": "base64" },
+              "value": { "type": "string", "pattern": "^[A-Za-z0-9+/]+={0,2}$" }
+            }
+          },
+          "description": { "type": "string", "minLength": 1, "maxLength": 200 }
+        }
+      }
+    },
+    "roles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["root", "recovery"],
+      "properties": {
+        "root": { "$ref": "#/definitions/rootRole" },
+        "recovery": { "$ref": "#/definitions/rootRole" }
+      }
+    },
+    "releaseAuthorities": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/definitions/githubActionsSigstoreAuthority" }
+    }
+  },
+  "definitions": {
+    "rootRole": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["keyids", "threshold"],
+      "properties": {
+        "keyids": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^sha256-[a-f0-9]{64}$" }
+        },
+        "threshold": { "const": 2 },
+        "expiresAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "githubActionsSigstoreAuthority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "oidcIssuer",
+        "repository",
+        "workflow",
+        "sourceRef",
+        "predicateType",
+        "denySelfHostedRunners"
+      ],
+      "properties": {
+        "type": { "const": "github-actions-sigstore" },
+        "oidcIssuer": { "const": "https://token.actions.githubusercontent.com" },
+        "repository": { "type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$" },
+        "workflow": { "type": "string", "pattern": "^\\.github/workflows/[A-Za-z0-9_.-]+\\.ya?ml$" },
+        "sourceRef": { "type": "string", "pattern": "^refs/heads/[A-Za-z0-9._/-]+$" },
+        "predicateType": { "const": "https://slsa.dev/provenance/v1" },
+        "denySelfHostedRunners": { "const": true }
+      }
+    }
+  }
+}

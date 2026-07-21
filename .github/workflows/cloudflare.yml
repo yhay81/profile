@@ -7,9 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  attestations: write
   contents: read
-  id-token: write
 
 concurrency:
   group: "cloudflare-production"
@@ -39,30 +37,73 @@ jobs:
         run: pnpm security:audit
       - name: Build and enforce performance contract
         run: pnpm build
-      - name: Verify identity artifacts
-        run: node dist/.well-known/verify-identity.mjs --artifact-dir dist --local-only --report identity-health.json
       - name: Verify and package reproducible site artifact
         shell: bash
         run: |
+          create_identity_release() {
+            revision="$(node -e "const fs=require('fs'); const m=JSON.parse(fs.readFileSync('dist/.well-known/identity.json')); process.stdout.write(String(m.releaseRevision))")"
+            release_dir="dist/.well-known/releases"
+            release_archive="$release_dir/identity-release-r${revision}.tar.gz"
+            rm -rf "$release_dir"
+            mkdir -p "$release_dir"
+
+            release_paths=(
+              .well-known/identity.json
+              .well-known/identity-history.json
+              .well-known/verify-identity.mjs
+              .well-known/schemas
+              .well-known/attestations
+              .well-known/history
+              .well-known/security.txt
+              .well-known/release.json
+              proofs
+              pgp-key.asc
+            )
+            optional_paths=(
+              .well-known/identity.json.asc
+              .well-known/identity-root.json
+              .well-known/identity-root.dsse.json
+            )
+            for path in "${optional_paths[@]}"; do
+              if [[ -e "dist/$path" ]]; then
+                release_paths+=("$path")
+              fi
+            done
+
+            tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner \
+              -cf - -C dist "${release_paths[@]}" | gzip -n > "$release_archive"
+          }
+
           create_archive() {
             tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner -cf - -C dist . \
               | gzip -n > "$1"
           }
 
+          create_identity_release
+          cp dist/.well-known/releases/identity-release-r*.tar.gz "$RUNNER_TEMP/identity-release-first.tar.gz"
           create_archive "$RUNNER_TEMP/site-dist-first.tar.gz"
           pnpm build
+          create_identity_release
           create_archive site-dist.tar.gz
 
+          first_identity_digest="$(sha256sum "$RUNNER_TEMP/identity-release-first.tar.gz" | cut -d ' ' -f 1)"
+          second_identity_digest="$(sha256sum dist/.well-known/releases/identity-release-r*.tar.gz | cut -d ' ' -f 1)"
           first_digest="$(sha256sum "$RUNNER_TEMP/site-dist-first.tar.gz" | cut -d ' ' -f 1)"
           second_digest="$(sha256sum site-dist.tar.gz | cut -d ' ' -f 1)"
+          echo "first identity release:  $first_identity_digest"
+          echo "second identity release: $second_identity_digest"
           echo "first build:  $first_digest"
           echo "second build: $second_digest"
+          test "$first_identity_digest" = "$second_identity_digest"
           test "$first_digest" = "$second_digest"
-      - name: Attest site artifact provenance
-        if: github.event_name == 'push'
-        uses: actions/attest@f7c74d28b9d84cb8768d0b8ca14a4bac6ef463e6 # v4
-        with:
-          subject-path: site-dist.tar.gz
+          sha256sum \
+            dist/.well-known/identity.json \
+            dist/.well-known/releases/identity-release-r*.tar.gz \
+            site-dist.tar.gz > release-subjects.sha256
+      - name: Verify identity artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node dist/.well-known/verify-identity.mjs --artifact-dir dist --local-only --report identity-health.json
       - name: Upload verifiable site artifact
         if: github.event_name == 'push'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
@@ -70,14 +111,50 @@ jobs:
           name: site-dist-${{ github.sha }}
           path: site-dist.tar.gz
           retention-days: 30
+      - name: Upload identity attestation subjects
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: identity-subjects-${{ github.sha }}
+          path: |
+            dist/.well-known/identity.json
+            dist/.well-known/releases/identity-release-r*.tar.gz
+            release-subjects.sha256
+          retention-days: 30
+
+  attest:
+    if: github.event_name == 'push'
+    permissions:
+      artifact-metadata: write
+      attestations: write
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download site attestation subject
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: site-dist-${{ github.sha }}
+      - name: Download identity attestation subjects
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: identity-subjects-${{ github.sha }}
+      - name: Attest identity manifest, release archive, and site provenance
+        uses: actions/attest@f7c74d28b9d84cb8768d0b8ca14a4bac6ef463e6 # v4
+        with:
+          subject-checksums: release-subjects.sha256
 
   deploy:
     if: github.event_name == 'push'
     environment:
       name: production
       url: https://yusuke-hayashi.com
+    permissions:
+      attestations: read
+      contents: read
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build, attest]
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
@@ -99,9 +176,25 @@ jobs:
           name: site-dist-${{ github.sha }}
       - name: Extract and verify deployment artifact
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
+          verify_attestation() {
+            gh attestation verify "$1" \
+              --repo yhay81/profile \
+              --signer-workflow yhay81/profile/.github/workflows/cloudflare.yml \
+              --cert-oidc-issuer https://token.actions.githubusercontent.com \
+              --source-ref refs/heads/main \
+              --source-digest "$GITHUB_SHA" \
+              --predicate-type https://slsa.dev/provenance/v1 \
+              --deny-self-hosted-runners
+          }
+
+          verify_attestation site-dist.tar.gz
           mkdir dist
           tar -xzf site-dist.tar.gz -C dist
+          verify_attestation dist/.well-known/identity.json
+          verify_attestation dist/.well-known/releases/identity-release-r*.tar.gz
           node dist/.well-known/verify-identity.mjs \
             --artifact-dir dist \
             --local-only \
@@ -114,6 +207,9 @@ jobs:
 
   verify-deployment:
     if: github.event_name == 'push'
+    permissions:
+      attestations: read
+      contents: read
     runs-on: ubuntu-latest
     needs: deploy
     steps:
@@ -125,16 +221,44 @@ jobs:
           node-version: "24"
       - name: Verify published release and identity resources
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          for attempt in {1..12}; do
-            if curl --fail --silent --show-error \
+          verify_attestation() {
+            gh attestation verify "$1" \
+              --repo yhay81/profile \
+              --signer-workflow yhay81/profile/.github/workflows/cloudflare.yml \
+              --cert-oidc-issuer https://token.actions.githubusercontent.com \
+              --source-ref refs/heads/main \
+              --source-digest "$GITHUB_SHA" \
+              --predicate-type https://slsa.dev/provenance/v1 \
+              --deny-self-hosted-runners
+          }
+
+          verify_once() {
+            curl --fail --silent --show-error \
               --header 'Cache-Control: no-cache' \
               'https://yusuke-hayashi.com/.well-known/verify-identity.mjs' \
               --output verify-identity.mjs \
               && node verify-identity.mjs --local-only --report identity-health.json \
               && node scripts/verify-release.mjs \
-                --base-url https://yusuke-hayashi.com \
-                --expected-commit "$GITHUB_SHA"; then
+                  --base-url https://yusuke-hayashi.com \
+                  --expected-commit "$GITHUB_SHA" \
+              && revision="$(node -e "fetch('https://yusuke-hayashi.com/.well-known/identity.json',{headers:{'Cache-Control':'no-cache'}}).then(r=>{if(!r.ok)throw new Error(String(r.status));return r.json()}).then(m=>process.stdout.write(String(m.releaseRevision)))")" \
+              && curl --fail --silent --show-error \
+                --header 'Cache-Control: no-cache' \
+                "https://yusuke-hayashi.com/.well-known/identity.json" \
+                --output identity.json \
+              && curl --fail --silent --show-error \
+                --header 'Cache-Control: no-cache' \
+                "https://yusuke-hayashi.com/.well-known/releases/identity-release-r${revision}.tar.gz" \
+                --output "identity-release-r${revision}.tar.gz" \
+              && verify_attestation identity.json \
+              && verify_attestation "identity-release-r${revision}.tar.gz"
+          }
+
+          for attempt in {1..12}; do
+            if verify_once; then
               exit 0
             fi
 

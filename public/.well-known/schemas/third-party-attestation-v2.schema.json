@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yusuke-hayashi.com/.well-known/schemas/third-party-attestation-v2.schema.json",
+  "title": "Third-party identity attestation v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "id", "subject", "issuer", "claim", "proof", "status"],
+  "properties": {
+    "$schema": { "const": "https://yusuke-hayashi.com/.well-known/schemas/third-party-attestation-v2.schema.json" },
+    "schemaVersion": { "const": 2 },
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{2,127}$" },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id"],
+      "properties": {
+        "id": { "const": "https://yusuke-hayashi.com" },
+        "identifiers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["type", "value"],
+            "properties": {
+              "type": { "enum": ["ethereum", "openpgp", "github", "domain"] },
+              "value": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    },
+    "issuer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "identifier"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "identifier": { "type": "string", "minLength": 1 },
+        "profileUrl": { "type": "string", "format": "uri" }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "statement", "issuedAt"],
+      "properties": {
+        "type": { "enum": ["identity-witness", "professional-relationship", "key-transition-witness"] },
+        "statement": { "type": "string", "minLength": 20, "maxLength": 2000 },
+        "observedAt": { "type": "string", "format": "date-time" },
+        "verificationMethod": { "enum": ["in-person"] },
+        "issuedAt": { "type": "string", "format": "date-time" },
+        "expiresAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "proof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "address", "typedData", "signature"],
+      "properties": {
+        "type": { "const": "eip712" },
+        "address": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+        "typedData": { "type": "object" },
+        "signature": { "type": "string", "pattern": "^0x[a-fA-F0-9]+$" }
+      }
+    },
+    "evidence": { "type": "array", "items": { "type": "string", "format": "uri" } },
+    "status": { "enum": ["active", "revoked", "expired"] },
+    "revokedAt": { "type": "string", "format": "date-time" },
+    "revocationReason": { "type": "string", "minLength": 1, "maxLength": 500 }
+  }
+}

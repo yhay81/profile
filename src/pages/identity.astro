@@ -94,7 +94,7 @@ const PROOF_CARDS: ProofCard[] = [
   {
     pair: "Deployment ⇄ source",
     method:
-      "Per-file release digest, reproducible build provenance, and budgets",
+      "Sigstore/SLSA attestations over the identity manifest, deterministic release archive, and deployment archive",
     href: "/integrity",
     linkText: "release integrity",
     external: false,
@@ -126,6 +126,15 @@ gpg --locate-keys yusuke@haya.company
 curl -sO https://yusuke-hayashi.com/.well-known/identity.json
 curl -sO https://yusuke-hayashi.com/.well-known/identity.json.asc
 gpg --verify identity.json.asc identity.json
+
+# Verify the same manifest's GitHub Actions / Sigstore provenance
+gh attestation verify identity.json \\
+  --repo yhay81/profile \\
+  --signer-workflow yhay81/profile/.github/workflows/cloudflare.yml \\
+  --cert-oidc-issuer https://token.actions.githubusercontent.com \\
+  --source-ref refs/heads/main \\
+  --predicate-type https://slsa.dev/provenance/v1 \\
+  --deny-self-hosted-runners
 
 # Verify the downloaded CLI hash before executing it (Node.js 22+)
 curl -sO https://yusuke-hayashi.com/.well-known/verify-identity.mjs
@@ -231,7 +240,9 @@ node verify-identity.mjs`;
         <a href="/.well-known/identity-history.json">append-only history</a>,
         and the exact verifier bundle. A scheduled health check uses the same
         verifier to detect broken signatures, DNS/ENS drift, and expired proofs.
-        The{" "}
+        GitHub Actions also packages the manifest, schemas, policy, verifier,
+        keys, and history into a deterministic identity release and attests both
+        the manifest and archive with Sigstore/SLSA. The{" "}
         <a href="/integrity">release ledger</a> separately binds every deployed byte
         to its source commit.
       </p>

@@ -2,8 +2,8 @@
   "$schema": "https://yusuke-hayashi.com/.well-known/schemas/identity-history-v1.schema.json",
   "schemaVersion": 1,
   "subject": "https://yusuke-hayashi.com",
-  "updatedAt": "2026-07-22",
-  "previousVersionSha256": "e72446c8a848d14be539b8ad83731bdaae4fe8c38776164393ee561c630439ff",
+  "updatedAt": "2026-07-20",
+  "previousVersionSha256": "63027ecbbb22c6833b320ce175d233f367cd20e295e0068cd14250c390c12363",
   "events": [
     {
       "id": "2026-07-12/openpgp-key-rotation",
@@ -130,23 +130,6 @@
         "https://etherscan.io/tx/0xa04628b362817c92a929fc10e1c18082371c7616b145417a75a38969fc0e4423",
         "https://ipfs.io/ipfs/bafybeia7ayng6ol5j2e7uzqub4httj6mqbx2jel7zflwhfn7gaslzetwmu/",
         "https://app.ens.domains/yhay81.eth"
-      ]
-    },
-    {
-      "id": "2026-07-22/sigstore-first-release-plane",
-      "effectiveAt": "2026-07-22",
-      "type": "proof-published",
-      "summary": "Verifier release 6 added a Sigstore-first release plane: GitHub Actions attests the exact identity manifest, a deterministic identity archive, and the deployment archive with SLSA provenance; the existing OpenPGP manifest remains the compatibility root until the physical 2-of-3 ceremony.",
-      "identifiers": {
-        "releaseRevision": "6",
-        "manifestSchema": "4-compatibility",
-        "targetManifestSchema": "5",
-        "releaseAuthority": "yhay81/profile/.github/workflows/cloudflare.yml@refs/heads/main"
-      },
-      "evidence": [
-        "https://yusuke-hayashi.com/.well-known/identity.json",
-        "https://yusuke-hayashi.com/.well-known/releases/identity-release-r6.tar.gz",
-        "https://yusuke-hayashi.com/integrity"
       ]
     }
   ]

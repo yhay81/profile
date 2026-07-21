@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yusuke-hayashi.com/.well-known/schemas/dsse-envelope-v1.schema.json",
+  "title": "DSSE envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["payloadType", "payload", "signatures"],
+  "properties": {
+    "payloadType": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "payload": { "type": "string", "pattern": "^[A-Za-z0-9+/]*={0,2}$" },
+    "signatures": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["keyid", "sig"],
+        "properties": {
+          "keyid": { "type": "string", "pattern": "^sha256-[a-f0-9]{64}$" },
+          "sig": { "type": "string", "pattern": "^[A-Za-z0-9+/]+={0,2}$" }
+        }
+      }
+    }
+  }
+}

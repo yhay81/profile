@@ -283,7 +283,7 @@ async function generateReleaseManifest({
       provenance: {
         predicateType: "https://slsa.dev/provenance/v1",
         verifyCommand:
-          "gh attestation verify site-dist.tar.gz -R yhay81/profile",
+          "gh attestation verify site-dist.tar.gz --repo yhay81/profile --signer-workflow yhay81/profile/.github/workflows/cloudflare.yml --cert-oidc-issuer https://token.actions.githubusercontent.com --source-ref refs/heads/main --deny-self-hosted-runners",
       },
     },
     deployment: {

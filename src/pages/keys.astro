@@ -6,9 +6,9 @@ import SectionHeader from "@/components/SectionHeader.astro";
 import Base from "@/layouts/Base.astro";
 import { KEYOXIDE_URL, PGP_FINGERPRINT_HEX, PROFILE_NAME } from "@/lib/site";
 
-const title = `OpenPGP Key Policy | ${PROFILE_NAME}`;
+const title = `OpenPGP Compatibility Policy | ${PROFILE_NAME}`;
 const description =
-  "How my OpenPGP key is structured and operated, and where to obtain it.";
+  "How my compatibility OpenPGP key is operated while routine releases move to Sigstore provenance.";
 
 const KEY_STRUCTURE = `Primary  ed25519  B22B 98AB B2D5 0330 7AB6 A316 0718 EFA6 506B B669  [C] certify-only
 Subkey   ed25519  0C15 3FFE 2B02 7436 5ACB 1BF1 AEFA 86FA 828C 52C5  [S] signing (git, documents)
@@ -67,12 +67,19 @@ const OBTAIN_ITEMS = [
 <Base description={description} path="/keys" title={title}>
   <main>
     <section>
-      <SectionHeader label="Keys" no="PGP" title="OpenPGP Key Policy" />
+      <SectionHeader
+        label="Keys"
+        no="PGP"
+        title="OpenPGP Compatibility Policy"
+      />
 
       <p class="lead">
-        How my OpenPGP key is structured and operated, and where to obtain it.
-        Publishing the operating policy costs nothing in security — the key
-        material stays offline; only the design is public.
+        This key remains the production root for the version 4 identity manifest
+        and verifies historical signatures. Routine site releases now use GitHub
+        Actions OIDC, Sigstore, and SLSA provenance. A future version 5 manifest
+        will put release-authority changes and recovery behind a separately held
+        2-of-3 root; that root is not active until its physical key ceremony is
+        complete.
       </p>
 
       <h2 class="heading">Current key (since 2026-07-12)</h2>

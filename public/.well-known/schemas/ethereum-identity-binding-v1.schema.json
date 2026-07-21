@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yusuke-hayashi.com/.well-known/schemas/ethereum-identity-binding-v1.schema.json",
+  "title": "Ethereum identity binding v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "subject",
+    "chainId",
+    "address",
+    "accountType",
+    "rootPolicy",
+    "issuedAt",
+    "expiresAt",
+    "typedData",
+    "signature"
+  ],
+  "properties": {
+    "$schema": { "const": "https://yusuke-hayashi.com/.well-known/schemas/ethereum-identity-binding-v1.schema.json" },
+    "schemaVersion": { "const": 1 },
+    "subject": { "const": "https://yusuke-hayashi.com" },
+    "chainId": { "const": 1 },
+    "address": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+    "accountType": { "enum": ["eoa-compatibility", "erc1271"] },
+    "rootPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sha256", "policyVersion"],
+      "properties": {
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "policyVersion": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "issuedAt": { "type": "string", "format": "date-time" },
+    "expiresAt": { "type": "string", "format": "date-time" },
+    "typedData": { "type": "object" },
+    "signature": { "type": "string", "pattern": "^0x[a-fA-F0-9]+$" }
+  }
+}

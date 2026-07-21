@@ -26,6 +26,15 @@ const description =
         <a href="/trust-control-plane.txt.asc">/trust-control-plane.txt.asc</a>.
       </p>
 
+      <p class="bodyText">
+        Architecture update (2026-07-22): this article preserves the deployed
+        OpenPGP-first version 4 design. Routine releases now use GitHub Actions
+        OIDC, Sigstore, and SLSA provenance over a deterministic identity
+        archive. The planned version 5 design limits a 2-of-3 offline root to
+        release-authority changes and recovery; OpenPGP remains available for
+        compatibility and historical verification.
+      </p>
+
       <h2 class="heading">The problem</h2>
 
       <p class="bodyText">

@@ -1,0 +1,206 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yusuke-hayashi.com/.well-known/schemas/identity-manifest-v5.schema.json",
+  "title": "Yusuke Hayashi identity manifest v5",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "releaseRevision",
+    "subject",
+    "validity",
+    "trust",
+    "identifiers",
+    "proofs",
+    "history",
+    "verifier",
+    "release",
+    "thirdPartyAttestations"
+  ],
+  "properties": {
+    "$schema": { "const": "https://yusuke-hayashi.com/.well-known/schemas/identity-manifest-v5.schema.json" },
+    "schemaVersion": { "const": 5 },
+    "releaseRevision": { "type": "integer", "minimum": 1 },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "type": "string", "format": "uri" },
+        "name": { "type": "string", "minLength": 1 }
+      }
+    },
+    "validity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["issuedAt", "expiresAt"],
+      "properties": {
+        "issuedAt": { "type": "string", "format": "date-time" },
+        "expiresAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "trust": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rootPolicy", "releaseAuthority"],
+      "properties": {
+        "rootPolicy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["url", "sha256", "policyVersion", "envelopeUrl"],
+          "properties": {
+            "url": { "type": "string", "format": "uri" },
+            "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            "policyVersion": { "type": "integer", "minimum": 1 },
+            "envelopeUrl": { "type": "string", "format": "uri" }
+          }
+        },
+        "releaseAuthority": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{2,63}$" },
+        "legacyOpenPgpSignature": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["url", "fingerprint"],
+          "properties": {
+            "url": { "type": "string", "format": "uri" },
+            "fingerprint": { "type": "string", "pattern": "^[A-F0-9]{40,64}$" }
+          }
+        }
+      }
+    },
+    "identifiers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["domains", "github", "ethereum", "nostr", "bluesky"],
+      "properties": {
+        "domains": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "format": "hostname" }
+        },
+        "github": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["handle", "profile", "repository"],
+          "properties": {
+            "handle": { "type": "string" },
+            "profile": { "type": "string", "format": "uri" },
+            "repository": { "type": "string", "format": "uri" }
+          }
+        },
+        "openpgp": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["fingerprint", "uri", "keyUrl", "wkdEmail", "status"],
+          "properties": {
+            "fingerprint": { "type": "string", "pattern": "^[A-F0-9]{40,64}$" },
+            "uri": { "type": "string", "pattern": "^openpgp4fpr:[a-f0-9]{40,64}$" },
+            "keyUrl": { "type": "string", "format": "uri" },
+            "wkdEmail": { "type": "string", "format": "email" },
+            "status": { "const": "compatibility" }
+          }
+        },
+        "ethereum": { "$ref": "#/definitions/ethereumIdentifier" },
+        "nostr": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["npub", "hex", "nip05"],
+          "properties": {
+            "npub": { "type": "string", "pattern": "^npub1[023456789acdefghjklmnpqrstuvwxyz]+$" },
+            "hex": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            "nip05": { "type": "string", "format": "email" }
+          }
+        },
+        "bluesky": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["handle", "did"],
+          "properties": {
+            "handle": { "type": "string", "format": "hostname" },
+            "did": { "type": "string", "pattern": "^did:plc:[a-z2-7]+$" }
+          }
+        }
+      }
+    },
+    "proofs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "type", "url"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "type": { "type": "string", "minLength": 1 },
+          "url": { "type": "string", "format": "uri" },
+          "mediaType": { "type": "string" },
+          "status": { "enum": ["current", "compatibility", "historical"] }
+        }
+      }
+    },
+    "history": { "$ref": "#/definitions/hashedResource" },
+    "verifier": { "$ref": "#/definitions/hashedResource" },
+    "release": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["archive", "provenance"],
+      "properties": {
+        "archive": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["url", "mediaType"],
+          "properties": {
+            "url": { "type": "string", "format": "uri" },
+            "mediaType": { "const": "application/gzip" }
+          }
+        },
+        "provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "oidcIssuer", "repository", "workflow", "sourceRef", "verification"],
+          "properties": {
+            "type": { "const": "https://slsa.dev/provenance/v1" },
+            "oidcIssuer": { "const": "https://token.actions.githubusercontent.com" },
+            "repository": { "type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$" },
+            "workflow": { "type": "string", "pattern": "^\\.github/workflows/[A-Za-z0-9_.-]+\\.ya?ml$" },
+            "sourceRef": { "type": "string", "pattern": "^refs/heads/[A-Za-z0-9._/-]+$" },
+            "verification": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "thirdPartyAttestations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["index", "policy", "schema"],
+      "properties": {
+        "index": { "$ref": "#/definitions/hashedResource" },
+        "policy": { "$ref": "#/definitions/hashedResource" },
+        "schema": { "type": "string", "format": "uri" }
+      }
+    }
+  },
+  "definitions": {
+    "hashedResource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url", "sha256"],
+      "properties": {
+        "url": { "type": "string", "format": "uri" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "policyVersion": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "ethereumIdentifier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["chainId", "address", "accountType", "ens"],
+      "properties": {
+        "chainId": { "const": 1 },
+        "address": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+        "accountType": { "enum": ["eoa-compatibility", "erc1271"] },
+        "ens": { "type": "object" }
+      }
+    }
+  }
+}
