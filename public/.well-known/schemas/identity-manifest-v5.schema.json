@@ -57,7 +57,7 @@
           }
         },
         "releaseAuthority": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{2,63}$" },
-        "legacyOpenPgpSignature": {
+        "openPgpCompatibilitySignature": {
           "type": "object",
           "additionalProperties": false,
           "required": ["url", "fingerprint"],
@@ -198,7 +198,7 @@
       "properties": {
         "chainId": { "const": 1 },
         "address": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
-        "accountType": { "enum": ["eoa-compatibility", "erc1271"] },
+        "accountType": { "enum": ["eoa", "erc1271"] },
         "ens": { "type": "object" }
       }
     }

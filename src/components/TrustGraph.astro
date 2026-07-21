@@ -1,7 +1,6 @@
 ---
 /**
- * トラストグラフ図解: GitHub / ドメイン / メール / OpenPGP 鍵 / Ethereum が
- * ENSを含め、どの証明で結ばれているかを 1 枚の SVG で示す。
+ * 現在のSigstore release planeと公開identifier adapterを1枚のSVGで示す。
  * 色はサイトのデザイントークン(CSS 変数)を参照する。
  */
 ---
@@ -15,55 +14,60 @@
   >
     <title id="trust-graph-title">Trust graph of my identities</title>
     <desc id="trust-graph-desc">
-      GitHub, my domains, and my email addresses are each linked to my OpenPGP
-      key by verifiable proofs; the key and my Ethereum account are linked by a
-      bidirectional cross-attestation, with yhay81.eth resolving to the same
-      Ethereum account in both directions.
+      A pinned GitHub Actions identity produces a Sigstore-attested identity
+      release. OpenPGP, public identifier adapters, and Ethereum proofs are
+      independently verified against that release.
     </desc>
 
     <!-- edges -->
     <g class="edges">
       <path class="edge" d="M 190 96 L 328 208"></path>
       <path class="edge" d="M 570 96 L 432 208"></path>
+      <path class="edge" d="M 172 250 L 278 250"></path>
       <path class="edge" d="M 588 250 L 482 250"></path>
       <path class="edge twoWay" d="M 380 292 L 380 384"></path>
     </g>
 
     <!-- edge labels -->
     <g class="edgeLabels">
-      <text x="200" y="166">Keyoxide proof</text>
-      <text x="202" y="184">signed commits</text>
-      <text x="472" y="166">WKD</text>
-      <text x="472" y="184">keys.openpgp.org</text>
-      <text x="486" y="238">DNS TXT</text>
-      <text x="396" y="330">cross-</text>
-      <text x="396" y="348">attestation</text>
+      <text x="202" y="166">OIDC certificate</text>
+      <text x="472" y="166">repo / workflow / ref</text>
+      <text x="178" y="238">compatibility</text>
+      <text x="486" y="238">signed claims</text>
+      <text x="396" y="330">EIP-712 /</text>
+      <text x="396" y="348">cross-proof</text>
     </g>
 
     <!-- nodes -->
     <g class="node">
       <rect height="56" rx="10" width="180" x="100" y="40"></rect>
-      <text class="nodeTitle" x="190" y="64">GitHub</text>
-      <text class="nodeSub" x="190" y="84">yhay81</text>
+      <text class="nodeTitle" x="190" y="64">GitHub Actions</text>
+      <text class="nodeSub" x="190" y="84">OIDC · hosted runner</text>
     </g>
 
     <g class="node">
       <rect height="56" rx="10" width="180" x="480" y="40"></rect>
-      <text class="nodeTitle" x="570" y="64">Email</text>
-      <text class="nodeSub" x="570" y="84">2 verified identities</text>
+      <text class="nodeTitle" x="570" y="64">Release policy</text>
+      <text class="nodeSub" x="570" y="84">exact workflow context</text>
+    </g>
+
+    <g class="node">
+      <rect height="56" rx="10" width="164" x="8" y="222"></rect>
+      <text class="nodeTitle" x="90" y="246">OpenPGP</text>
+      <text class="nodeSub" x="90" y="266">compatibility proofs</text>
     </g>
 
     <g class="node">
       <rect height="56" rx="10" width="164" x="588" y="222"></rect>
-      <text class="nodeTitle" x="670" y="246">Domains</text>
-      <text class="nodeSub" x="670" y="266">×2 (DNS proofs)</text>
+      <text class="nodeTitle" x="670" y="246">Public adapters</text>
+      <text class="nodeSub" x="670" y="266">DNS · WKD · Nostr</text>
     </g>
 
     <g class="node keyNode">
       <rect height="84" rx="10" width="204" x="278" y="208"></rect>
-      <text class="nodeTitle" x="380" y="240">OpenPGP key</text>
-      <text class="nodeSub" x="380" y="262">B22B 98AB … 506B B669</text>
-      <text class="nodeSub" x="380" y="280">primary key offline</text>
+      <text class="nodeTitle" x="380" y="240">Sigstore release</text>
+      <text class="nodeSub" x="380" y="262">manifest + archive</text>
+      <text class="nodeSub" x="380" y="280">SLSA provenance</text>
     </g>
 
     <g class="node">
@@ -73,8 +77,8 @@
     </g>
   </svg>
   <figcaption class="caption">
-    Every line is independently verifiable — nothing on this page asks you to
-    trust it.
+    Release provenance and identifier control are separate checks; every edge
+    names the evidence it requires.
   </figcaption>
 </figure>
 

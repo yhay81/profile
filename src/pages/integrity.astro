@@ -18,7 +18,7 @@ const CHECKS = [
   ["release", "Published release manifest"],
   ["assets", "Deployed asset integrity"],
   ["performance", "Performance contract"],
-  ["identity", "Identity manifest signature"],
+  ["identity", "Identity compatibility signature"],
   ["history", "Append-only identity history"],
   ["pgp-eth", "OpenPGP → Ethereum proof"],
   ["eth-pgp", "Ethereum → OpenPGP proof"],
@@ -37,8 +37,8 @@ const CHECKS = [
 
       <p class="lead">
         Do not trust the badge. Recompute it. This page binds the live bytes to
-        a Git commit, a reproducible build, a strict performance contract, and
-        my cryptographic identity.
+        a Git commit, strict Sigstore/SLSA provenance, a reproducible build, a
+        performance contract, and my cryptographic identity.
       </p>
 
       <div class="releaseStrip" data-status="loading" id="release-strip">

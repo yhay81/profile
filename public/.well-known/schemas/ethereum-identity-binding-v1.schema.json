@@ -23,7 +23,7 @@
     "subject": { "const": "https://yusuke-hayashi.com" },
     "chainId": { "const": 1 },
     "address": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
-    "accountType": { "enum": ["eoa-compatibility", "erc1271"] },
+    "accountType": { "enum": ["eoa", "erc1271"] },
     "rootPolicy": {
       "type": "object",
       "additionalProperties": false,

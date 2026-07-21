@@ -37559,14 +37559,14 @@ var expected_identity_default = {
   baseUrl: "https://yusuke-hayashi.com",
   subject: "https://yusuke-hayashi.com",
   displayName: "Yusuke Hayashi",
-  releaseRevision: 6,
+  releaseRevision: 7,
   domains: [
     "yusuke-hayashi.com",
     "haya.company",
     "haya-inc.co.jp"
   ],
   manifest: {
-    issuedAt: "2026-07-21T18:25:00.000Z",
+    issuedAt: "2026-07-21T19:29:51.000Z",
     expiresAt: "2027-07-13T00:00:00.000Z"
   },
   openpgp: {
@@ -37623,20 +37623,6 @@ var expected_identity_default = {
     sourceRef: "refs/heads/main",
     predicateType: "https://slsa.dev/provenance/v1",
     denySelfHostedRunners: true
-  },
-  trustMigration: {
-    phase: "compatibility",
-    currentManifestSchema: 4,
-    targetManifestSchema: 5,
-    targetRootKeys: 3,
-    targetRootThreshold: 2,
-    activationRequires: [
-      "three distinct offline root public keys",
-      "root-approved GitHub Actions Sigstore release authority",
-      "Sigstore-attested deterministic release archive and manifest",
-      "old and new verification paths passing together",
-      "offline recovery drill"
-    ]
   }
 };
 
@@ -37693,7 +37679,7 @@ var ethereum_identity_binding_v1_schema_default = {
     subject: { const: "https://yusuke-hayashi.com" },
     chainId: { const: 1 },
     address: { type: "string", pattern: "^0x[a-fA-F0-9]{40}$" },
-    accountType: { enum: ["eoa-compatibility", "erc1271"] },
+    accountType: { enum: ["eoa", "erc1271"] },
     rootPolicy: {
       type: "object",
       additionalProperties: false,
@@ -37992,7 +37978,7 @@ var identity_manifest_v5_schema_default = {
           }
         },
         releaseAuthority: { type: "string", pattern: "^[a-z0-9][a-z0-9-]{2,63}$" },
-        legacyOpenPgpSignature: {
+        openPgpCompatibilitySignature: {
           type: "object",
           additionalProperties: false,
           required: ["url", "fingerprint"],
@@ -38133,7 +38119,7 @@ var identity_manifest_v5_schema_default = {
       properties: {
         chainId: { const: 1 },
         address: { type: "string", pattern: "^0x[a-fA-F0-9]{40}$" },
-        accountType: { enum: ["eoa-compatibility", "erc1271"] },
+        accountType: { enum: ["eoa", "erc1271"] },
         ens: { type: "object" }
       }
     }
@@ -38722,7 +38708,7 @@ async function verifyEthereumIdentityBinding(binding, {
     }
     invariant2(result.toLowerCase() === ERC1271_MAGIC_VALUE, "ERC-1271 signature is invalid");
   } else {
-    invariant2(binding.accountType === "eoa-compatibility", "unsupported Ethereum identity account type");
+    invariant2(binding.accountType === "eoa", "unsupported Ethereum identity account type");
     let recovered;
     try {
       recovered = await recoverTypedDataAddress({ ...expectedTypedData, signature: binding.signature });
@@ -39551,7 +39537,7 @@ function assertExpectedManifestRoots(manifest, expected, now) {
     "manifest attestation schema URL changed"
   );
   if (manifest.schemaVersion === 5) {
-    invariant5(Boolean(expected.trust), "v5 verification requires a pinned trust policy configuration");
+    invariant5(Boolean(expected.trust), "authority-root verification requires a pinned trust policy configuration");
     invariant5(
       manifest.trust.rootPolicy.url === `${canonicalBaseUrl}/.well-known/identity-root.json`,
       "manifest trust policy URL changed"
@@ -39990,7 +39976,7 @@ async function runVerification({
   });
   const getTrustPolicyAssessment = once(async () => {
     const { manifest } = await getManifestAssessment();
-    invariant5(manifest.schemaVersion === 5, "trust policy is only available for manifest v5");
+    invariant5(manifest.schemaVersion === 5, "trust policy requires an authority-bound manifest");
     const policyText = await http.text(manifest.trust.rootPolicy.url);
     invariant5(sha2563(policyText) === manifest.trust.rootPolicy.sha256, "trust policy hash mismatch");
     invariant5(sha2563(policyText) === expected.trust.rootPolicySha256, "trust policy does not match the pinned digest");
@@ -40037,7 +40023,7 @@ async function runVerification({
     }
     const signature = await http.text("/.well-known/identity.json.asc");
     await verifyDetachedOpenPgp(await getManifestText(), signature, await getRootKey());
-    return { role: "legacy-openpgp", threshold: 1, verifiedKeyids: [expected.openpgp.fingerprint] };
+    return { role: "openpgp-compatibility", threshold: 1, verifiedKeyids: [expected.openpgp.fingerprint] };
   });
   const getTrustedManifest = once(async () => {
     const [{ manifest }] = await Promise.all([
@@ -40060,17 +40046,17 @@ async function runVerification({
       return `policy v${policy.policyVersion}; root ${rootApproval.verifiedKeyids.length}/${rootApproval.threshold} approved`;
     }
     const key = await getRootKey();
-    await assertCurrentOpenPgpKey(key, now, "legacy OpenPGP root key");
-    return `legacy OpenPGP ${normalizeFingerprint(key.getFingerprint())}`;
+    await assertCurrentOpenPgpKey(key, now, "OpenPGP compatibility key");
+    return `OpenPGP compatibility ${normalizeFingerprint(key.getFingerprint())}`;
   }));
   results.push(await check("identity-manifest-signature", async () => {
     const verification = await verifyManifestSignature();
-    return verification.role === "legacy-openpgp" ? "legacy detached OpenPGP signature valid" : `Sigstore SLSA provenance valid for ${verification.verifiedKeyids[0]}`;
+    return verification.role === "openpgp-compatibility" ? "OpenPGP compatibility signature valid" : `Sigstore SLSA provenance valid for ${verification.verifiedKeyids[0]}`;
   }));
   if (expected.trust) {
     results.push(await check("ethereum-identity-binding", async () => {
       const manifest = await getTrustedManifest();
-      invariant5(manifest.schemaVersion === 5, "modern Ethereum binding requires manifest v5");
+      invariant5(manifest.schemaVersion === 5, "Ethereum authority binding requires an authority-bound manifest");
       const binding = JSON.parse(await http.text("/proofs/ethereum-identity.json"));
       validateWithSchema("ethereumIdentityBinding", binding);
       const verified2 = await verifyEthereumIdentityBinding(binding, {
@@ -40185,7 +40171,7 @@ async function runVerification({
         return `${response.sha.slice(0, 12)} (SSH signature pinned to hardware-backed signing key)`;
       }
       await verifyGitHubCommit(response, await getRootKey());
-      return `${response.sha.slice(0, 12)} (legacy OpenPGP signature pinned to compatibility key)`;
+      return `${response.sha.slice(0, 12)} (OpenPGP compatibility signature pinned to configured key)`;
     }, { availabilityIsWarning: true }));
     results.push(await check("keyoxide-profile", async () => {
       const page = await http.text(`https://keyoxide.org/${expected.openpgp.fingerprint.toLowerCase()}`);

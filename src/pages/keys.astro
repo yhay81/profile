@@ -8,7 +8,7 @@ import { KEYOXIDE_URL, PGP_FINGERPRINT_HEX, PROFILE_NAME } from "@/lib/site";
 
 const title = `OpenPGP Compatibility Policy | ${PROFILE_NAME}`;
 const description =
-  "How my compatibility OpenPGP key is operated while routine releases move to Sigstore provenance.";
+  "How the current OpenPGP compatibility key is separated from Sigstore release provenance.";
 
 const KEY_STRUCTURE = `Primary  ed25519  B22B 98AB B2D5 0330 7AB6 A316 0718 EFA6 506B B669  [C] certify-only
 Subkey   ed25519  0C15 3FFE 2B02 7436 5ACB 1BF1 AEFA 86FA 828C 52C5  [S] signing (git, documents)
@@ -20,14 +20,14 @@ const POLICY_ITEMS = [
   "The primary (certify-only) key is kept offline and is used solely to manage subkeys and identities. Day-to-day operations use subkeys only.",
   "Signing subkeys are machine-scoped — no private subkey is shared across machines.",
   "Keys have no expiry; compromise response relies on revocation and re-distribution via keyservers and WKD.",
-  "All git commits and tags are signed (shown as Verified on GitHub).",
+  "Git commits and tags are signed with a configured key and verified against its exact public key, not a badge alone.",
 ];
 
 const AI_DELEGATION_ITEMS = [
   "After the owner reviews and approves the exact content, the agent may run signing commands that use the machine-scoped subkeys (git commits, detached signatures over identity artifacts), regenerate manifests, and run verification and health checks.",
   "Only the owner performs master-key ceremonies (offline), authorizes publishing to the production site, sends on-chain transactions, and handles seeds, passphrases, revocation material, and physical media.",
   "The agent is never shown private key material or passphrases; signing requests go through the local GnuPG agent under the owner's control.",
-  "All commits are OpenPGP-signed, so the signed git history doubles as an audit trail of agent-executed operations.",
+  "Signed git history is retained as audit evidence, and signer verification is pinned to configured public keys.",
 ];
 
 const OBTAIN_ITEMS = [
@@ -74,15 +74,15 @@ const OBTAIN_ITEMS = [
       />
 
       <p class="lead">
-        This key remains the production root for the version 4 identity manifest
-        and verifies historical signatures. Routine site releases now use GitHub
-        Actions OIDC, Sigstore, and SLSA provenance. A future version 5 manifest
-        will put release-authority changes and recovery behind a separately held
-        2-of-3 root; that root is not active until its physical key ceremony is
-        complete.
+        Routine releases use GitHub Actions OIDC, Sigstore, and SLSA provenance.
+        This certificate supplies the current manifest compatibility signature,
+        WKD, signed security.txt, cross-proofs, and configured Git signatures.
+        It does not replace release-attestation verification. The separate
+        2-of-3 authority root is reported as not configured until its hardware
+        ceremony is complete.
       </p>
 
-      <h2 class="heading">Current key (since 2026-07-12)</h2>
+      <h2 class="heading">Configured certificate</h2>
 
       <CodeBlock code={KEY_STRUCTURE} />
 
@@ -129,8 +129,8 @@ const OBTAIN_ITEMS = [
 
       <p class="bodyText">
         Parts of this infrastructure are operated together with an AI coding
-        agent (currently Claude). The delegation boundary is explicit and narrow
-        — the background is in{" "}
+        agent. The delegation boundary is explicit and narrow — the background
+        is in{" "}
         <a href="/trust-control-plane">A Personal Trust Control Plane</a>:
       </p>
 
@@ -138,14 +138,10 @@ const OBTAIN_ITEMS = [
         {AI_DELEGATION_ITEMS.map((item) => <li>{item}</li>)}
       </ul>
 
-      <h2 class="heading">Previous key</h2>
-
-      <p class="bodyText">
-        RSA-4096 <code class="inlineCode">89C3 25D4 1DD3 055B</code>{" "}
-        (2020–2026) was revoked as superseded by the current key on 2026-07-12.
+      <p class="updated">
+        Cryptographic audit history remains available through the signed
+        manifest history; this policy describes only the current key role.
       </p>
-
-      <p class="updated">Last updated: 2026-07-21</p>
     </section>
   </main>
 </Base>

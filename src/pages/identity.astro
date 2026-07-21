@@ -15,7 +15,7 @@ import {
 
 const title = `Verifiable Identity | ${PROFILE_NAME}`;
 const description =
-  "How my GitHub, domains, email, OpenPGP key, and Ethereum account are cryptographically linked — and how to verify it yourself.";
+  "How a Sigstore-attested release binds my public identifiers and how to verify it independently.";
 
 interface ProofCard {
   pair: string;
@@ -85,8 +85,9 @@ const PROOF_CARDS: ProofCard[] = [
     external: false,
   },
   {
-    pair: "Machine-readable root",
-    method: "OpenPGP-signed identity manifest with hashed history and verifier",
+    pair: "Canonical identity state",
+    method:
+      "Sigstore-attested manifest with compatibility signature, hashed audit history, and pinned verifier",
     href: "/.well-known/identity.json",
     linkText: "identity.json",
     external: false,
@@ -114,25 +115,36 @@ cast wallet verify --address ${ETH_ADDRESS} "<message>" "<signature>"
 cast resolve-name ${ENS_NAME}
 cast lookup-address ${ETH_ADDRESS}`;
 
-const VERIFY_BOOTSTRAP = `# Obtain this fingerprint out of band, then compare it locally
+const VERIFY_BOOTSTRAP = `# Pin the accepted release authority before trusting site content
+OIDC_ISSUER=https://token.actions.githubusercontent.com
+REPOSITORY=yhay81/profile
+WORKFLOW=.github/workflows/cloudflare.yml
+SOURCE_REF=refs/heads/main
+
+# Independently obtain this compatibility fingerprint, then compare it locally
 EXPECTED_FINGERPRINT=B22B98ABB2D503307AB6A3160718EFA6506BB669
 gpg --locate-keys yusuke@haya.company
 ACTUAL_FINGERPRINT="$(gpg --with-colons --fingerprint yusuke@haya.company \\
   | awk -F: '$1 == "fpr" { print $10; exit }')"
 test "$ACTUAL_FINGERPRINT" = "$EXPECTED_FINGERPRINT"`;
 
-const VERIFY_MACHINE = `# Verify the machine-readable identity root via WKD
-gpg --locate-keys yusuke@haya.company
+const VERIFY_MACHINE = `# Download the current manifest and deployed source commit
+curl -sO https://yusuke-hayashi.com/.well-known/release.json
 curl -sO https://yusuke-hayashi.com/.well-known/identity.json
+SOURCE_COMMIT="$(node -p 'JSON.parse(require("fs").readFileSync("release.json")).source.commit')"
+
+# Verify the OpenPGP compatibility signature
+gpg --locate-keys yusuke@haya.company
 curl -sO https://yusuke-hayashi.com/.well-known/identity.json.asc
 gpg --verify identity.json.asc identity.json
 
-# Verify the same manifest's GitHub Actions / Sigstore provenance
+# Verify GitHub Actions / Sigstore provenance against the deployed commit
 gh attestation verify identity.json \\
   --repo yhay81/profile \\
   --signer-workflow yhay81/profile/.github/workflows/cloudflare.yml \\
   --cert-oidc-issuer https://token.actions.githubusercontent.com \\
   --source-ref refs/heads/main \\
+  --source-digest "$SOURCE_COMMIT" \\
   --predicate-type https://slsa.dev/provenance/v1 \\
   --deny-self-hosted-runners
 
@@ -196,9 +208,8 @@ node verify-identity.mjs`;
           legal identity, reputation, or human authorship.
         </p>
         <p>
-          I have also not published a Human Passport score on any of its seven
-          supported chains as checked on 2026-07-17, so I do not present it here
-          as public evidence.
+          I have not published a Human Passport score on its supported chains,
+          so I do not present one here as public evidence.
         </p>
         <div class="statusLinks">
           <a href="/.well-known/attestations/index.json">public registry ↗</a>
@@ -211,18 +222,17 @@ node verify-identity.mjs`;
       <h2 class="heading">Verify it yourself</h2>
 
       <p class="bodyText">
-        Start from an OpenPGP fingerprint obtained through a channel you already
-        trust. No site can establish trust in itself merely by serving its own
-        key and verifier. Compare the fingerprint through an in-person exchange,
-        a previously signed document, or multiple separately controlled routes
-        such as WKD, DNS, and the signed GitHub history.
+        Start from the pinned release policy: OIDC issuer, repository, workflow,
+        source ref, and source commit. Then verify the OpenPGP compatibility
+        fingerprint through an independently obtained channel. No site can
+        establish trust merely by serving its own key and verifier.
       </p>
 
       <CodeBlock code={VERIFY_BOOTSTRAP} />
 
       <p class="bodyText">
-        Once that root is pinned, the remaining checks take about two minutes.
-        Details live on{" "}
+        Once those independent inputs are pinned, the remaining checks take
+        about two minutes. Details live on{" "}
         <a href="/keys">/keys</a> and <a href="/proofs">/proofs</a>; the{" "}
         <a href="/siwe">SIWE demo</a> shows the same Ethereum signature scheme working
         live in your browser.
@@ -252,9 +262,8 @@ node verify-identity.mjs`;
       <h2 class="heading">Design notes</h2>
 
       <p class="bodyText">
-        Why this system is shaped the way it is — the four questions behind it,
-        the trust-bootstrap problem, the maturity model, and the AI delegation
-        boundary — is written up in{" "}
+        The current release policy, trust-bootstrap rules, recovery boundary,
+        and AI delegation policy are described in{" "}
         <a href="/trust-control-plane">A Personal Trust Control Plane</a>{" "}
         (clearsigned).
       </p>
