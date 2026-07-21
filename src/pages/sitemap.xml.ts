@@ -4,7 +4,19 @@ import { PROFILE_URL } from "@/lib/site";
 
 // robots.txt が /sitemap.xml を参照しているため、この名前で静的生成する
 const PAGES = [
-  { path: "/", lastmod: "2026-07-14", changefreq: "monthly", priority: "1.0" },
+  { path: "/", lastmod: "2026-07-21", changefreq: "monthly", priority: "1.0" },
+  {
+    path: "/writing",
+    lastmod: "2026-07-21",
+    changefreq: "monthly",
+    priority: "0.7",
+  },
+  {
+    path: "/trust-control-plane",
+    lastmod: "2026-07-21",
+    changefreq: "yearly",
+    priority: "0.7",
+  },
   {
     path: "/identity",
     lastmod: "2026-07-14",

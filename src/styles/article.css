@@ -90,3 +90,18 @@
   font-size: var(--text-xs);
   color: var(--color-text-soft);
 }
+
+.backNav {
+  margin: 16px 0 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+
+  & a {
+    color: var(--color-text-soft);
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-accent);
+    }
+  }
+}

@@ -1,0 +1,52 @@
+---
+import SectionHeader from "@/components/SectionHeader.astro";
+import WritingList from "@/components/WritingList.astro";
+import { WRITING } from "@/lib/writing";
+
+// トップには最新数本のみ。全一覧は /writing に置く
+const latest = WRITING.slice(0, 3);
+---
+
+<section class="writing" id="writing">
+  <SectionHeader label="Writing" level={2} no="02" title="Writing" />
+
+  <p class="text">
+    Notes on verifiable identity, web development, and engineering practice —
+    published here and on Zenn (Japanese).
+  </p>
+
+  <WritingList entries={latest} />
+
+  <p class="allLink">
+    <a href="/writing">All writing →</a>
+  </p>
+</section>
+
+<style>
+  .writing {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .text {
+    max-width: 50ch;
+    margin: 0 0 24px;
+    color: var(--color-text-soft);
+  }
+
+  .allLink {
+    margin: 24px 0 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+
+    & a {
+      color: var(--color-text-strong);
+      transition: color var(--dur-base) var(--ease-swift);
+
+      &:hover,
+      &:focus-visible {
+        color: var(--color-accent);
+      }
+    }
+  }
+</style>

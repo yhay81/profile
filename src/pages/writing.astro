@@ -1,0 +1,32 @@
+---
+import "@/styles/article.css";
+
+import SectionHeader from "@/components/SectionHeader.astro";
+import WritingList from "@/components/WritingList.astro";
+import Base from "@/layouts/Base.astro";
+import { PROFILE_NAME } from "@/lib/site";
+import { WRITING } from "@/lib/writing";
+
+const title = `Writing | ${PROFILE_NAME}`;
+const description =
+  "All articles and notes — verifiable identity and engineering practice on this site, web development notes on Zenn.";
+---
+
+<Base description={description} path="/writing" title={title}>
+  <main>
+    <section>
+      <SectionHeader label="Writing" no="00" title="Writing" />
+
+      <p class="lead">
+        Everything I have published, newest first. Long-form articles live on
+        this site; Japanese notes on web development and engineering practice
+        are on{" "}
+        <a href="https://zenn.dev/yhay81" rel="noreferrer" target="_blank">
+          Zenn ↗
+        </a>.
+      </p>
+
+      <WritingList entries={WRITING} />
+    </section>
+  </main>
+</Base>

@@ -86,6 +86,7 @@ export interface NavLink {
 // Keys / Proofs / SIWE は /identity から辿れるためナビには出さない
 export const NAV_LINKS: readonly NavLink[] = [
   { href: "/#about", label: "About" },
+  { href: "/writing", label: "Writing" },
   { href: "/identity", label: "Identity" },
   { href: "/integrity", label: "Integrity" },
   { href: "/#contact", label: "Contact" },

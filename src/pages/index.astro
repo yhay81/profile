@@ -2,6 +2,7 @@
 import About from "@/components/About.astro";
 import Contact from "@/components/Contact.astro";
 import Hero from "@/components/Hero.astro";
+import Writing from "@/components/Writing.astro";
 import Base from "@/layouts/Base.astro";
 import { PROFILE_EMAIL, PROFILE_NAME, PROFILE_URL } from "@/lib/site";
 
@@ -11,7 +12,7 @@ const description =
 const structuredData = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "ProfilePage",
-  dateModified: "2026-07-14",
+  dateModified: "2026-07-21",
   mainEntity: {
     "@type": "Person",
     name: PROFILE_NAME,
@@ -41,6 +42,7 @@ const structuredData = JSON.stringify({
   <main>
     <Hero />
     <About />
+    <Writing />
     <Contact />
   </main>
 </Base>

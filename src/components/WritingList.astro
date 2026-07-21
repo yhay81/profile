@@ -1,0 +1,73 @@
+---
+/**
+ * 記事一覧の行表示。トップの Writing セクションと /writing の両方で使う。
+ */
+import type { WritingEntry } from "@/lib/writing";
+
+interface Props {
+  entries: readonly WritingEntry[];
+}
+
+const { entries } = Astro.props;
+---
+
+<ol class="writingList">
+  {
+    entries.map((entry) => (
+      <li class="item">
+        <time class="date" datetime={entry.date}>
+          {entry.date}
+        </time>
+        <a
+          class="link"
+          href={entry.url}
+          rel={entry.external ? "noreferrer" : undefined}
+          target={entry.external ? "_blank" : undefined}
+        >
+          {entry.title}
+          {entry.external && " ↗"}
+        </a>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .writingList {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 18px;
+    align-items: baseline;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--border-subtle);
+
+    @media (width <= 640px) {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+  }
+
+  .date {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-soft);
+    letter-spacing: 0.06em;
+  }
+
+  .link {
+    max-width: 66ch;
+    color: var(--color-text-strong);
+    transition: color var(--dur-base) var(--ease-swift);
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-accent);
+    }
+  }
+</style>
