@@ -2,8 +2,8 @@
   "$schema": "https://yusuke-hayashi.com/.well-known/schemas/identity-history-v1.schema.json",
   "schemaVersion": 1,
   "subject": "https://yusuke-hayashi.com",
-  "updatedAt": "2026-07-23",
-  "previousVersionSha256": "992bf85a8a25eb12087a77179ed4c8e7b3466631febadc6ac053c1d84f181202",
+  "updatedAt": "2026-07-22",
+  "previousVersionSha256": "6eda5f0f50e86021d158fab0e36b4673f6436ef6498c1ea2ae71738fa29e88f9",
   "events": [
     {
       "id": "2026-07-12/openpgp-key-rotation",
@@ -163,24 +163,6 @@
         "https://yusuke-hayashi.com/.well-known/identity.json",
         "https://yusuke-hayashi.com/.well-known/releases/identity-release-r7.tar.gz",
         "https://yusuke-hayashi.com/trust-control-plane"
-      ]
-    },
-    {
-      "id": "2026-07-23/ens-registration-renewed",
-      "effectiveAt": "2026-07-23",
-      "type": "identifier-linked",
-      "summary": "The yhay81.eth registration was renewed for 94,608,000 seconds. Registrant ownership, forward and reverse resolution, contenthash, and monitored text records remain unchanged.",
-      "identifiers": {
-        "ensName": "yhay81.eth",
-        "ethereumAddress": "0x1C049D25D368bFD50c74df68c919a12aDc48C079",
-        "previousRegistrationExpiresAt": "2027-07-18T09:27:23.000Z",
-        "registrationExpiresAt": "2030-07-17T09:27:23.000Z",
-        "renewalDurationSeconds": "94608000",
-        "releaseRevision": "8"
-      },
-      "evidence": [
-        "https://etherscan.io/tx/0x0c72e7af2643015902dab7adb0890d52307c823589c20fd9575d5fdedcc930bc",
-        "https://app.ens.domains/yhay81.eth"
       ]
     }
   ]

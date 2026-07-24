@@ -3778,6 +3778,7 @@ var require_fast_uri = __commonJS({
       return uriTokens.join("");
     }
     var URI_PARSE = /^(?:([^#/:?]+):)?(?:\/\/((?:([^#/?@]*)@)?(\[[^#/?\]]+\]|[^#/:?]*)(?::(\d*))?))?([^#?]*)(?:\?([^#]*))?(?:#((?:.|[\n\r])*))?/u;
+    var AUTHORITY_PREFIX = /^(?:[^#/:?]+:)?\/\/([^/?#]*)/;
     function getParseError(parsed, matches) {
       if (matches[2] !== void 0 && parsed.path && parsed.path[0] !== "/") {
         return 'URI path must start with "/" when authority is present.';
@@ -3806,6 +3807,11 @@ var require_fast_uri = __commonJS({
         } else {
           uri = "//" + uri;
         }
+      }
+      const authorityMatch = uri.match(AUTHORITY_PREFIX);
+      if (authorityMatch !== null && authorityMatch[1].indexOf("\\") !== -1) {
+        parsed.error = "URI authority must not contain a literal backslash.";
+        malformedAuthorityOrPort = true;
       }
       const matches = uri.match(URI_PARSE);
       if (matches) {
@@ -37559,14 +37565,14 @@ var expected_identity_default = {
   baseUrl: "https://yusuke-hayashi.com",
   subject: "https://yusuke-hayashi.com",
   displayName: "Yusuke Hayashi",
-  releaseRevision: 7,
+  releaseRevision: 8,
   domains: [
     "yusuke-hayashi.com",
     "haya.company",
     "haya-inc.co.jp"
   ],
   manifest: {
-    issuedAt: "2026-07-21T19:29:51.000Z",
+    issuedAt: "2026-07-24T12:55:00.000Z",
     expiresAt: "2027-07-13T00:00:00.000Z"
   },
   openpgp: {
@@ -37586,7 +37592,7 @@ var expected_identity_default = {
     address: "0x1C049D25D368bFD50c74df68c919a12aDc48C079",
     ens: {
       name: "yhay81.eth",
-      registrationExpiresAt: "2027-07-18T09:27:23.000Z",
+      registrationExpiresAt: "2030-07-17T09:27:23.000Z",
       contentHash: "ipfs://bafybeia7ayng6ol5j2e7uzqub4httj6mqbx2jel7zflwhfn7gaslzetwmu",
       textRecords: {
         "com.github": "yhay81",

@@ -2,7 +2,7 @@
   "name": "09090",
   "version": "0.2.0",
   "private": true,
-  "packageManager": "pnpm@11.13.0",
+  "packageManager": "pnpm@11.17.0",
   "type": "module",
   "scripts": {
     "dev": "astro dev",
