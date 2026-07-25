@@ -4,8 +4,8 @@
  * 3 行を順にタイプして残す(ループで消さない)。
  */
 const TYPED_LINES = [
-  "I build AI-first products from concept to production.",
-  "I make my work verifiable — keys, proofs, and code.",
+  "I turn AI plans into products people can actually use.",
+  "I make releases verifiable — source, workflow, and bytes.",
   "I turn complex problems into reliable systems.",
 ];
 
@@ -20,7 +20,7 @@ const HERO_STATS = [
   <p class="kicker">$ whoami</p>
 
   <h1 class="title">Yusuke Hayashi</h1>
-  <h2 class="subtitle">Software Engineer</h2>
+  <h2 class="subtitle">AI Adoption Consultant &amp; Software Engineer</h2>
 
   <div aria-hidden="true" class="typer">
     {TYPED_LINES.map((line) => <span class="line">{line}</span>)}
@@ -28,9 +28,9 @@ const HERO_STATS = [
   <p class="visuallyHidden">{TYPED_LINES.join(" ")}</p>
 
   <p class="summary">
-    I build reliable, user-focused products across web, cloud, and AI — and I
-    like my work to be verifiable: signed commits, published keys, and
-    cryptographic proofs of identity.
+    Through haya Inc. I help teams redesign workflows, validate AI use cases,
+    and ship reliable products. My production releases are built with public,
+    machine-verifiable provenance.
   </p>
 
   <dl class="metrics">
@@ -46,7 +46,7 @@ const HERO_STATS = [
 
   <div class="cta">
     <a class="primary" href="#contact">Contact</a>
-    <a class="secondary" href="/identity">Verify my identity</a>
+    <a class="secondary" href="#provenance">How releases are verified</a>
   </div>
 
   <a aria-label="Scroll to About" class="arrow" href="#about">scroll</a>
@@ -182,13 +182,13 @@ const HERO_STATS = [
     }
 
     &:nth-child(1) {
-      --n: 53;
+      --n: 54;
       --delay: 0.08s;
       --duration: 0.64s;
     }
 
     &:nth-child(2) {
-      --n: 51;
+      --n: 57;
       --delay: 0.82s;
       --duration: 0.61s;
     }

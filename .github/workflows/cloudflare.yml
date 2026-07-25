@@ -100,6 +100,15 @@ jobs:
             dist/.well-known/identity.json \
             dist/.well-known/releases/identity-release-r*.tar.gz \
             site-dist.tar.gz > release-subjects.sha256
+          mkdir -p release
+      - name: Generate deployed-site SPDX SBOM
+        uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0.24.0
+        with:
+          path: dist/
+          format: spdx-json
+          output-file: release/site.spdx.json
+          upload-artifact: false
+          upload-release-assets: false
       - name: Verify identity artifacts
         env:
           GH_TOKEN: ${{ github.token }}
@@ -119,6 +128,7 @@ jobs:
           path: |
             dist/.well-known/identity.json
             dist/.well-known/releases/identity-release-r*.tar.gz
+            release/site.spdx.json
             release-subjects.sha256
           retention-days: 30
 
@@ -144,6 +154,11 @@ jobs:
         uses: actions/attest@f7c74d28b9d84cb8768d0b8ca14a4bac6ef463e6 # v4
         with:
           subject-checksums: release-subjects.sha256
+      - name: Attest deployed-site SBOM
+        uses: actions/attest@f7c74d28b9d84cb8768d0b8ca14a4bac6ef463e6 # v4
+        with:
+          subject-path: site-dist.tar.gz
+          sbom-path: release/site.spdx.json
 
   deploy:
     if: github.event_name == 'push'

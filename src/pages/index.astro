@@ -2,17 +2,18 @@
 import About from "@/components/About.astro";
 import Contact from "@/components/Contact.astro";
 import Hero from "@/components/Hero.astro";
+import Provenance from "@/components/Provenance.astro";
 import Writing from "@/components/Writing.astro";
 import Base from "@/layouts/Base.astro";
 import { PROFILE_EMAIL, PROFILE_NAME, PROFILE_URL } from "@/lib/site";
 
 const description =
-  "Software engineer in Tokyo building AI-first products. Verifiable by design — signed commits, published keys, and cryptographic identity proofs.";
+  "Tokyo-based AI adoption consultant and software engineer building production systems with public, verifiable release provenance.";
 
 const structuredData = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "ProfilePage",
-  dateModified: "2026-07-21",
+  dateModified: "2026-07-25",
   mainEntity: {
     "@type": "Person",
     name: PROFILE_NAME,
@@ -21,7 +22,7 @@ const structuredData = JSON.stringify({
     email: PROFILE_EMAIL,
     url: PROFILE_URL,
     image: `${PROFILE_URL}/me.webp`,
-    jobTitle: "Software Engineer",
+    jobTitle: "AI Adoption Consultant and Software Engineer",
     sameAs: [
       "https://github.com/yhay81",
       "https://twitter.com/yhay81",
@@ -36,11 +37,12 @@ const structuredData = JSON.stringify({
 <Base
   description={description}
   path="/"
-  title={`${PROFILE_NAME} — Software Engineer`}
+  title={`${PROFILE_NAME} — AI Adoption & Software Engineering`}
 >
   <script is:inline set:html={structuredData} type="application/ld+json" />
   <main>
     <Hero />
+    <Provenance />
     <About />
     <Writing />
     <Contact />

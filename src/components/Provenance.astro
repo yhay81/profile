@@ -1,0 +1,284 @@
+---
+import SectionHeader from "@/components/SectionHeader.astro";
+
+const PROOF_LAYERS = [
+  {
+    label: "Build identity",
+    value: "yhay81/profile · cloudflare.yml · main",
+    detail: "The repository, workflow, and protected source branch are pinned.",
+  },
+  {
+    label: "Artifact binding",
+    value: "source commit → SHA-256 → deployed archive",
+    detail:
+      "The exact reproducible archive is attested before Cloudflare sees it.",
+  },
+  {
+    label: "Public record",
+    value: "SLSA provenance · Sigstore · Rekor",
+    detail: "A short-lived GitHub OIDC identity is recorded in a public log.",
+  },
+] as const;
+---
+
+<section class="provenance" id="provenance">
+  <SectionHeader
+    label="Release provenance"
+    level={2}
+    no="01"
+    title="Verifiable by construction"
+  />
+
+  <div class="proofSurface reveal">
+    <div class="statement">
+      <p class="eyebrow">
+        <span aria-hidden="true" class="signal"></span>
+        Public, keyless provenance
+      </p>
+      <p class="lead">
+        This site is built in GitHub Actions. Every production release binds the
+        deployed bytes to a source commit and an exact workflow identity before
+        deployment.
+      </p>
+    </div>
+
+    <ol class="proofLayers">
+      {
+        PROOF_LAYERS.map((layer, index) => (
+          <li>
+            <span aria-hidden="true" class="index">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <div class="layerBody">
+              <span class="label">{layer.label}</span>
+              <div class="layerCopy">
+                <strong>{layer.value}</strong>
+                <p>{layer.detail}</p>
+              </div>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="boundary">
+      <span>What this proves</span>
+      <p>
+        Sigstore proves which automation produced specific bytes. It does not
+        prove that every statement on this site is true, that the code is
+        vulnerability-free, or that I am human. Identity proofs and source
+        review remain separate layers.
+      </p>
+    </div>
+
+    <nav aria-label="Release verification" class="actions">
+      <a class="primary" href="/integrity">Inspect the live release</a>
+      <a
+        class="secondary"
+        href="https://github.com/yhay81/profile/attestations"
+        rel="noreferrer"
+        target="_blank">Browse public attestations ↗</a
+      >
+    </nav>
+  </div>
+</section>
+
+<style>
+  .provenance {
+    padding-top: clamp(76px, 9vh, 108px);
+  }
+
+  .proofSurface {
+    position: relative;
+    display: grid;
+    gap: clamp(28px, 5vw, 52px);
+    padding: clamp(28px, 5vw, 58px) clamp(22px, 5vw, 56px);
+    overflow: hidden;
+    background:
+      linear-gradient(
+        120deg,
+        color-mix(in oklab, var(--color-accent) 5%, transparent),
+        transparent 46%
+      ),
+      color-mix(in oklab, var(--color-bg-deep) 72%, transparent);
+    border-top: 1px solid var(--border-accent);
+    border-bottom: 1px solid var(--border-subtle);
+
+    &::before {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 3px;
+      content: "";
+      background: linear-gradient(
+        180deg,
+        var(--color-accent),
+        var(--color-info),
+        transparent 88%
+      );
+      box-shadow: 0 0 24px var(--accent-glow);
+    }
+  }
+
+  .statement {
+    display: grid;
+    gap: 14px;
+
+    @media (width >= 780px) {
+      grid-template-columns: minmax(190px, 0.6fr) minmax(0, 1.4fr);
+      gap: 48px;
+      align-items: start;
+    }
+  }
+
+  .eyebrow {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin: 4px 0 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+
+  .signal {
+    width: 8px;
+    height: 8px;
+    background: var(--color-accent);
+    border-radius: 50%;
+    box-shadow: 0 0 14px var(--border-accent);
+  }
+
+  .lead {
+    max-width: 54ch;
+    margin: 0;
+    font-size: var(--text-xl);
+    line-height: 1.5;
+    color: var(--color-text-strong);
+  }
+
+  .proofLayers {
+    display: grid;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    border-top: 1px solid var(--border-subtle);
+
+    & li {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 10px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border-subtle);
+
+      @media (width >= 780px) {
+        grid-template-columns: 54px minmax(0, 1fr);
+        gap: 20px;
+        align-items: baseline;
+      }
+    }
+
+    & .layerBody {
+      display: grid;
+      gap: 5px;
+
+      @media (width >= 780px) {
+        grid-template-columns: minmax(150px, 0.55fr) minmax(0, 1.45fr);
+        gap: 20px;
+        align-items: baseline;
+      }
+    }
+
+    & .layerCopy {
+      display: grid;
+      gap: 5px;
+    }
+
+    & strong {
+      overflow-wrap: anywhere;
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--color-text-strong);
+    }
+
+    & p {
+      max-width: 47ch;
+      margin: 0;
+      font-size: var(--text-sm);
+      color: var(--color-text);
+    }
+  }
+
+  .index,
+  .label {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    text-transform: uppercase;
+    letter-spacing: 0.11em;
+  }
+
+  .index {
+    color: var(--color-accent);
+  }
+
+  .label {
+    color: var(--color-text-soft);
+  }
+
+  .boundary {
+    display: grid;
+    gap: 10px;
+    max-width: 74ch;
+    padding-left: 16px;
+    border-left: 1px solid var(--border-subtle);
+
+    & span {
+      font-family: var(--font-mono);
+      font-size: var(--text-2xs);
+      color: var(--color-info);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    & p {
+      margin: 0;
+      font-size: var(--text-sm);
+      color: var(--color-text-soft);
+    }
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 24px;
+    align-items: center;
+  }
+
+  .primary {
+    padding: 0.85rem 1.2rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-bg-deep);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    background: var(--color-accent);
+    border-radius: var(--radius-sm);
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-bg-deep);
+    }
+  }
+
+  .secondary {
+    padding-bottom: 2px;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-strong);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+</style>
