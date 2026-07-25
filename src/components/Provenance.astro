@@ -1,6 +1,4 @@
 ---
-import SectionHeader from "@/components/SectionHeader.astro";
-
 const PROOF_LAYERS = [
   {
     label: "Build identity",
@@ -21,14 +19,7 @@ const PROOF_LAYERS = [
 ] as const;
 ---
 
-<section class="provenance" id="provenance">
-  <SectionHeader
-    label="Release provenance"
-    level={2}
-    no="01"
-    title="Verifiable by construction"
-  />
-
+<section aria-label="Release provenance" class="provenance" id="provenance">
   <div class="proofSurface reveal">
     <div class="statement">
       <p class="eyebrow">

@@ -84,7 +84,12 @@ const OBTAIN_ITEMS = [
 
       <h2 class="heading">Configured certificate</h2>
 
-      <CodeBlock code={KEY_STRUCTURE} />
+      <CodeBlock
+        code={KEY_STRUCTURE}
+        label="Certificate structure"
+        language="text"
+        wrap
+      />
 
       <ul class="itemList">
         {POLICY_ITEMS.map((item) => <li>{item}</li>)}
