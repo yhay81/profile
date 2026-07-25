@@ -63,6 +63,15 @@
   --color-code-text: oklch(91.5% 0.024 250deg);
   --color-code-label: oklch(82.5% 0.035 251deg);
   --color-code-muted: oklch(69.5% 0.038 251deg);
+  --color-code-comment: oklch(64% 0.035 251deg);
+  --color-code-command: oklch(83% 0.105 230deg);
+  --color-code-keyword: oklch(80% 0.14 315deg);
+  --color-code-number: oklch(82% 0.105 305deg);
+  --color-code-operator: oklch(79% 0.115 42deg);
+  --color-code-option: oklch(79% 0.12 290deg);
+  --color-code-string: oklch(87% 0.12 91deg);
+  --color-code-url: oklch(82% 0.105 220deg);
+  --color-code-variable: oklch(84% 0.15 158deg);
   --border-code: color-mix(in oklab, var(--color-code-text) 20%, transparent);
 
   /* ---- Typography ---- */

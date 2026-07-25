@@ -3,6 +3,8 @@
  * コードブロック。CSP の style-src-attr 'none' を維持し、Shiki が生成する
  * inline style を避けるため、意味論的な pre/code だけを静的に出力する。
  */
+import { type CodeTokenKind, highlightCode } from "@/lib/code-highlight";
+
 interface Props {
   code: string;
   label?: string;
@@ -16,6 +18,19 @@ const {
   language = "plain text",
   wrap = false,
 } = Astro.props;
+
+const highlightedCode = highlightCode(code, language);
+const TOKEN_CLASSES: Readonly<Record<CodeTokenKind, string>> = {
+  comment: "tokenComment",
+  command: "tokenCommand",
+  keyword: "tokenKeyword",
+  number: "tokenNumber",
+  operator: "tokenOperator",
+  option: "tokenOption",
+  string: "tokenString",
+  url: "tokenUrl",
+  variable: "tokenVariable",
+};
 ---
 
 <figure class="codeFrame">
@@ -26,7 +41,18 @@ const {
   </figcaption>
   <pre
     aria-label={`${label} (${language})`}
-    class:list={["codeBlock", { wrap }]}><code>{code}</code></pre>
+    class:list={[
+      "codeBlock",
+      { wrap },
+    ]}><code>{
+        highlightedCode.map((token) =>
+          token.kind ? (
+            <span class={TOKEN_CLASSES[token.kind]}>{token.value}</span>
+          ) : (
+            token.value
+          ),
+        )
+      }</code></pre>
 </figure>
 
 <style is:global>
@@ -86,6 +112,52 @@ const {
 
     & code {
       font-family: inherit;
+    }
+
+    & .tokenComment {
+      font-style: italic;
+      color: var(--color-code-comment);
+    }
+
+    & .tokenCommand {
+      font-weight: 650;
+      color: var(--color-code-command);
+    }
+
+    & .tokenKeyword {
+      font-weight: 650;
+      color: var(--color-code-keyword);
+    }
+
+    & .tokenNumber {
+      color: var(--color-code-number);
+    }
+
+    & .tokenOperator {
+      color: var(--color-code-operator);
+    }
+
+    & .tokenOption {
+      color: var(--color-code-option);
+    }
+
+    & .tokenString {
+      color: var(--color-code-string);
+    }
+
+    & .tokenUrl {
+      color: var(--color-code-url);
+      text-decoration: underline;
+      text-decoration-color: color-mix(
+        in oklab,
+        var(--color-code-url) 38%,
+        transparent
+      );
+      text-underline-offset: 0.18em;
+    }
+
+    & .tokenVariable {
+      color: var(--color-code-variable);
     }
   }
 

@@ -1,0 +1,78 @@
+name: Sync published writing
+
+on:
+  schedule:
+    - cron: "23 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-published-writing
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          fetch-depth: 0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
+        with:
+          version: 11.17.0
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: "24"
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Sync official Zenn feed
+        run: pnpm sync:writing
+      - name: Detect changes
+        id: changes
+        shell: bash
+        run: |
+          if git diff --quiet -- src/data/zenn-writing.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Validate updated snapshot
+        if: steps.changes.outputs.changed == 'true'
+        run: pnpm check && pnpm build
+      - name: Publish synchronization PR
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          branch="automation/sync-published-writing"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin "$branch:refs/remotes/origin/$branch" || true
+          git switch -C "$branch"
+          git add src/data/zenn-writing.json
+          git commit -m "Sync published writing"
+          git push --force-with-lease --set-upstream origin "$branch"
+
+          pr_url="$(gh pr list \
+            --base main \
+            --head "$branch" \
+            --state open \
+            --json url \
+            --jq '.[0].url')"
+          if [[ -z "$pr_url" ]]; then
+            gh pr create \
+              --base main \
+              --head "$branch" \
+              --title "Sync published writing" \
+              --body "Updates the committed writing snapshot from the official Zenn RSS feed. The synchronization workflow ran the full quality and reproducible-build checks before opening this PR."
+          fi

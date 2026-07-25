@@ -21,6 +21,7 @@
     "lint:prettier:fix": "prettier --write .",
     "lint-staged": "lint-staged",
     "security:audit": "pnpm audit --audit-level=high",
+    "sync:writing": "node scripts/sync-writing.mjs",
     "verify:release": "node scripts/verify-release.mjs",
     "fix": "pnpm lint:style:fix && pnpm lint:eslint:fix && pnpm lint:prettier:fix",
     "prepare": "husky"
