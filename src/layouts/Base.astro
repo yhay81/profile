@@ -12,9 +12,22 @@ interface Props {
   description: string;
   path: string;
   ogImage?: string;
+  ogType?: "article" | "website";
+  author?: string;
+  datePublished?: string;
+  dateModified?: string;
 }
 
-const { title, description, path, ogImage = "/og.png" } = Astro.props;
+const {
+  title,
+  description,
+  path,
+  ogImage = "/og.png",
+  ogType = "website",
+  author,
+  datePublished,
+  dateModified,
+} = Astro.props;
 const canonical = new URL(path, PROFILE_URL).href;
 const ogImageAbs = new URL(ogImage, PROFILE_URL).href;
 
@@ -39,7 +52,14 @@ const speculationRules = JSON.stringify({
     </script>
     <title>{title}</title>
     <meta content={description} name="description" />
+    {author && <meta content={author} name="author" />}
     <link href={canonical} rel="canonical" />
+    <link
+      href="/feed.xml"
+      rel="alternate"
+      title="Yusuke Hayashi — Writing"
+      type="application/rss+xml"
+    />
     <meta content={MAIN_COLOR} name="theme-color" />
     <meta content={Astro.generator} name="generator" />
 
@@ -50,9 +70,22 @@ const speculationRules = JSON.stringify({
     <meta content={title} property="og:title" />
     <meta content={description} property="og:description" />
     <meta content={canonical} property="og:url" />
-    <meta content="website" property="og:type" />
+    <meta content={ogType} property="og:type" />
     <meta content="en_US" property="og:locale" />
     <meta content={ogImageAbs} property="og:image" />
+    {
+      ogType === "article" && (
+        <>
+          {author && <meta content={author} property="article:author" />}
+          {datePublished && (
+            <meta content={datePublished} property="article:published_time" />
+          )}
+          {dateModified && (
+            <meta content={dateModified} property="article:modified_time" />
+          )}
+        </>
+      )
+    }
     <meta content="summary_large_image" name="twitter:card" />
     <meta content={title} name="twitter:title" />
     <meta content={description} name="twitter:description" />

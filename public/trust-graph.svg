@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="520" viewBox="0 0 760 520">
+  <title>Evidence graph of my public identity</title>
+  <desc>
+    The canonical identity manifest is the central public state. GitHub Actions
+    and an exact release policy produce Sigstore and SLSA provenance for that
+    state. OpenPGP, public adapters, Ethereum and ENS, and independent witnesses
+    provide separate evidence bindings.
+  </desc>
+
+  <g fill="none" stroke="#d6ddfa" stroke-opacity=".18" stroke-width="1.5">
+    <path d="M180 86 324 142"/>
+    <path d="M580 86 436 142"/>
+    <path d="M174 278H270"/>
+    <path d="M586 278H490"/>
+    <path d="M286 428 342 324" stroke="#04ffaa" stroke-opacity=".3" stroke-width="2"/>
+    <path d="M516 428 426 324" stroke-dasharray="5 5"/>
+    <path d="M380 196V232" stroke="#04ffaa" stroke-opacity=".3" stroke-width="2"/>
+  </g>
+
+  <g fill="#8d99ba" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11">
+    <text x="178" y="128">OIDC identity</text>
+    <text x="482" y="128">workflow context</text>
+    <text x="396" y="218" fill="#04ffaa">attests exact bytes</text>
+    <text x="194" y="266">PGP proof</text>
+    <text x="500" y="266">adapter claims</text>
+    <text x="240" y="378">cross-proofs</text>
+    <text x="478" y="378">separate observation</text>
+  </g>
+
+  <g fill="#d6ddfa" fill-opacity=".035" stroke="#d6ddfa" stroke-opacity=".18">
+    <rect width="180" height="56" x="90" y="30" rx="10"/>
+    <rect width="180" height="56" x="490" y="30" rx="10"/>
+    <rect width="200" height="64" x="280" y="132" rx="10" stroke-opacity=".24"/>
+    <rect width="166" height="56" x="8" y="250" rx="10"/>
+    <rect width="166" height="56" x="586" y="250" rx="10"/>
+    <rect width="220" height="56" x="80" y="428" rx="10"/>
+    <rect width="220" height="56" x="460" y="428" rx="10" stroke-dasharray="5 4"/>
+    <rect width="220" height="92" x="270" y="232" rx="10" fill="#04ffaa" fill-opacity=".08" stroke="#04ffaa" stroke-opacity=".3" stroke-width="1.5"/>
+  </g>
+
+  <g fill="#d6ddfa" font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif" font-size="15" font-weight="600" text-anchor="middle">
+    <text x="180" y="54">GitHub Actions</text>
+    <text x="580" y="54">Release policy</text>
+    <text x="380" y="158">Sigstore + SLSA</text>
+    <text x="91" y="274">OpenPGP</text>
+    <text x="380" y="262" font-size="16">Canonical identity state</text>
+    <text x="669" y="274">Public adapters</text>
+    <text x="190" y="452">Ethereum / ENS</text>
+    <text x="570" y="452">Humanity witness</text>
+  </g>
+
+  <g fill="#8d99ba" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" text-anchor="middle">
+    <text x="180" y="74">OIDC · hosted runner</text>
+    <text x="580" y="74">repo · workflow · ref</text>
+    <text x="380" y="180">release provenance</text>
+    <text x="91" y="294">compatibility evidence</text>
+    <text x="380" y="284">/.well-known/identity.json</text>
+    <text x="380" y="304">claims + proof registry</text>
+    <text x="669" y="294">DNS · WKD · Nostr</text>
+    <text x="190" y="472">account + name resolution</text>
+    <text x="570" y="472">independent · 0 active records</text>
+  </g>
+</svg>

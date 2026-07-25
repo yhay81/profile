@@ -4,11 +4,55 @@ import "@/styles/article.css";
 import CodeBlock from "@/components/CodeBlock.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 import Base from "@/layouts/Base.astro";
-import { PROFILE_NAME } from "@/lib/site";
+import { TRUST_CONTROL_PLANE_ARTICLE } from "@/lib/articles";
+import { PROFILE_NAME, PROFILE_URL } from "@/lib/site";
 
-const title = `A Personal Trust Control Plane | ${PROFILE_NAME}`;
-const description =
-  "The current design for verifiable, monitorable, and recoverable public identity releases.";
+const article = TRUST_CONTROL_PLANE_ARTICLE;
+const title = `${article.title} | ${PROFILE_NAME}`;
+const publishedLabel = new Intl.DateTimeFormat("en", {
+  dateStyle: "long",
+  timeZone: "Asia/Tokyo",
+}).format(new Date(article.datePublished));
+const modifiedLabel = new Intl.DateTimeFormat("en", {
+  dateStyle: "long",
+  timeZone: "Asia/Tokyo",
+}).format(new Date(article.dateModified));
+
+const articleJsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: article.title,
+  description: article.description,
+  url: `${PROFILE_URL}${article.url}`,
+  mainEntityOfPage: `${PROFILE_URL}${article.url}`,
+  image: `${PROFILE_URL}/og-trust-control-plane.png`,
+  datePublished: article.datePublished,
+  dateModified: article.dateModified,
+  author: {
+    "@type": "Person",
+    name: PROFILE_NAME,
+    url: PROFILE_URL,
+  },
+});
+
+const TABLE_OF_CONTENTS = [
+  { id: "trust-problem", label: "The trust problem" },
+  {
+    id: "control-and-distribution",
+    label: "Control plane and distribution plane",
+  },
+  { id: "sigstore-releases", label: "Sigstore-first releases" },
+  { id: "machine-readable-state", label: "Machine-readable current state" },
+  { id: "authority-and-recovery", label: "Authority and recovery" },
+  { id: "identifier-adapters", label: "Identifier adapters" },
+  {
+    id: "audit-evidence",
+    label: "Audit evidence without stale documentation",
+  },
+  { id: "monitoring", label: "Monitoring" },
+  { id: "offline-recovery", label: "Offline recovery kit" },
+  { id: "operating-principles", label: "Operating principles" },
+] as const;
 
 const VERIFY_RELEASE = `# Fetch the deployed release metadata and identity manifest
 curl -sO https://yusuke-hayashi.com/.well-known/release.json
@@ -26,200 +70,310 @@ gh attestation verify identity.json \\
   --deny-self-hosted-runners`;
 ---
 
-<Base description={description} path="/trust-control-plane" title={title}>
+<Base
+  author={PROFILE_NAME}
+  dateModified={article.dateModified}
+  datePublished={article.datePublished}
+  description={article.description}
+  ogImage="/og-trust-control-plane.png"
+  ogType="article"
+  path={article.url}
+  title={title}
+>
+  <script
+    is:inline
+    set:html={articleJsonLd}
+    slot="head"
+    type="application/ld+json"
+  />
+
   <main>
-    <section>
-      <SectionHeader
-        label="Article"
-        no="CURRENT"
-        title="A Personal Trust Control Plane"
-      />
+    <article>
+      <section>
+        <SectionHeader label="Article" no="01" title={article.title} />
 
-      <p class="lead">
-        How I make public identity releases verifiable, monitorable, and
-        recoverable without treating one platform or one long-lived key as the
-        whole system. A clearsigned copy is available at <a
-          href="/trust-control-plane.txt.asc">/trust-control-plane.txt.asc</a
-        >.
-      </p>
+        <div class="articleMeta" aria-label="Article details">
+          <div class="metaPrimary">
+            <span>By {PROFILE_NAME}</span>
+            <span aria-hidden="true">·</span>
+            <span>Current architecture</span>
+          </div>
+          <dl class="metaDates">
+            <div>
+              <dt>Published</dt>
+              <dd>
+                <time datetime={article.datePublished}>{publishedLabel}</time>
+              </dd>
+            </div>
+            <div>
+              <dt>Updated</dt>
+              <dd>
+                <time datetime={article.dateModified}>{modifiedLabel}</time>
+              </dd>
+            </div>
+          </dl>
+          <a class="signedCopy" href="/trust-control-plane.txt.asc">
+            Signed text ↗
+          </a>
+        </div>
 
-      <h2 class="heading">The trust problem</h2>
+        <p class="lead articleLead">
+          How I make public identity releases verifiable, monitorable, and
+          recoverable without treating one platform or one long-lived key as the
+          whole system.
+        </p>
 
-      <p class="bodyText">
-        Public identity is distributed across a domain, GitHub, email, an
-        Ethereum account, ENS, Nostr, Bluesky, and other services. No single
-        badge or account proves control of all of them, and a compromised host
-        can serve a convincing but false set of files.
-      </p>
+        <nav class="articleToc" aria-label="On this page">
+          <p class="tocLabel">On this page</p>
+          <ol>
+            {
+              TABLE_OF_CONTENTS.map((item) => (
+                <li>
+                  <a href={`#${item.id}`}>{item.label}</a>
+                </li>
+              ))
+            }
+          </ol>
+        </nav>
 
-      <p class="bodyText">The system answers four concrete questions:</p>
+        <details class="articleTocMobile">
+          <summary>On this page</summary>
+          <nav aria-label="On this page">
+            <ol>
+              {
+                TABLE_OF_CONTENTS.map((item) => (
+                  <li>
+                    <a href={`#${item.id}`}>{item.label}</a>
+                  </li>
+                ))
+              }
+            </ol>
+          </nav>
+        </details>
 
-      <ol class="numberList">
-        <li>What is the current canonical identity state?</li>
-        <li>Which workflow and source commit produced the release?</li>
-        <li>Which proofs bind each public identifier to the subject?</li>
-        <li>How is authority stopped or recovered after compromise?</li>
-      </ol>
+        <h2 class="heading" id="trust-problem">
+          <a class="headingLink" href="#trust-problem">The trust problem</a>
+        </h2>
 
-      <h2 class="heading">Control plane and distribution plane</h2>
+        <p class="bodyText">
+          Public identity is distributed across a domain, GitHub, email, an
+          Ethereum account, ENS, Nostr, Bluesky, and other services. No single
+          badge or account proves control of all of them, and a compromised host
+          can serve a convincing but false set of files.
+        </p>
 
-      <p class="bodyText">
-        A private control-plane repository holds expected public values,
-        policies, schemas, pre-publication artifacts, verification code, and
-        runbooks. It contains no private keys, seeds, passwords, recovery codes,
-        or physical locations.
-      </p>
+        <p class="bodyText">The system answers four concrete questions:</p>
 
-      <p class="bodyText">
-        A public repository and this website form the distribution plane. They
-        publish the manifest, deterministic release archive, verifier, schemas,
-        proofs, audit history, and compatibility key material. The public site
-        is rebuildable and cannot redefine the verifier's pinned expectations by
-        itself.
-      </p>
+        <ol class="numberList">
+          <li>What is the current canonical identity state?</li>
+          <li>Which workflow and source commit produced the release?</li>
+          <li>Which proofs bind each public identifier to the subject?</li>
+          <li>How is authority stopped or recovered after compromise?</li>
+        </ol>
 
-      <h2 class="heading">Sigstore-first releases</h2>
+        <h2 class="heading" id="control-and-distribution">
+          <a class="headingLink" href="#control-and-distribution">
+            Control plane and distribution plane
+          </a>
+        </h2>
 
-      <p class="bodyText">
-        Routine releases use GitHub Actions OIDC, a short-lived Sigstore
-        certificate, and SLSA provenance. The workflow attests the identity
-        manifest, a deterministic identity release archive, and the complete
-        deployment archive.
-      </p>
+        <p class="bodyText">
+          A private control-plane repository holds expected public values,
+          policies, schemas, pre-publication artifacts, verification code, and
+          runbooks. It contains no private keys, seeds, passwords, recovery
+          codes, or physical locations.
+        </p>
 
-      <p class="bodyText">
-        Verification pins the OIDC issuer, repository, signer workflow, source
-        ref, source commit, SLSA predicate, hosted-runner requirement, and
-        artifact digest. An attestation is not accepted merely because its
-        cryptographic signature is valid. Pull-request builds have read-only
-        permissions and cannot request an OIDC signing identity.
-      </p>
+        <p class="bodyText">
+          A public repository and this website form the distribution plane. They
+          publish the manifest, deterministic release archive, verifier,
+          schemas, proofs, audit history, and compatibility key material. The
+          public site is rebuildable and cannot redefine the verifier's pinned
+          expectations by itself.
+        </p>
 
-      <CodeBlock
-        code={VERIFY_RELEASE}
-        label="Verify the release"
-        language="bash"
-        wrap
-      />
+        <h2 class="heading" id="sigstore-releases">
+          <a class="headingLink" href="#sigstore-releases">
+            Sigstore-first releases
+          </a>
+        </h2>
 
-      <h2 class="heading">Machine-readable current state</h2>
+        <p class="bodyText">
+          Routine releases use GitHub Actions OIDC, a short-lived Sigstore
+          certificate, and SLSA provenance. The workflow attests the identity
+          manifest, a deterministic identity release archive, and the complete
+          deployment archive.
+        </p>
 
-      <ul class="itemList">
-        <li>
-          <a href="/.well-known/identity.json"
-            ><code class="inlineCode">/.well-known/identity.json</code></a
-          > names the current identifiers, validity window, verifier hash, audit-history
-          hash, and proof registry.
-        </li>
-        <li>
-          The deterministic identity archive packages the exact public materials
-          required for independent verification.
-        </li>
-        <li>
-          <a href="/.well-known/release.json"
-            ><code class="inlineCode">/.well-known/release.json</code></a
-          > names the deployed source commit.
-        </li>
-        <li>
-          The manifest also carries an OpenPGP detached signature for WKD,
-          <code class="inlineCode">security.txt</code>, cross-proofs, and
-          configured Git-signature compatibility. It is not the primary proof of
-          routine release provenance.
-        </li>
-      </ul>
+        <p class="bodyText">
+          Verification pins the OIDC issuer, repository, signer workflow, source
+          ref, source commit, SLSA predicate, hosted-runner requirement, and
+          artifact digest. An attestation is not accepted merely because its
+          cryptographic signature is valid. Pull-request builds have read-only
+          permissions and cannot request an OIDC signing identity.
+        </p>
 
-      <h2 class="heading">Authority and recovery</h2>
+        <CodeBlock
+          code={VERIFY_RELEASE}
+          label="Verify the release"
+          language="bash"
+          wrap
+        />
 
-      <p class="bodyText">
-        The release plane is separate from permanent identity continuity. An
-        offline authority policy supports three hardware-backed public keys with
-        a threshold of two. It is reserved for changing the accepted release
-        authority, rotating root keys, and recovery; it does not sign every
-        routine release.
-      </p>
+        <h2 class="heading" id="machine-readable-state">
+          <a class="headingLink" href="#machine-readable-state">
+            Machine-readable current state
+          </a>
+        </h2>
 
-      <p class="bodyText">
-        The offline root is not configured. It becomes active only after real
-        hardware keys, an out-of-band policy digest, two valid approvals, and a
-        recovery drill exist. An unperformed ceremony is reported as an
-        incomplete capability.
-      </p>
+        <ul class="itemList">
+          <li>
+            <a href="/.well-known/identity.json"
+              ><code class="inlineCode">/.well-known/identity.json</code></a
+            > names the current identifiers, validity window, verifier hash, audit-history
+            hash, and proof registry.
+          </li>
+          <li>
+            The deterministic identity archive packages the exact public
+            materials required for independent verification.
+          </li>
+          <li>
+            <a href="/.well-known/release.json"
+              ><code class="inlineCode">/.well-known/release.json</code></a
+            > names the deployed source commit.
+          </li>
+          <li>
+            The manifest also carries an OpenPGP detached signature for WKD,
+            <code class="inlineCode">security.txt</code>, cross-proofs, and
+            configured Git-signature compatibility. It is not the primary proof
+            of routine release provenance.
+          </li>
+        </ul>
 
-      <h2 class="heading">Identifier adapters</h2>
+        <h2 class="heading" id="authority-and-recovery">
+          <a class="headingLink" href="#authority-and-recovery">
+            Authority and recovery
+          </a>
+        </h2>
 
-      <p class="bodyText">
-        The current Ethereum/OpenPGP cross-proof and ENS records bind the public
-        account to the other compatibility identifiers. The verifier also
-        supports authority-bound EIP-712 proofs for EOAs and ERC-1271 proofs for
-        smart accounts; that proof remains unpublished while the offline
-        authority root is unconfigured. ENS is a name-resolution adapter, not a
-        foundation. No adapter can replace the release authority policy.
-      </p>
+        <p class="bodyText">
+          The release plane is separate from permanent identity continuity. An
+          offline authority policy supports three hardware-backed public keys
+          with a threshold of two. It is reserved for changing the accepted
+          release authority, rotating root keys, and recovery; it does not sign
+          every routine release.
+        </p>
 
-      <h2 class="heading">Audit evidence without stale documentation</h2>
+        <p class="bodyText">
+          The offline root is not configured. It becomes active only after real
+          hardware keys, an out-of-band policy digest, two valid approvals, and
+          a recovery drill exist. An unperformed ceremony is reported as an
+          incomplete capability.
+        </p>
 
-      <p class="bodyText">
-        Normative documents and tool help describe only the current system.
-        Cryptographic audit evidence remains separate and append-only:
-        <code class="inlineCode">identity-history.json</code>, content-addressed
-        checkpoints, signed Git commits, and release attestations. Current
-        instructions stay concise without silently deleting earlier signed
-        states.
-      </p>
+        <h2 class="heading" id="identifier-adapters">
+          <a class="headingLink" href="#identifier-adapters">
+            Identifier adapters
+          </a>
+        </h2>
 
-      <h2 class="heading">Monitoring</h2>
+        <p class="bodyText">
+          The current Ethereum/OpenPGP cross-proof and ENS records bind the
+          public account to the other compatibility identifiers. The verifier
+          also supports authority-bound EIP-712 proofs for EOAs and ERC-1271
+          proofs for smart accounts; that proof remains unpublished while the
+          offline authority root is unconfigured. ENS is a name-resolution
+          adapter, not a foundation. No adapter can replace the release
+          authority policy.
+        </p>
 
-      <p class="bodyText">
-        The production verifier checks manifest integrity, compatibility
-        signatures, identifier bindings, expiry, DNS, WKD, ENS, Git signatures,
-        third-party attestations, and audit-history invariants. A separate
-        verifier checks Sigstore provenance for the manifest and release
-        archive.
-      </p>
+        <h2 class="heading" id="audit-evidence">
+          <a class="headingLink" href="#audit-evidence">
+            Audit evidence without stale documentation
+          </a>
+        </h2>
 
-      <p class="bodyText">
-        GitHub Actions runs the checks daily. A macOS watchdog runs outside
-        GitHub, pins its installed verifier hashes, and reports state changes.
-        Availability failures and integrity failures remain distinct, and expiry
-        becomes a warning before it becomes an outage.
-      </p>
+        <p class="bodyText">
+          Normative documents and tool help describe only the current system.
+          Cryptographic audit evidence remains separate and append-only:
+          <code class="inlineCode">identity-history.json</code>,
+          content-addressed checkpoints, signed Git commits, and release
+          attestations. Current instructions stay concise without silently
+          deleting earlier signed states.
+        </p>
 
-      <h2 class="heading">Offline recovery kit</h2>
+        <h2 class="heading" id="monitoring">
+          <a class="headingLink" href="#monitoring">Monitoring</a>
+        </h2>
 
-      <p class="bodyText">
-        The sealed recovery kit contains signed Git bundles, current runbooks,
-        public evidence, the deterministic identity archive, a Sigstore bundle,
-        a trusted-root snapshot, and a checksum signature. It contains no secret
-        key material. Exact repository commits and checksums make it usable when
-        the Mac, GitHub, the public website, or a password-manager session is
-        unavailable.
-      </p>
+        <p class="bodyText">
+          The production verifier checks manifest integrity, compatibility
+          signatures, identifier bindings, expiry, DNS, WKD, ENS, Git
+          signatures, third-party attestations, and audit-history invariants. A
+          separate verifier checks Sigstore provenance for the manifest and
+          release archive.
+        </p>
 
-      <h2 class="heading">Operating principles</h2>
+        <p class="bodyText">
+          GitHub Actions runs the checks daily. A macOS watchdog runs outside
+          GitHub, pins its installed verifier hashes, and reports state changes.
+          Availability failures and integrity failures remain distinct, and
+          expiry becomes a warning before it becomes an outage.
+        </p>
 
-      <ol class="numberList">
-        <li>
-          Pin identities and workflow context, not only signature validity.
-        </li>
-        <li>
-          Keep routine release keys short-lived and keep recovery keys offline.
-        </li>
-        <li>State the exact guarantee of every check.</li>
-        <li>
-          Treat availability, integrity, freshness, and claim truth as different
-          questions.
-        </li>
-        <li>
-          Keep audit evidence append-only while keeping normative documentation
-          current.
-        </li>
-        <li>Never claim that an unperformed hardware ceremony is complete.</li>
-      </ol>
+        <h2 class="heading" id="offline-recovery">
+          <a class="headingLink" href="#offline-recovery">
+            Offline recovery kit
+          </a>
+        </h2>
 
-      <p class="bodyText">
-        The <a href="/identity">identity page</a> links the public verifier, release
-        archive, trust-bootstrap procedure, and recovery status.
-      </p>
-    </section>
+        <p class="bodyText">
+          The sealed recovery kit contains signed Git bundles, current runbooks,
+          public evidence, the deterministic identity archive, a Sigstore
+          bundle, a trusted-root snapshot, and a checksum signature. It contains
+          no secret key material. Exact repository commits and checksums make it
+          usable when the Mac, GitHub, the public website, or a password-manager
+          session is unavailable.
+        </p>
+
+        <h2 class="heading" id="operating-principles">
+          <a class="headingLink" href="#operating-principles">
+            Operating principles
+          </a>
+        </h2>
+
+        <ol class="numberList">
+          <li>
+            Pin identities and workflow context, not only signature validity.
+          </li>
+          <li>
+            Keep routine release keys short-lived and keep recovery keys
+            offline.
+          </li>
+          <li>State the exact guarantee of every check.</li>
+          <li>
+            Treat availability, integrity, freshness, and claim truth as
+            different questions.
+          </li>
+          <li>
+            Keep audit evidence append-only while keeping normative
+            documentation current.
+          </li>
+          <li>
+            Never claim that an unperformed hardware ceremony is complete.
+          </li>
+        </ol>
+
+        <p class="bodyText">
+          The <a href="/identity">identity page</a> links the public verifier, release
+          archive, trust-bootstrap procedure, and recovery status.
+        </p>
+
+        <footer class="articleFooter">
+          <a href="/writing">← All writing</a>
+          <a href="/identity">Explore the verifiable identity →</a>
+        </footer>
+      </section>
+    </article>
   </main>
 </Base>

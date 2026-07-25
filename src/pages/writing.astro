@@ -26,7 +26,23 @@ const description =
         </a>.
       </p>
 
+      <p class="writingFeed">
+        <a href="/feed.xml">Subscribe to the combined RSS feed ↗</a>
+      </p>
+
       <WritingList entries={WRITING} />
     </section>
   </main>
 </Base>
+
+<style>
+  .writingFeed {
+    margin: -4px 0 20px;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+
+    & a {
+      color: var(--color-text-soft);
+    }
+  }
+</style>
