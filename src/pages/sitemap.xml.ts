@@ -2,7 +2,7 @@ import type { APIRoute } from "astro";
 
 import { PROFILE_URL } from "@/lib/site";
 
-// robots.txt が /sitemap.xml を参照しているため、この名前で静的生成する
+// Emit this static endpoint at the /sitemap.xml URL referenced by robots.txt.
 const PAGES = [
   { path: "/", lastmod: "2026-07-21", changefreq: "monthly", priority: "1.0" },
   {

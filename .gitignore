@@ -7,7 +7,7 @@
 /.ipfs/
 /.wrangler/
 
-# 旧 Next.js ビルドの残骸(ローカルに残っている場合)
+# Legacy Next.js build artifacts, if present locally
 /out/
 /.next/
 

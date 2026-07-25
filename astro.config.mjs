@@ -42,12 +42,12 @@ export default defineConfig({
       },
     },
   },
-  // 既存 URL(/keys 等、拡張子なし・リダイレクトなし)を維持するため
-  // ディレクトリ形式ではなくファイル形式(keys.html)で出力する
+  // Emit file-form pages (such as keys.html) to preserve existing
+  // extensionless URLs like /keys without a redirect.
   build: {
     format: "file",
-    // ページ数が少ない静的サイトでは CSS を常時インライン化して
-    // レンダリング前の RTT を 1 往復削る方が LCP に効く
+    // For this small static site, always inlining CSS removes a render-blocking
+    // round trip and improves LCP.
     inlineStylesheets: "always",
   },
 });

@@ -1,4 +1,4 @@
-/* コンテンツページ(keys / proofs / identity)共通の記事スタイル */
+/* Shared article styles for content pages such as keys, proofs, and identity. */
 
 .lead {
   margin: 0 0 20px;
@@ -208,7 +208,7 @@
   font-size: var(--text-xs);
   color: var(--color-text-strong);
 
-  /* 42 文字のアドレスや指紋など、区切りのない長い文字列を狭幅で折り返す */
+  /* Wrap unbroken strings such as 42-character addresses and fingerprints. */
   overflow-wrap: anywhere;
 }
 

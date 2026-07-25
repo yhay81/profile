@@ -12,7 +12,7 @@ export default {
       files: ["**/*.astro"],
       customSyntax: "postcss-html",
       rules: {
-        // :global() は Astro の scoped style がサポートする固有セレクタ
+        // :global() is an Astro-specific selector supported by scoped styles.
         "selector-pseudo-class-no-unknown": [
           true,
           { ignorePseudoClasses: ["global"] },
@@ -22,8 +22,8 @@ export default {
   ],
   rules: {
     "max-nesting-depth": 4,
-    // ネイティブ CSS ネスティングでは宣言が「書かれた位置」で評価されるため、
-    // @media オーバーライドは必ず宣言の後に置く(SCSS 時代の逆)
+    // Native CSS nesting evaluates declarations in source order, so @media
+    // overrides must follow the declarations they override (unlike old SCSS).
     "order/order": [
       ["custom-properties", "declarations", "rules", "at-rules"],
       { severity: "error" },
@@ -31,8 +31,8 @@ export default {
     "plugin/declaration-block-no-ignored-properties": true,
     "plugin/no-low-performance-animation-properties": [
       true,
-      // color 系の transition は再ペイントのみで実害が小さいため許容する
-      // (アニメーション(@keyframes)は引き続き transform/opacity に限定)
+      // Color transitions only repaint and have negligible cost. Keyframe
+      // animations remain restricted to transform and opacity.
       {
         ignoreProperties: [
           "color",
