@@ -9,16 +9,34 @@ interface Props {
   title: string;
   level?: 1 | 2;
   accent?: "info" | "violet";
+  transitionName?: "page-title" | `article-${string}`;
 }
 
-const { no, label, title, level = 1, accent = "info" } = Astro.props;
+const {
+  no,
+  label,
+  title,
+  level = 1,
+  accent = "info",
+  transitionName,
+} = Astro.props;
 ---
 
 <p class:list={["sectionLabel", accent]}>
   <span class="no">{no}</span>
   <span class="text">{label}</span>
 </p>
-{level === 1 ? <h1 class="title">{title}</h1> : <h2 class="title">{title}</h2>}
+{
+  level === 1 ? (
+    <h1 class="title" data-view-transition-name={transitionName}>
+      {title}
+    </h1>
+  ) : (
+    <h2 class="title" data-view-transition-name={transitionName}>
+      {title}
+    </h2>
+  )
+}
 
 <style>
   .sectionLabel {

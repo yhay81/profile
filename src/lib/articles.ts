@@ -4,6 +4,7 @@ export interface LocalArticle {
   readonly url: `/${string}`;
   readonly datePublished: string;
   readonly dateModified: string;
+  readonly transitionName: `article-${string}`;
 }
 
 export const TRUST_CONTROL_PLANE_ARTICLE = {
@@ -13,6 +14,7 @@ export const TRUST_CONTROL_PLANE_ARTICLE = {
   url: "/trust-control-plane",
   datePublished: "2026-07-21T21:21:40+09:00",
   dateModified: "2026-07-22T04:34:30+09:00",
+  transitionName: "article-trust-control-plane",
 } as const satisfies LocalArticle;
 
 export const LOCAL_ARTICLES: readonly LocalArticle[] = [

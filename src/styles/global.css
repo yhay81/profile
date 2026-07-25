@@ -1,6 +1,6 @@
 /* Global base styles — native CSS (nesting, color-mix), no preprocessor. */
 
-/* ---- Cross-document View Transitions (MPA navigation) ---- */
+/* ---- Cross-document View Transitions (progressive MPA enhancement) ---- */
 
 /* stylelint-disable-next-line at-rule-no-unknown */
 @view-transition {
@@ -14,12 +14,126 @@
   }
 }
 
-::view-transition-old(root) {
-  animation-duration: 0.1s;
+@keyframes page-out {
+  to {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
 }
 
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes title-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes title-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* The background changes almost imperceptibly; the content carries the motion. */
+::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 0.1s;
+  animation-duration: 0.14s;
+  /* stylelint-disable-next-line plugin/no-unsupported-browser-features */
+  mix-blend-mode: normal;
+}
+
+::view-transition-group(site-header),
+::view-transition-group(site-side) {
+  animation-duration: 0.24s;
+  animation-timing-function: var(--ease-swift);
+}
+
+::view-transition-old(page-content) {
+  animation: page-out 0.1s var(--ease-swift) both;
+}
+
+::view-transition-new(page-content) {
+  animation: page-in 0.18s var(--ease-out) 0.08s both;
+}
+
+::view-transition-group(page-title),
+::view-transition-group(article-trust-control-plane) {
+  animation-duration: 0.26s;
+  animation-timing-function: var(--ease-out);
+}
+
+::view-transition-old(page-title),
+::view-transition-old(article-trust-control-plane) {
+  animation: title-out 0.08s var(--ease-swift) both;
+}
+
+::view-transition-new(page-title),
+::view-transition-new(article-trust-control-plane) {
+  animation: title-in 0.18s var(--ease-out) 0.08s both;
+}
+
+/*
+ * Named elements are deliberately opt-in. A transition name must never be
+ * assigned to multiple visible elements in the same document.
+ */
+#page-content {
+  view-transition-name: page-content;
+}
+
+[data-view-transition-name="page-title"] {
+  view-transition-name: page-title;
+}
+
+[data-view-transition-name="article-trust-control-plane"] {
+  view-transition-name: article-trust-control-plane;
+}
+
+/*
+ * Level 2 derives future article names from build-time data and styles all
+ * title snapshots as one class. The explicit selectors above are the fallback.
+ */
+@supports (
+  view-transition-name: attr(
+      data-view-transition-name type(<custom-ident>),
+      none
+    )
+) {
+  [data-view-transition-name] {
+    /* stylelint-disable-next-line plugin/no-unsupported-browser-features */
+    view-transition-name: attr(
+      data-view-transition-name type(<custom-ident>),
+      none
+    );
+    /* stylelint-disable-next-line plugin/no-unsupported-browser-features */
+    view-transition-class: contenttitle;
+  }
+
+  ::view-transition-group(*.contenttitle) {
+    animation-duration: 0.26s;
+    animation-timing-function: var(--ease-out);
+  }
+
+  ::view-transition-old(*.contenttitle) {
+    animation: title-out 0.08s var(--ease-swift) both;
+  }
+
+  ::view-transition-new(*.contenttitle) {
+    animation: title-in 0.18s var(--ease-out) 0.08s both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none;
+  }
 }
 
 /* ---- Scroll-driven reveal (progressive enhancement) ---- */

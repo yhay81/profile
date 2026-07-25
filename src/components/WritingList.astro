@@ -21,6 +21,7 @@ const { entries } = Astro.props;
           </time>
           <a
             class="link"
+            data-view-transition-name={entry.transitionName}
             href={entry.url}
             lang={entry.language}
             rel={entry.external ? "noreferrer" : undefined}

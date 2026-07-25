@@ -96,7 +96,12 @@ gh attestation verify identity.json \\
   <main>
     <article>
       <section>
-        <SectionHeader label="Article" no="01" title={article.title} />
+        <SectionHeader
+          label="Article"
+          no="01"
+          title={article.title}
+          transitionName={article.transitionName}
+        />
 
         <div class="articleMeta" aria-label="Article details">
           <div class="metaPrimary">
