@@ -572,7 +572,7 @@ const FEATURED_PROJECTS = [
     min-width: 0;
     min-height: 420px;
     overflow: hidden;
-    color: var(--color-text-soft);
+    color: var(--color-bg-deep);
     background: var(--surface-card);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-md);
@@ -583,7 +583,7 @@ const FEATURED_PROJECTS = [
 
   .productCanvas:hover,
   .productCanvas:focus-visible {
-    color: var(--color-text-strong);
+    color: var(--color-bg-deep);
     border-color: var(--border-accent);
     transform: translateY(-2px);
   }
@@ -605,30 +605,23 @@ const FEATURED_PROJECTS = [
   }
 
   .wasmhatchCanvas {
-    background:
-      radial-gradient(
-        circle at 82% 16%,
-        color-mix(in oklab, var(--color-info) 10%, transparent),
-        transparent 38%
-      ),
-      var(--surface-card);
+    background: var(--color-text-strong);
   }
 
   .wasmMark {
     display: grid;
     width: 28px;
     height: 28px;
-    color: var(--color-accent);
+    color: var(--color-text-strong);
     place-items: center;
-    background: var(--accent-tint);
-    border: 1px solid var(--border-accent);
+    background: var(--color-bg-deep);
     border-radius: var(--radius-sm);
   }
 
   .canvasStatus {
     margin-left: auto;
     font-weight: 500;
-    color: var(--color-text);
+    color: color-mix(in oklab, var(--color-bg-deep) 65%, transparent);
   }
 
   .wasmStage {
@@ -643,12 +636,11 @@ const FEATURED_PROJECTS = [
     font-size: clamp(2rem, 4.2vw, 4.5rem);
     font-weight: 750;
     line-height: 0.95;
-    color: var(--color-text-strong);
     letter-spacing: -0.06em;
   }
 
   .wasmHeadline strong {
-    color: var(--color-accent);
+    color: var(--color-danger);
   }
 
   .wasmChat {
@@ -658,8 +650,12 @@ const FEATURED_PROJECTS = [
     width: min(100%, 460px);
     padding: 18px 20px;
     margin-left: auto;
-    background: var(--surface-raised);
-    border: 1px solid var(--border-strong);
+    background: color-mix(
+      in oklab,
+      var(--color-text-strong) 72%,
+      var(--color-info)
+    );
+    border: 1px solid color-mix(in oklab, var(--color-bg-deep) 18%, transparent);
     border-radius: var(--radius-md);
   }
 
@@ -674,33 +670,30 @@ const FEATURED_PROJECTS = [
     font-size: var(--text-sm);
     font-weight: 650;
     line-height: 1.4;
-    color: var(--color-text-strong);
   }
 
   .chatAction {
     font-family: var(--font-mono);
     font-size: 0.68rem;
-    color: var(--color-text);
+    color: color-mix(in oklab, var(--color-bg-deep) 68%, transparent);
   }
 
   .chatAction span {
     color: var(--color-accent);
-    background: var(--accent-tint);
+    background: var(--color-bg-deep);
     border-radius: var(--radius-full);
   }
 
   .pylopdfCanvas {
-    background:
-      radial-gradient(
-        circle at 16% 78%,
-        color-mix(in oklab, var(--color-violet) 11%, transparent),
-        transparent 42%
-      ),
-      var(--surface-card);
+    background: color-mix(
+      in oklab,
+      var(--color-text-strong) 87%,
+      var(--color-danger)
+    );
   }
 
   .pylopdfNav {
-    color: var(--color-text-soft);
+    color: var(--color-bg-deep);
   }
 
   .pyLogo {
@@ -709,7 +702,7 @@ const FEATURED_PROJECTS = [
   }
 
   .pyLogo span {
-    color: var(--color-accent);
+    color: var(--color-violet);
   }
 
   .pylopdfNav > span:last-child {
@@ -729,17 +722,15 @@ const FEATURED_PROJECTS = [
   .pylopdfHeadline {
     position: relative;
     z-index: 2;
-    font-family: var(--font-display);
+    font-family: Georgia, serif;
     font-size: clamp(1.95rem, 3.8vw, 4rem);
-    font-weight: 650;
+    font-weight: 700;
     line-height: 0.98;
-    color: var(--color-text-strong);
     letter-spacing: -0.055em;
   }
 
   .pylopdfHeadline em {
-    color: var(--color-accent);
-    font-style: normal;
+    color: var(--color-violet);
   }
 
   .pdfDocument {
@@ -750,8 +741,10 @@ const FEATURED_PROJECTS = [
     min-height: 280px;
     padding: 30px 24px;
     overflow: hidden;
-    background: var(--color-code-bg);
-    border: 1px solid var(--border-code);
+    background: var(--color-text-strong);
+    box-shadow: 12px 16px 0
+      color-mix(in oklab, var(--color-violet) 22%, transparent);
+    transform: rotate(3deg);
   }
 
   .pdfFold {
@@ -762,8 +755,8 @@ const FEATURED_PROJECTS = [
     height: 42px;
     background: linear-gradient(
       45deg,
-      color-mix(in oklab, var(--color-info) 18%, var(--color-code-bg)) 50%,
-      color-mix(in oklab, var(--color-code-text) 8%, var(--color-code-bg)) 50%
+      color-mix(in oklab, var(--color-info) 30%, var(--color-text-strong)) 50%,
+      color-mix(in oklab, var(--color-text-strong) 80%, var(--color-info)) 50%
     );
   }
 
@@ -772,14 +765,14 @@ const FEATURED_PROJECTS = [
     font-family: var(--font-mono);
     font-size: 2.8rem;
     font-weight: 800;
-    color: var(--color-accent);
+    color: var(--color-violet);
   }
 
   .pdfLines {
     width: 100%;
     height: 7px;
     margin-bottom: 12px;
-    background: var(--border-code);
+    background: color-mix(in oklab, var(--color-bg-deep) 18%, transparent);
   }
 
   .pdfLines.short {
@@ -792,22 +785,24 @@ const FEATURED_PROJECTS = [
     font-family: var(--font-mono);
     font-size: 0.62rem;
     color: var(--color-text-strong);
-    background: var(--color-code-header);
+    background: var(--color-bg-deep);
   }
 
   .hayateCanvas {
-    background:
-      radial-gradient(
-        circle at 84% 20%,
-        color-mix(in oklab, var(--color-accent) 9%, transparent),
-        transparent 40%
-      ),
-      var(--surface-card);
+    background: color-mix(
+      in oklab,
+      var(--color-text-strong) 92%,
+      var(--color-accent)
+    );
   }
 
   .hayateBar {
-    color: var(--color-text-soft);
-    background: var(--accent-tint);
+    color: var(--color-bg-deep);
+    background: color-mix(
+      in oklab,
+      var(--color-accent) 52%,
+      var(--color-text-strong)
+    );
   }
 
   .hayateBrand {
@@ -819,7 +814,7 @@ const FEATURED_PROJECTS = [
     padding: 6px 10px;
     margin-left: auto;
     font-weight: 500;
-    border: 1px solid var(--border-strong);
+    border: 1px solid color-mix(in oklab, var(--color-bg-deep) 20%, transparent);
     border-radius: var(--radius-sm);
   }
 
@@ -836,13 +831,14 @@ const FEATURED_PROJECTS = [
     padding: 32px 24px;
     font-family: var(--font-mono);
     font-size: 0.68rem;
-    color: var(--color-text);
-    border-right: 1px solid var(--border-subtle);
+    color: color-mix(in oklab, var(--color-bg-deep) 72%, transparent);
+    border-right: 1px solid
+      color-mix(in oklab, var(--color-bg-deep) 13%, transparent);
   }
 
   .docsNav strong {
     margin-top: 10px;
-    color: var(--color-text-strong);
+    color: var(--color-bg-deep);
   }
 
   .docsContent {
@@ -856,7 +852,7 @@ const FEATURED_PROJECTS = [
     font-family: var(--font-mono);
     font-size: 0.65rem;
     font-weight: 800;
-    color: var(--color-accent);
+    color: color-mix(in oklab, var(--color-bg-deep) 60%, transparent);
     letter-spacing: 0.12em;
   }
 
@@ -865,13 +861,12 @@ const FEATURED_PROJECTS = [
     font-size: clamp(1.9rem, 3.5vw, 3.5rem);
     font-weight: 750;
     line-height: 1;
-    color: var(--color-text-strong);
     letter-spacing: -0.05em;
   }
 
   .docsText {
     font-size: var(--text-sm);
-    color: var(--color-text-soft);
+    color: color-mix(in oklab, var(--color-bg-deep) 72%, transparent);
   }
 
   .codePanel {
@@ -901,33 +896,30 @@ const FEATURED_PROJECTS = [
   }
 
   .catalogCanvas {
-    background:
-      radial-gradient(
-        circle at 18% 20%,
-        color-mix(in oklab, var(--color-info) 11%, transparent),
-        transparent 42%
-      ),
-      var(--surface-card);
+    background: color-mix(
+      in oklab,
+      var(--color-info) 16%,
+      var(--color-text-strong)
+    );
   }
 
   .catalogBar {
-    color: var(--color-text-soft);
+    color: var(--color-bg-deep);
   }
 
   .catalogMark {
     display: grid;
     width: 28px;
     height: 28px;
-    color: var(--color-accent);
+    color: var(--color-text-strong);
     place-items: center;
-    background: var(--accent-tint);
-    border: 1px solid var(--border-accent);
+    background: var(--color-violet);
     border-radius: var(--radius-sm);
   }
 
   .catalogOnline {
     margin-left: auto;
-    color: var(--color-text);
+    color: color-mix(in oklab, var(--color-bg-deep) 65%, transparent);
   }
 
   .catalogOnline::first-letter {
@@ -946,19 +938,18 @@ const FEATURED_PROJECTS = [
     font-size: clamp(2.1rem, 4vw, 4.2rem);
     font-weight: 800;
     line-height: 1.05;
-    color: var(--color-text-strong);
     letter-spacing: -0.055em;
   }
 
   .catalogHeadline strong {
-    color: var(--color-accent);
+    color: var(--color-violet);
   }
 
   .catalogCopy {
     max-width: 480px;
     margin-top: 18px;
     font-size: var(--text-sm);
-    color: var(--color-text-soft);
+    color: color-mix(in oklab, var(--color-bg-deep) 72%, transparent);
   }
 
   .catalogConnection {
@@ -970,8 +961,12 @@ const FEATURED_PROJECTS = [
     margin-top: 34px;
     font-family: var(--font-mono);
     font-size: 0.72rem;
-    background: var(--surface-raised);
-    border: 1px solid var(--border-strong);
+    background: color-mix(
+      in oklab,
+      var(--color-text-strong) 76%,
+      var(--color-info)
+    );
+    border: 1px solid color-mix(in oklab, var(--color-bg-deep) 18%, transparent);
     border-radius: var(--radius-sm);
   }
 
@@ -979,11 +974,11 @@ const FEATURED_PROJECTS = [
     grid-column: 1 / -1;
     font-size: 0.56rem;
     font-weight: 800;
-    color: var(--color-text);
+    color: color-mix(in oklab, var(--color-bg-deep) 58%, transparent);
   }
 
   .catalogConnection b {
-    color: var(--color-accent);
+    color: var(--color-violet);
   }
 
   .catalogStats {
@@ -993,11 +988,11 @@ const FEATURED_PROJECTS = [
     margin-top: auto;
     font-family: var(--font-mono);
     font-size: 0.65rem;
-    color: var(--color-text);
+    color: color-mix(in oklab, var(--color-bg-deep) 62%, transparent);
   }
 
   .catalogStats b {
-    color: var(--color-text-strong);
+    color: var(--color-bg-deep);
   }
 
   .moreWork,
