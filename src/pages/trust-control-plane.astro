@@ -5,6 +5,7 @@ import CodeBlock from "@/components/CodeBlock.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 import Base from "@/layouts/Base.astro";
 import { TRUST_CONTROL_PLANE_ARTICLE } from "@/lib/articles";
+import { sha256CspHash } from "@/lib/csp";
 import { PROFILE_NAME, PROFILE_URL } from "@/lib/site";
 
 const article = TRUST_CONTROL_PLANE_ARTICLE;
@@ -33,6 +34,11 @@ const articleJsonLd = JSON.stringify({
     name: PROFILE_NAME,
     url: PROFILE_URL,
   },
+});
+
+Astro.csp?.insertScriptHash({
+  hash: sha256CspHash(articleJsonLd),
+  kind: "element",
 });
 
 const TABLE_OF_CONTENTS = [
