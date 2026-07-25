@@ -6,6 +6,12 @@ import { PROFILE_URL } from "@/lib/site";
 const PAGES = [
   { path: "/", lastmod: "2026-07-21", changefreq: "monthly", priority: "1.0" },
   {
+    path: "/work",
+    lastmod: "2026-07-26",
+    changefreq: "monthly",
+    priority: "0.9",
+  },
+  {
     path: "/writing",
     lastmod: "2026-07-25",
     changefreq: "monthly",

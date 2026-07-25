@@ -22,6 +22,12 @@ const ROUTE_BUDGETS = [
     initialJsGzipBytes: 0,
   },
   {
+    path: "/work",
+    file: "work.html",
+    documentGzipBytes: 12_000,
+    initialJsGzipBytes: 0,
+  },
+  {
     path: "/identity",
     file: "identity.html",
     // Identity proofs and the interactive release ledger intentionally share

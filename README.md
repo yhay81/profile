@@ -58,6 +58,10 @@ runtime, and its output is server-free HTML and CSS with a small set of
 purpose-specific client scripts. Web-platform features are preferred over
 application-level reimplementations:
 
+- **Selected work:** `/work` presents four detailed product and open-source
+  case studies plus two supporting projects. The product-window illustrations
+  are semantic HTML and CSS, so the page has no screenshot or image-download
+  cost.
 - **Navigation:** CSS-only cross-document View Transitions (`@view-transition`)
   keep the site shell stable, sequence page-content replacement, and share
   local article titles across list/detail views. The Speculation Rules API
@@ -99,9 +103,10 @@ application-level reimplementations:
   Speculation Rules.
 - `src/components/` — Reusable UI including `SectionHeader`, `CodeBlock`, and
   `TrustGraph`.
-- `src/pages/` — `/` (Hero, About, Writing, and Contact), `/identity` (trust
-  graph, release ledger, and browser verifier), `/keys`, `/proofs`, `/siwe`, and
-  static feed/sitemap endpoints.
+- `src/pages/` — `/` (Hero, About, Writing, and Contact), `/work` (selected
+  products and open source), `/identity` (trust graph, release ledger, and
+  browser verifier), `/keys`, `/proofs`, `/siwe`, and static feed/sitemap
+  endpoints.
 - `src/lib/site.ts` — Shared profile metadata, social links, and key
   fingerprints.
 - `public/` — **Stable, externally referenced assets. Do not rename or move
