@@ -2,13 +2,12 @@
 import About from "@/components/About.astro";
 import Contact from "@/components/Contact.astro";
 import Hero from "@/components/Hero.astro";
-import Provenance from "@/components/Provenance.astro";
 import Writing from "@/components/Writing.astro";
 import Base from "@/layouts/Base.astro";
 import { PROFILE_EMAIL, PROFILE_NAME, PROFILE_URL } from "@/lib/site";
 
 const description =
-  "Tokyo-based AI adoption consultant and software engineer building production systems with public, verifiable release provenance.";
+  "Tokyo-based AI adoption consultant and software engineer helping teams turn AI plans into reliable products people can use.";
 
 const structuredData = JSON.stringify({
   "@context": "https://schema.org",
@@ -42,7 +41,6 @@ const structuredData = JSON.stringify({
   <script is:inline set:html={structuredData} type="application/ld+json" />
   <main>
     <Hero />
-    <Provenance />
     <About />
     <Writing />
     <Contact />
