@@ -24,7 +24,9 @@ const ROUTE_BUDGETS = [
   {
     path: "/identity",
     file: "identity.html",
-    documentGzipBytes: 11_000,
+    // Astro's page-specific CSP adds hash metadata to the document while
+    // keeping the route comfortably below a 12 KiB compressed budget.
+    documentGzipBytes: 12_000,
     initialJsGzipBytes: 0,
   },
   {
@@ -83,6 +85,35 @@ function resourceUrls(html) {
     }
   }
   return urls;
+}
+
+function pageContentSecurityPolicy(html, file) {
+  const match = html.match(
+    /<meta\s+http-equiv=(["'])content-security-policy\1\s+content=(["'])([\s\S]*?)\2\s*\/?>/i,
+  );
+  if (!match) {
+    throw new Error(`Astro CSP metadata is missing from ${file}`);
+  }
+
+  const policy = match[3];
+  const required = [
+    "default-src 'none'",
+    "require-trusted-types-for 'script'",
+    "trusted-types 'none'",
+    "script-src-elem 'self' 'inline-speculation-rules'",
+    "script-src-attr 'none'",
+    "style-src-elem 'self'",
+    "style-src-attr 'none'",
+  ];
+  for (const directive of required) {
+    if (!policy.includes(directive)) {
+      throw new Error(`Astro CSP in ${file} is missing: ${directive}`);
+    }
+  }
+  if (policy.includes("'unsafe-inline'") || policy.includes("'unsafe-eval'")) {
+    throw new Error(`Astro CSP in ${file} contains an unsafe source`);
+  }
+  return policy;
 }
 
 async function generatePerformanceReport({ commit, checkedAt }) {
@@ -195,15 +226,33 @@ async function generateContentSecurityPolicy() {
 
   for (const file of htmlFiles) {
     const html = await readFile(join(DIST, file), "utf8");
+    const pagePolicy = pageContentSecurityPolicy(html, file);
     for (const match of html.matchAll(
       /<script\b([^>]*)>([\s\S]*?)<\/script>/gi,
     )) {
       if (!/\bsrc=/i.test(match[1]) && match[2].length > 0) {
-        scriptHashes.add(sha256Csp(match[2]));
+        const hash = sha256Csp(match[2]);
+        scriptHashes.add(hash);
+        const isSpeculationRules = /\btype=["']speculationrules["']/i.test(
+          match[1],
+        );
+        if (!isSpeculationRules && !pagePolicy.includes(hash)) {
+          throw new Error(
+            `Astro CSP in ${file} does not cover an inline script`,
+          );
+        }
       }
     }
     for (const match of html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)) {
-      if (match[1].length > 0) styleHashes.add(sha256Csp(match[1]));
+      if (match[1].length > 0) {
+        const hash = sha256Csp(match[1]);
+        styleHashes.add(hash);
+        if (!pagePolicy.includes(hash)) {
+          throw new Error(
+            `Astro CSP in ${file} does not cover an inline style element`,
+          );
+        }
+      }
     }
   }
 
@@ -217,10 +266,14 @@ async function generateContentSecurityPolicy() {
     "img-src 'self' data:",
     "manifest-src 'self'",
     "object-src 'none'",
-    `script-src 'self' 'inline-speculation-rules' ${[...scriptHashes].sort().join(" ")}`,
+    "require-trusted-types-for 'script'",
+    `script-src 'self'`,
+    `script-src-elem 'self' 'inline-speculation-rules' ${[...scriptHashes].sort().join(" ")}`,
     "script-src-attr 'none'",
-    `style-src 'self' ${[...styleHashes].sort().join(" ")}`,
+    `style-src 'self'`,
+    `style-src-elem 'self' ${[...styleHashes].sort().join(" ")}`,
     "style-src-attr 'none'",
+    "trusted-types 'none'",
     "worker-src 'self'",
     "upgrade-insecure-requests",
   ].join("; ");
@@ -230,7 +283,11 @@ async function generateContentSecurityPolicy() {
     throw new Error("The _headers CSP placeholder is missing");
   }
   await writeFile(headersPath, headers.replace("__GENERATED_CSP__", csp));
-  return { scriptHashes: scriptHashes.size, styleHashes: styleHashes.size };
+  return {
+    pagePolicies: htmlFiles.length,
+    scriptHashes: scriptHashes.size,
+    styleHashes: styleHashes.size,
+  };
 }
 
 async function generateReleaseManifest({
@@ -333,5 +390,6 @@ const release = await generateReleaseManifest({
 
 process.stdout.write(
   `Integrity build: ${release.assetSet.fileCount} files, sha256:${release.assetSet.sha256}, ` +
-    `${csp.scriptHashes} script hash(es), ${csp.styleHashes} style hash(es)\n`,
+    `${csp.pagePolicies} page CSP(s), ${csp.scriptHashes} script hash(es), ` +
+    `${csp.styleHashes} style hash(es)\n`,
 );

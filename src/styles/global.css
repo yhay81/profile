@@ -197,6 +197,12 @@ p {
   }
 }
 
+/* Baseline 2026: native disclosure state styling without attribute selectors. */
+/* stylelint-disable-next-line plugin/no-unsupported-browser-features */
+details:open > summary::marker {
+  color: var(--color-accent);
+}
+
 code,
 pre {
   font-family: var(--font-mono);

@@ -11,28 +11,34 @@ interface Props {
 const { entries } = Astro.props;
 ---
 
-<ol class="writingList">
-  {
-    entries.map((entry) => (
-      <li class="item">
-        <time class="date" datetime={entry.date}>
-          {entry.date}
-        </time>
-        <a
-          class="link"
-          href={entry.url}
-          rel={entry.external ? "noreferrer" : undefined}
-          target={entry.external ? "_blank" : undefined}
-        >
-          {entry.title}
-          {entry.external && " ↗"}
-        </a>
-      </li>
-    ))
-  }
-</ol>
+<div class="writingRegion">
+  <ol class="writingList">
+    {
+      entries.map((entry) => (
+        <li class="item">
+          <time class="date" datetime={entry.date}>
+            {entry.date}
+          </time>
+          <a
+            class="link"
+            href={entry.url}
+            rel={entry.external ? "noreferrer" : undefined}
+            target={entry.external ? "_blank" : undefined}
+          >
+            {entry.title}
+            {entry.external && " ↗"}
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+</div>
 
 <style>
+  .writingRegion {
+    container: writing-list / inline-size;
+  }
+
   .writingList {
     padding: 0;
     margin: 0;
@@ -46,8 +52,10 @@ const { entries } = Astro.props;
     align-items: baseline;
     padding: 13px 0;
     border-bottom: 1px solid var(--border-subtle);
+  }
 
-    @media (width <= 640px) {
+  @container writing-list (width <= 40rem) {
+    .item {
       grid-template-columns: 1fr;
       gap: 4px;
     }

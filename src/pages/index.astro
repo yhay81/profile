@@ -4,6 +4,7 @@ import Contact from "@/components/Contact.astro";
 import Hero from "@/components/Hero.astro";
 import Writing from "@/components/Writing.astro";
 import Base from "@/layouts/Base.astro";
+import { sha256CspHash } from "@/lib/csp";
 import { PROFILE_EMAIL, PROFILE_NAME, PROFILE_URL } from "@/lib/site";
 
 const description =
@@ -31,6 +32,11 @@ const structuredData = JSON.stringify({
     ],
   },
 }).replaceAll("<", "\\u003c");
+
+Astro.csp?.insertScriptHash({
+  hash: sha256CspHash(structuredData),
+  kind: "element",
+});
 ---
 
 <Base

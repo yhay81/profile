@@ -5,6 +5,7 @@ import "@/styles/global.css";
 import Footer from "@/components/Footer.astro";
 import Nav from "@/components/Nav.astro";
 import Side from "@/components/Side.astro";
+import { sha256CspHash } from "@/lib/csp";
 import { MAIN_COLOR, PROFILE_URL } from "@/lib/site";
 
 interface Props {
@@ -35,6 +36,17 @@ const ogImageAbs = new URL(ogImage, PROFILE_URL).href;
 const speculationRules = JSON.stringify({
   prerender: [{ where: { href_matches: "/*" }, eagerness: "moderate" }],
 });
+const firstVisitScript = `
+      if (!sessionStorage.getItem("visited")) {
+        document.documentElement.dataset.firstVisit = "";
+        sessionStorage.setItem("visited", "1");
+      }
+    `;
+
+Astro.csp?.insertScriptHash({
+  hash: sha256CspHash(firstVisitScript),
+  kind: "element",
+});
 ---
 
 <!doctype html>
@@ -43,8 +55,6 @@ const speculationRules = JSON.stringify({
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <script is:inline>
-      // 登場アニメーションはセッション初回のみ(遷移・リロードごとの再生は UX を損なう)。
-      // 描画前に同期実行するため head 内に置く(FOUC なし)。
       if (!sessionStorage.getItem("visited")) {
         document.documentElement.dataset.firstVisit = "";
         sessionStorage.setItem("visited", "1");
