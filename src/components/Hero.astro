@@ -1,7 +1,7 @@
 ---
 /**
- * ヒーロー。タイプライター演出は CSS steps() のみ(JS ゼロ)。
- * 3 行を順にタイプして残す(ループで消さない)。
+ * Hero with a CSS-only steps() typewriter effect and no JavaScript.
+ * Type the three lines in sequence and leave them visible without looping.
  */
 const TYPED_LINES = [
   "I turn AI plans into products people can actually use.",
@@ -164,11 +164,12 @@ const HERO_STATS = [
     white-space: nowrap;
     max-width: 100%;
 
-    /* stylelint-disable-next-line plugin/no-low-performance-animation-properties -- タイプライター演出: 離散 steps で 1 インライン要素のみ */
+    /* stylelint-disable-next-line plugin/no-low-performance-animation-properties -- Discrete typewriter steps on one inline element only. */
     animation: line-typing var(--duration) steps(var(--n)) var(--delay) forwards;
 
-    /* カーソルは基本非表示とし、自行のタイプ中だけアニメで表示する
-       (fill-mode の終端値に頼ると極短アニメで不定になるため使わない) */
+    /* Keep the cursor hidden by default and animate it only while its line is
+       being typed. Avoid relying on a fill-mode endpoint, which is unstable
+       for extremely short animations. */
     &::after {
       content: "▌";
       color: var(--color-accent);
@@ -176,7 +177,7 @@ const HERO_STATS = [
       animation: cursor-on var(--duration) step-end var(--delay);
     }
 
-    /* 最終行はタイプ開始以降ずっと点滅 */
+    /* Keep the final cursor blinking after its line starts typing. */
     &:last-child::after {
       animation: cursor-blink 0.8s step-end var(--delay) infinite;
     }
@@ -209,7 +210,7 @@ const HERO_STATS = [
     }
   }
 
-  /* 狭い画面では 1 行に収まらないため、静的表示にフォールバック */
+  /* Fall back to a static display when lines cannot fit on narrow screens. */
   @media (width <= 640px) {
     .line {
       width: auto;
@@ -223,7 +224,7 @@ const HERO_STATS = [
   }
 
   /* stylelint-disable plugin/no-low-performance-animation-properties --
-     タイプライター演出: 離散 steps で 1 インライン要素のみ、実測で無害 */
+     Discrete typewriter steps on one inline element; measured impact is negligible. */
   @keyframes line-typing {
     from {
       width: 0;
@@ -394,7 +395,7 @@ const HERO_STATS = [
     }
   }
 
-  /* 登場演出はセッション初回のみ */
+  /* Run the entrance animation only on the first visit in a session. */
   :global(html[data-first-visit]) .arrow {
     opacity: 0;
     animation: hero-fade-in 0.24s var(--ease-out) 0.45s forwards;

@@ -19,8 +19,8 @@
   --color-violet: oklch(67.42% 0.1885 291.71deg);
   --color-danger: oklch(71.16% 0.1812 22.84deg);
 
-  /* テキスト 3 段階。明度は text < soft < strong の順
-     (soft は muted の意味ではなく「柔らかい白」— 本文より明るい) */
+  /* Three text levels ordered by lightness: text < soft < strong.
+     "Soft" means a gentler white, not muted text, and is lighter than body copy. */
   --color-text: oklch(66.24% 0.0461 270.63deg); /* slate */
   --color-text-soft: oklch(76.6% 0.0458 271.2deg);
   --color-text-strong: oklch(87.86% 0.0455 271.71deg);

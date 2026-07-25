@@ -1,8 +1,8 @@
-# pnpm 11 の既定(公開後 24h 未満のパッケージを拒否)を無効化し、
-# リリース直後でも最新版を採用する
+# Disable pnpm 11's default rejection of packages published less than 24 hours
+# ago so the project can adopt current releases immediately.
 minimumReleaseAge: 0
 
-# ビルドスクリプトの許可(pnpm 11 の allowBuilds 形式)
+# Explicit build-script policy using pnpm 11's allowBuilds format.
 allowBuilds:
   esbuild: true
   sharp: true
@@ -10,7 +10,7 @@ allowBuilds:
   unrs-resolver: false
   workerd: true
 
-# 直接依存だけでなく、監査対象の推移的依存も修正版に統一する。
+# Pin vulnerable transitive dependencies to their patched releases as well.
 overrides:
   "brace-expansion@<=5.0.7": "5.0.8"
   "minimatch@<3.1.4": "3.1.4"

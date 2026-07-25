@@ -83,7 +83,7 @@ export interface NavLink {
   readonly label: string;
 }
 
-// Keys / Proofs / SIWE は /identity から辿れるためナビには出さない
+// Keys, Proofs, and SIWE are reachable from /identity and stay out of the nav.
 export const NAV_LINKS: readonly NavLink[] = [
   { href: "/#about", label: "About" },
   { href: "/writing", label: "Writing" },

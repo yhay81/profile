@@ -1,7 +1,7 @@
 ---
 /**
- * コードブロック。CSP の style-src-attr 'none' を維持し、Shiki が生成する
- * inline style を避けるため、意味論的な pre/code だけを静的に出力する。
+ * Semantic static code block. Avoid Shiki-generated inline styles so the site
+ * can retain CSP style-src-attr 'none'.
  */
 import { type CodeTokenKind, highlightCode } from "@/lib/code-highlight";
 

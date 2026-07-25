@@ -1,8 +1,7 @@
 ---
 /**
- * セクション見出しキット。
- * 旧実装で 5 コンポーネントにコピペされていた
- * sectionLabel / sectionNo / sectionText / title を一本化したもの。
+ * Shared section-heading primitive that consolidates sectionLabel, sectionNo,
+ * sectionText, and title markup previously duplicated across five components.
  */
 interface Props {
   no: string;
@@ -35,7 +34,7 @@ const { no, label, title, level = 1, accent = "info" } = Astro.props;
     letter-spacing: 0.24em;
 
     &::after {
-      /* 固定幅ではなく残余幅を使う(狭幅でラベルがはみ出さない) */
+      /* Use the remaining width so labels do not overflow on narrow screens. */
       flex: 1 1 24px;
       max-width: 260px;
       height: 1px;

@@ -1,7 +1,7 @@
 import zennWriting from "@/data/zenn-writing.json";
 import { LOCAL_ARTICLES } from "@/lib/articles";
 
-// サイト内記事と、公式 RSS から同期した Zenn の公開物を新しい順に並べる。
+// Combine local articles with the official Zenn RSS snapshot in newest-first order.
 export interface WritingEntry {
   readonly date: string; // YYYY-MM-DD
   readonly title: string;

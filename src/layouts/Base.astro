@@ -32,7 +32,7 @@ const {
 const canonical = new URL(path, PROFILE_URL).href;
 const ogImageAbs = new URL(ogImage, PROFILE_URL).href;
 
-// Speculation Rules: 内部リンクをホバー時に prerender(未対応ブラウザは無視)
+// Prerender internal links on hover. Browsers without Speculation Rules ignore it.
 const speculationRules = JSON.stringify({
   prerender: [{ where: { href_matches: "/*" }, eagerness: "moderate" }],
 });

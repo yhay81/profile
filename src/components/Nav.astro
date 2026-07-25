@@ -45,7 +45,7 @@ const { currentPath } = Astro.props;
   }
 
   .header {
-    /* ページ遷移中もヘッダーを連続した要素としてモーフィングさせる */
+    /* Keep the header continuous across cross-document transitions. */
     view-transition-name: site-header;
     position: fixed;
     top: 0;
@@ -62,7 +62,7 @@ const { currentPath } = Astro.props;
     backdrop-filter: blur(12px);
   }
 
-  /* 登場演出はセッション初回のみ(Base.astro が data-first-visit を付与) */
+  /* Base.astro adds data-first-visit for the first entrance in a session. */
   :global(html[data-first-visit]) .header {
     opacity: 0;
     animation: nav-in 0.3s var(--ease-out) 0.06s forwards;

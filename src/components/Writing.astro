@@ -3,7 +3,7 @@ import SectionHeader from "@/components/SectionHeader.astro";
 import WritingList from "@/components/WritingList.astro";
 import { WRITING } from "@/lib/writing";
 
-// トップには最新数本のみ。全一覧は /writing に置く
+// Keep the home page concise; the complete archive lives at /writing.
 const latest = WRITING.slice(0, 3);
 ---
 

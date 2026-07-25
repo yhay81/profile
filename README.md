@@ -1,12 +1,13 @@
 # profile
 
-Yusuke Hayashi のプロフィールページ(yusuke-hayashi.com)。
+The source for [Yusuke Hayashi's profile site](https://yusuke-hayashi.com).
 
 ## Identity verification
 
-OpenPGP 署名付きの機械可読 manifest を
-[`/.well-known/identity.json`](https://yusuke-hayashi.com/.well-known/identity.json)
-で配信する。detached signature、変更履歴、schema、公開検証 CLI も同じ `.well-known` 配下に置く。
+The site publishes an OpenPGP-signed, machine-readable identity manifest at
+[`/.well-known/identity.json`](https://yusuke-hayashi.com/.well-known/identity.json).
+Its detached signature, revision history, schemas, and public verification CLI
+are available under the same `.well-known` namespace.
 
 ```sh
 gpg --locate-keys yusuke@haya.company
@@ -20,83 +21,139 @@ node verify-identity.mjs
 
 ## Release integrity
 
-[`/integrity`](https://yusuke-hayashi.com/integrity) は、source commit、再現可能 build
-provenance、performance contract、identity proof を一つの検証面にまとめる。通常 asset
-は SHA-256 で完全一致を検証する。Cloudflare が先頭に managed policy を加える
-`robots.txt` は、source-controlled suffix の byte 数と SHA-256 を検証する。自己参照になる
-`release.json` と配信設定は asset set 外だが、archive attestation には含まれる。ブラウザー内の
-検証器はクリックされるまで読み込まれない。
+[`/integrity`](https://yusuke-hayashi.com/integrity) combines the source
+commit, reproducible-build provenance, performance contract, and identity
+proofs in one verification surface. Ordinary assets are verified by exact
+SHA-256 match. Because Cloudflare prepends a managed policy to `robots.txt`,
+the verifier checks the byte length and SHA-256 digest of its source-controlled
+suffix. The self-referential `release.json` and deployment configuration are
+outside the asset set, but remain covered by the archive attestation. The
+in-browser verifier is loaded only when requested.
 
-トップページの `Release provenance` セクションは、非技術者向けに build identity、
-artifact binding、public transparency record を分けて説明する。Sigstore が証明するのは
-特定の自動化と byte の関係であり、記載内容の真実性、脆弱性の不存在、本人の人間性までは
-証明しないことも同じ場所に明記する。
+The home page remains focused on the profile itself. Deeper release and
+identity evidence is intentionally available through `/integrity` and
+`/identity`. The integrity documentation distinguishes build identity,
+artifact binding, and the public transparency record while making the limits
+of Sigstore explicit: it proves the relationship between a specific automation
+identity and specific bytes, not the truth of the site's claims, the absence of
+vulnerabilities, or a person's identity.
 
 ```sh
 node scripts/verify-release.mjs --base-url https://yusuke-hayashi.com
 ```
 
-機械可読の [`release.json`](https://yusuke-hayashi.com/.well-known/release.json) と
-[`performance.json`](https://yusuke-hayashi.com/.well-known/performance.json) は各 build で
-決定論的に生成される。CSP の inline script/style hash も同じ build で生成し、未登録の
-inline code は本番で実行できない。
+The machine-readable
+[`release.json`](https://yusuke-hayashi.com/.well-known/release.json) and
+[`performance.json`](https://yusuke-hayashi.com/.well-known/performance.json)
+are generated deterministically on every build. The same build derives the CSP
+hashes for inline scripts and styles, preventing unregistered inline code from
+running in production. Astro also emits a page-level CSP with Trusted Types
+enforcement and separate element/attribute directives.
 
-## 技術方針
+## Technical approach
 
-Astro + ネイティブ CSS の静的サイト。フレームワークランタイムを持たず、出力はデフォルトで JS ゼロの純 HTML/CSS。プラットフォーム標準機能を優先する:
+This is a static Astro site built with native CSS. It ships no framework
+runtime, and its default output is plain HTML and CSS with zero client-side
+JavaScript. Web-platform features are preferred over application-level
+reimplementations:
 
-- **ページ遷移**: Cross-document View Transitions(`@view-transition`、CSS のみ)+ Speculation Rules API(内部リンクの prerender)。SPA ルーターは使わない
-- **モーション**: Scroll-driven Animations(`animation-timeline: view()`)によるリビール、CSS `steps()` のみのタイプライター演出。すべて `prefers-reduced-motion` で無効化
-- **色**: OKLCH のデザイントークン + `color-mix()` で透明度バリエーションを導出(`src/styles/tokens.css` が単一の情報源。生 rgb/hex リテラル禁止 — stylelint の `declaration-strict-value` で強制)
-- **フォント**: `system-ui` / `ui-monospace` のみ。Web フォントの取得・preload・表示待ちを発生させない
-- **JS を使う場所**: SIWE デモ(viem はクリック時 import)、メールコピー、`/integrity` の検証器だけ。OpenPGP/viem を含む暗号コードは検証開始時まで import しない。アナリティクスなし・第三者スクリプトなし
-- **performance contract**: 主要 route の圧縮 HTML/初期 JS 上限と、第三者 request・font・RUM が常に 0 であることを build で強制
-- **security headers**: build 出力から生成する hash-based CSP、HSTS、COOP/CORP、Permissions-Policy、nosniff、clickjacking 防止を Cloudflare edge で付与
+- **Navigation:** CSS-only cross-document View Transitions (`@view-transition`)
+  and the Speculation Rules API for internal-link prerendering. There is no SPA
+  router.
+- **Motion:** Scroll-driven Animations (`animation-timeline: view()`) for
+  reveals and a CSS `steps()` typewriter effect. All motion is disabled under
+  `prefers-reduced-motion`.
+- **Color:** OKLCH design tokens with `color-mix()`-derived variants.
+  `src/styles/tokens.css` is the single source of truth; Stylelint's
+  `declaration-strict-value` rule rejects raw RGB and hex color literals.
+- **Typography:** `system-ui` and `ui-monospace` only, avoiding font downloads,
+  preloads, and render delays.
+- **JavaScript:** Limited to the SIWE demo (with `viem` imported on demand),
+  email copying, and the `/integrity` verifier. Cryptographic code, including
+  OpenPGP and `viem`, is not imported until verification starts. The site uses
+  no analytics or third-party scripts.
+- **Performance contract:** The build enforces compressed HTML and initial
+  JavaScript budgets for key routes, with zero third-party requests, web fonts,
+  or RUM beacons.
+- **Security headers:** The build derives a hash-based CSP. Cloudflare adds
+  HSTS, COOP/CORP, Permissions Policy, `nosniff`, and clickjacking protection at
+  the edge.
 
-## 構成
+## Project structure
 
-- `src/layouts/Base.astro` — 共通シェル(メタ・OG/Twitter カード・Speculation Rules)
-- `src/components/` — SectionHeader / CodeBlock / TrustGraph など
-- `src/pages/` — `/`(Hero+About+Contact)、`/identity`(トラストグラフ)、`/integrity`(release ledger + browser verifier)、`/keys`、`/proofs`、`/siwe`、`sitemap.xml.ts`
-- `src/lib/site.ts` — プロフィール情報・ソーシャルリンク・鍵指紋などの共通定数
-- `public/` — **外部参照される固定資産**(変更・移動禁止): `pgp-key.asc`(+.ots)、`.well-known/security.txt`(+.ots)、`.well-known/identity.json`(+署名・履歴・検証 CLI)、`.well-known/nostr.json`、`proofs/statement.txt.asc`、`proofs/eth-attestation.json`
+- `src/layouts/Base.astro` — Shared document shell, metadata, social cards, and
+  Speculation Rules.
+- `src/components/` — Reusable UI including `SectionHeader`, `CodeBlock`, and
+  `TrustGraph`.
+- `src/pages/` — `/` (Hero, About, Writing, and Contact), `/identity` (trust
+  graph), `/integrity` (release ledger and browser verifier), `/keys`, `/proofs`,
+  `/siwe`, and static feed/sitemap endpoints.
+- `src/lib/site.ts` — Shared profile metadata, social links, and key
+  fingerprints.
+- `public/` — **Stable, externally referenced assets. Do not rename or move
+  them:** `pgp-key.asc` and its timestamp, `.well-known/security.txt` and its
+  timestamp, the signed identity manifest, revision history, verification CLI,
+  Nostr metadata, and public identity proofs.
+- `src/data/zenn-writing.json` — A generated snapshot of the official Zenn RSS
+  feed. Article titles remain in their original publication language and are
+  not repository documentation.
 
-## デザイン
+## Design
 
-ダークネイビー + ネオングリーンのターミナル調。OS ネイティブフォントによる即時描画、背景の薄いグリッド、セクション番号と見出しのリズム、`:focus-visible` のアウトライン。プロフィール写真は `astro:assets` でビルド時に最適化。
+The visual system combines a dark navy foundation with a restrained neon-green
+accent. Native OS fonts render immediately, a subtle grid adds depth, and
+section numbers establish rhythm. Keyboard focus uses `:focus-visible`, and
+Astro optimizes the profile image at build time.
 
-## 開発
+## Development
 
 ```sh
 pnpm install
-pnpm dev        # localhost:4321
-pnpm build      # dist/ に静的書き出し
-pnpm verify:release # 公開中の全 asset hash と performance report を再検証
-pnpm deploy:cloudflare # 検証済み dist/ を Cloudflare へ配置
-pnpm lint       # astro check + eslint + stylelint + prettier
-pnpm fix        # 自動修正
+pnpm dev                 # Start the local server at http://localhost:4321
+pnpm build               # Build and verify the static site in dist/
+pnpm verify:release      # Verify the deployed asset hashes and performance report
+pnpm deploy:cloudflare   # Deploy the verified dist/ directory to Cloudflare
+pnpm check               # Run Astro, ESLint, Stylelint, and Prettier checks
+pnpm fix                 # Apply supported automatic fixes
 pnpm security:audit
 ```
 
-コミット時は husky + lint-staged が差分の eslint/stylelint/prettier を自動実行します。
+Husky and lint-staged run ESLint, Stylelint, and Prettier against staged files
+before each commit.
 
-## デプロイ
+## Deployment and provenance
 
-GitHub Actions(`.github/workflows/cloudflare.yml`)で lint → audit → 再現可能ビルド →
-SLSA artifact attestation + SPDX SBOM attestation → Cloudflare Workers Static Assets
-への直接配置を行う。リクエスト時に Worker コードは実行しない。
-`build.format: "file"` と `assets.html_handling: "drop-trailing-slash"` により、`/keys` などの拡張子なし URL をリダイレクトなしで維持する。
-sitemap は `src/pages/sitemap.xml.ts` の静的エンドポイントで、`robots.txt` の記載と同じ `/sitemap.xml` 名で生成します。
-`dist/` 全体を固定 metadata の archive にして job 間で受け渡すため、`/.well-known` も欠落せず、attestation 対象と実際のデプロイ内容が一致する。
-ハッシュ付きの `/_astro/*` は `public/_headers` で1年間 immutable、HTML と固定 URL の identity artifact は Cloudflare 標準の再検証動作を使う。
-デプロイ後は release manifest の全 asset と公開済み identity 検証 CLI を再検証し、security header と RUM 不在も CI で確認する。別の daily workflow が DNS を含む identity claim と公開中の全 byte を毎日監視する。
+The GitHub Actions workflow in `.github/workflows/cloudflare.yml` runs quality
+checks and a dependency audit, verifies two reproducible builds, issues SLSA
+artifact and SPDX SBOM attestations, and deploys directly to Cloudflare Workers
+Static Assets. No Worker code runs on requests.
 
-CIでは同じcommitを2回buildし、固定metadataで作った `site-dist.tar.gz` のSHA-256一致を必須にする。
-`main` の build では検証済みのarchiveに対してGitHub Artifact
-Attestation で commit・workflow・成果物 digest の provenance を発行する。ダウンロードした成果物は
-`gh attestation verify site-dist.tar.gz -R yhay81/profile` で検証できる。
+`build.format: "file"` and
+`assets.html_handling: "drop-trailing-slash"` preserve extensionless URLs such
+as `/keys` without redirects. The sitemap is a static endpoint at
+`src/pages/sitemap.xml.ts` and is emitted at the `/sitemap.xml` URL referenced by
+`robots.txt`.
 
-## 参考
+The workflow packages the complete `dist/` directory into an archive with
+fixed metadata, preserving `/.well-known` resources and ensuring that the
+attested artifact is exactly what gets deployed. Hashed `/_astro/*` assets are
+immutable for one year; HTML and stable identity-artifact URLs use Cloudflare's
+standard revalidation behavior.
 
-- https://github.com/bchiang7/v4 (初代デザインの出発点)
+After deployment, CI verifies every asset in the release manifest, the
+published identity CLI, security headers, and the absence of RUM. A separate
+daily workflow monitors the deployed bytes and identity claims, including DNS.
+
+CI builds the same commit twice and requires the SHA-256 digests of the
+fixed-metadata `site-dist.tar.gz` archives to match. Builds from `main` receive
+GitHub Artifact Attestations that bind the commit and workflow identity to the
+artifact digest. Downloaded artifacts can be verified with:
+
+```sh
+gh attestation verify site-dist.tar.gz -R yhay81/profile
+```
+
+## References
+
+- https://github.com/bchiang7/v4 (the starting point for the original design)
 - https://realfavicongenerator.net/
