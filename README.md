@@ -27,6 +27,11 @@ provenance、performance contract、identity proof を一つの検証面にま�
 `release.json` と配信設定は asset set 外だが、archive attestation には含まれる。ブラウザー内の
 検証器はクリックされるまで読み込まれない。
 
+トップページの `Release provenance` セクションは、非技術者向けに build identity、
+artifact binding、public transparency record を分けて説明する。Sigstore が証明するのは
+特定の自動化と byte の関係であり、記載内容の真実性、脆弱性の不存在、本人の人間性までは
+証明しないことも同じ場所に明記する。
+
 ```sh
 node scripts/verify-release.mjs --base-url https://yusuke-hayashi.com
 ```
@@ -77,7 +82,9 @@ pnpm security:audit
 
 ## デプロイ
 
-GitHub Actions(`.github/workflows/cloudflare.yml`)で lint → audit → 再現可能ビルド → artifact attestation → Cloudflare Workers Static Assets への直接配置を行う。リクエスト時に Worker コードは実行しない。
+GitHub Actions(`.github/workflows/cloudflare.yml`)で lint → audit → 再現可能ビルド →
+SLSA artifact attestation + SPDX SBOM attestation → Cloudflare Workers Static Assets
+への直接配置を行う。リクエスト時に Worker コードは実行しない。
 `build.format: "file"` と `assets.html_handling: "drop-trailing-slash"` により、`/keys` などの拡張子なし URL をリダイレクトなしで維持する。
 sitemap は `src/pages/sitemap.xml.ts` の静的エンドポイントで、`robots.txt` の記載と同じ `/sitemap.xml` 名で生成します。
 `dist/` 全体を固定 metadata の archive にして job 間で受け渡すため、`/.well-known` も欠落せず、attestation 対象と実際のデプロイ内容が一致する。

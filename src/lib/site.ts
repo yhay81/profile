@@ -88,6 +88,6 @@ export const NAV_LINKS: readonly NavLink[] = [
   { href: "/#about", label: "About" },
   { href: "/writing", label: "Writing" },
   { href: "/identity", label: "Identity" },
-  { href: "/integrity", label: "Integrity" },
+  { href: "/integrity", label: "Verify" },
   { href: "/#contact", label: "Contact" },
 ];
