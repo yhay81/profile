@@ -22,6 +22,7 @@ const { entries } = Astro.props;
           <a
             class="link"
             href={entry.url}
+            lang={entry.language}
             rel={entry.external ? "noreferrer" : undefined}
             target={entry.external ? "_blank" : undefined}
           >

@@ -22,11 +22,12 @@ export const GET: APIRoute = () => {
       <link>${escapeXml(url)}</link>
       <guid isPermaLink="true">${escapeXml(url)}</guid>
       <pubDate>${new Date(`${entry.date}T00:00:00Z`).toUTCString()}</pubDate>
+      <dc:language>${entry.language}</dc:language>
     </item>`;
   }).join("\n");
 
   const body = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
     <title>${PROFILE_NAME} — Writing</title>
     <link>${PROFILE_URL}/writing</link>

@@ -7,6 +7,7 @@ export interface WritingEntry {
   readonly title: string;
   readonly url: string;
   readonly external: boolean;
+  readonly language: "en" | "ja";
 }
 
 const LOCAL_WRITING: readonly WritingEntry[] = LOCAL_ARTICLES.map(
@@ -15,10 +16,19 @@ const LOCAL_WRITING: readonly WritingEntry[] = LOCAL_ARTICLES.map(
     title: article.title,
     url: article.url,
     external: false,
+    language: "en",
   }),
 );
 
-const externalWriting = zennWriting.entries satisfies readonly WritingEntry[];
+const JAPANESE_SCRIPT =
+  /[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/u;
+
+const externalWriting: readonly WritingEntry[] = zennWriting.entries.map(
+  (entry) => ({
+    ...entry,
+    language: JAPANESE_SCRIPT.test(entry.title) ? "ja" : "en",
+  }),
+);
 
 export const WRITING: readonly WritingEntry[] = [
   ...LOCAL_WRITING,

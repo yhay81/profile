@@ -1,6 +1,20 @@
-# Disable pnpm 11's default rejection of packages published less than 24 hours
-# ago so the project can adopt current releases immediately.
-minimumReleaseAge: 0
+# Hold new package releases for 24 hours and fail closed if registry publication
+# metadata is unavailable. Security fixes can use a version-specific exclusion.
+minimumReleaseAge: 1440
+minimumReleaseAgeStrict: true
+minimumReleaseAgeIgnoreMissingTime: false
+trustPolicy: no-downgrade
+trustPolicyExclude:
+  # @astrojs/check 0.9.9 requires chokidar 4. Its final release predates npm
+  # provenance, but its registry signature is verified by security:signatures.
+  - chokidar@4.0.3
+
+strictPeerDependencies: true
+peerDependencyRules:
+  allowedVersions:
+    # jsx-a11y has not widened its peer declaration for ESLint 10 yet. The
+    # strict rule set is exercised by this repository's lint and Astro checks.
+    "eslint-plugin-jsx-a11y@6.10.2>eslint": "10"
 
 # Explicit build-script policy using pnpm 11's allowBuilds format.
 allowBuilds:
