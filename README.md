@@ -59,8 +59,9 @@ purpose-specific client scripts. Web-platform features are preferred over
 application-level reimplementations:
 
 - **Navigation:** CSS-only cross-document View Transitions (`@view-transition`)
-  and the Speculation Rules API for internal-link prerendering. There is no SPA
-  router.
+  keep the site shell stable, sequence page-content replacement, and share
+  local article titles across list/detail views. The Speculation Rules API
+  prerenders internal links; there is no SPA router.
 - **Motion:** Scroll-driven Animations (`animation-timeline: view()`) for
   reveals and a CSS `steps()` typewriter effect. All motion is disabled under
   `prefers-reduced-motion`.

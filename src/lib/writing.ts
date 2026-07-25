@@ -8,6 +8,7 @@ export interface WritingEntry {
   readonly url: string;
   readonly external: boolean;
   readonly language: "en" | "ja";
+  readonly transitionName?: `article-${string}`;
 }
 
 const LOCAL_WRITING: readonly WritingEntry[] = LOCAL_ARTICLES.map(
@@ -17,6 +18,7 @@ const LOCAL_WRITING: readonly WritingEntry[] = LOCAL_ARTICLES.map(
     url: article.url,
     external: false,
     language: "en",
+    transitionName: article.transitionName,
   }),
 );
 
