@@ -5,35 +5,109 @@
  */
 interface Props {
   code: string;
+  label?: string;
+  language?: string;
   wrap?: boolean;
 }
 
-const { code, wrap = false } = Astro.props;
+const {
+  code,
+  label = "Code",
+  language = "plain text",
+  wrap = false,
+} = Astro.props;
 ---
 
-<pre class:list={["codeBlock", { wrap }]}><code>{code}</code></pre>
+<figure class="codeFrame">
+  <figcaption class="codeHeader">
+    <span aria-hidden="true" class="codePrompt">❯</span>
+    <span>{label}</span>
+    <span class="codeLanguage">{language}</span>
+  </figcaption>
+  <pre
+    aria-label={`${label} (${language})`}
+    class:list={["codeBlock", { wrap }]}><code>{code}</code></pre>
+</figure>
 
 <style is:global>
-  pre.codeBlock {
-    margin: 0 0 14px;
-    padding: 16px 18px;
-    overflow-x: auto;
+  .codeFrame {
+    margin: 0 0 20px;
+    overflow: hidden;
+    background: color-mix(
+      in oklab,
+      var(--color-bg-deep) 94%,
+      var(--color-info)
+    );
+    border: 1px solid
+      color-mix(in oklab, var(--color-info) 30%, var(--border-subtle));
+    border-radius: var(--radius-md);
+    box-shadow:
+      inset 3px 0 0 var(--color-info),
+      0 16px 48px color-mix(in oklab, var(--color-bg-deep) 32%, transparent);
+  }
+
+  .codeHeader {
+    display: flex;
+    gap: 9px;
+    align-items: center;
+    padding: 10px 16px 10px 18px;
     font-family: var(--font-mono);
     font-size: var(--text-xs);
-    line-height: 1.8;
-
-    /* テーマの背景ではなくサイトのサーフェスに揃える */
     color: var(--color-text-strong);
-    background-color: var(--surface-subtle);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
+    background: color-mix(in oklab, var(--surface-raised) 80%, transparent);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .codePrompt,
+  .codeLanguage {
+    color: var(--color-accent);
+  }
+
+  .codePrompt {
+    font-weight: 700;
+  }
+
+  .codeLanguage {
+    margin-left: auto;
+    color: var(--color-text-soft);
+    letter-spacing: 0.04em;
+  }
+
+  pre.codeBlock {
+    max-width: 100%;
+    padding: 20px 22px 22px;
+    margin: 0;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    line-height: 1.75;
+    color: var(--color-text-strong);
+    tab-size: 2;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
 
     &.wrap {
       white-space: pre-wrap;
+      overflow-wrap: anywhere;
     }
 
     & code {
       font-family: inherit;
+    }
+  }
+
+  @media (width <= 640px) {
+    .codeHeader {
+      padding-inline: 14px;
+    }
+
+    pre.codeBlock {
+      padding: 17px 16px 19px;
+      font-size: var(--text-xs);
+      line-height: 1.8;
     }
   }
 </style>

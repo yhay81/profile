@@ -160,10 +160,15 @@ const CHECKS = [
         }
       </ol>
 
-      <details class="manual">
+      <details class="manual" open>
         <summary>Verify from a clean terminal</summary>
         <div class="manualBody">
-          <CodeBlock code={VERIFY_COMMAND} wrap />
+          <CodeBlock
+            code={VERIFY_COMMAND}
+            label="Independent release check"
+            language="bash · Node.js 22+"
+            wrap
+          />
         </div>
       </details>
 
@@ -549,19 +554,18 @@ const CHECKS = [
 
   .manual {
     margin-top: 32px;
-    border-block: 1px solid var(--border-subtle);
   }
 
   .manual summary {
-    padding: 12px 0;
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
+    padding: 12px 0 14px;
+    font-size: var(--text-lg);
+    font-weight: 700;
     color: var(--color-text-strong);
     cursor: pointer;
   }
 
   .manualBody {
-    padding-top: 8px;
+    padding-top: 2px;
   }
 
   .artifactLinks {

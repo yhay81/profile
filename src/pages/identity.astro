@@ -228,7 +228,12 @@ node verify-identity.mjs`;
         establish trust merely by serving its own key and verifier.
       </p>
 
-      <CodeBlock code={VERIFY_BOOTSTRAP} />
+      <CodeBlock
+        code={VERIFY_BOOTSTRAP}
+        label="Pin the release authority"
+        language="bash"
+        wrap
+      />
 
       <p class="bodyText">
         Once those independent inputs are pinned, the remaining checks take
@@ -238,7 +243,12 @@ node verify-identity.mjs`;
         live in your browser.
       </p>
 
-      <CodeBlock code={VERIFY_QUICKSTART} />
+      <CodeBlock
+        code={VERIFY_QUICKSTART}
+        label="Two-minute verification"
+        language="bash"
+        wrap
+      />
 
       <h2 class="heading">Machine-readable identity</h2>
 
@@ -257,7 +267,12 @@ node verify-identity.mjs`;
         to its source commit.
       </p>
 
-      <CodeBlock code={VERIFY_MACHINE} />
+      <CodeBlock
+        code={VERIFY_MACHINE}
+        label="Machine verification"
+        language="bash"
+        wrap
+      />
 
       <h2 class="heading">Design notes</h2>
 

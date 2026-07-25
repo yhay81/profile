@@ -53,7 +53,12 @@ cast wallet verify --address ${ETH_ADDRESS} "<message>" "<signature>"`;
         <a href="/proofs/statement.txt.asc">statement.txt.asc</a>
       </p>
 
-      <CodeBlock code={VERIFY_GPG} />
+      <CodeBlock
+        code={VERIFY_GPG}
+        label="Verify the OpenPGP statement"
+        language="bash"
+        wrap
+      />
 
       <h2 class="heading">2. Ethereum → GPG</h2>
 
@@ -63,7 +68,12 @@ cast wallet verify --address ${ETH_ADDRESS} "<message>" "<signature>"`;
         <a href="/proofs/eth-attestation.json">eth-attestation.json</a>
       </p>
 
-      <CodeBlock code={VERIFY_ETH} />
+      <CodeBlock
+        code={VERIFY_ETH}
+        label="Verify the Ethereum statement"
+        language="bash"
+        wrap
+      />
 
       <p class="bodyText">
         Or verify in the browser: the <a href="/siwe">SIWE demo</a> uses the same
