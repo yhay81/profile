@@ -100,6 +100,7 @@ jobs:
             dist/.well-known/identity.json \
             dist/.well-known/releases/identity-release-r*.tar.gz \
             site-dist.tar.gz > release-subjects.sha256
+          mkdir -p release
       - name: Generate deployed-site SPDX SBOM
         uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0.24.0
         with:
