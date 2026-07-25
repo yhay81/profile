@@ -86,6 +86,10 @@ application-level reimplementations:
   `@astrojs/check`'s pre-provenance `chokidar@4.0.3` dependency. Peer
   dependencies are strict, with one package-scoped compatibility declaration
   for `eslint-plugin-jsx-a11y@6.10.2` on the tested ESLint 10 toolchain.
+- **TypeScript transition:** Native TypeScript 7 performs project-wide CLI type
+  checking, while the official TypeScript 6 compatibility package supplies the
+  stable Compiler API still required by Astro and typescript-eslint. Both paths
+  are exercised by `pnpm check`.
 
 ## Project structure
 
@@ -121,7 +125,8 @@ pnpm dev                 # Start the local server at http://localhost:4321
 pnpm build               # Build and verify the static site in dist/
 pnpm verify:release      # Verify the deployed asset hashes and performance report
 pnpm deploy:cloudflare   # Deploy the verified dist/ directory to Cloudflare
-pnpm check               # Run Astro, ESLint, Stylelint, and Prettier checks
+pnpm typecheck           # Type-check with the native TypeScript 7 compiler
+pnpm check               # Run TypeScript, Astro, ESLint, Stylelint, and Prettier
 pnpm fix                 # Apply supported automatic fixes
 pnpm security:check      # Audit advisories and verify registry signatures
 ```
