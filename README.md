@@ -53,9 +53,9 @@ enforcement and separate element/attribute directives.
 ## Technical approach
 
 This is a static Astro site built with native CSS. It ships no framework
-runtime, and its default output is plain HTML and CSS with zero client-side
-JavaScript. Web-platform features are preferred over application-level
-reimplementations:
+runtime, and its output is server-free HTML and CSS with a small set of
+purpose-specific client scripts. Web-platform features are preferred over
+application-level reimplementations:
 
 - **Navigation:** CSS-only cross-document View Transitions (`@view-transition`)
   and the Speculation Rules API for internal-link prerendering. There is no SPA
@@ -69,15 +69,23 @@ reimplementations:
 - **Typography:** `system-ui` and `ui-monospace` only, avoiding font downloads,
   preloads, and render delays.
 - **JavaScript:** Limited to the SIWE demo (with `viem` imported on demand),
-  email copying, and the `/integrity` verifier. Cryptographic code, including
-  OpenPGP and `viem`, is not imported until verification starts. The site uses
-  no analytics or third-party scripts.
+  email copying, first-visit motion state, and the `/integrity` verifier.
+  Cryptographic code, including OpenPGP and `viem`, is not imported until
+  verification starts. The site uses no framework runtime, analytics, or
+  third-party scripts.
 - **Performance contract:** The build enforces compressed HTML and initial
   JavaScript budgets for key routes, with zero third-party requests, web fonts,
   or RUM beacons.
 - **Security headers:** The build derives a hash-based CSP. Cloudflare adds
   HSTS, COOP/CORP, Permissions Policy, `nosniff`, and clickjacking protection at
   the edge.
+- **Dependency security:** pnpm holds new releases for 24 hours, fails closed
+  when registry publication metadata is missing, audits moderate-and-higher
+  advisories, rejects publish-trust downgrades, and verifies registry
+  signatures in CI. A single version-specific exception covers
+  `@astrojs/check`'s pre-provenance `chokidar@4.0.3` dependency. Peer
+  dependencies are strict, with one package-scoped compatibility declaration
+  for `eslint-plugin-jsx-a11y@6.10.2` on the tested ESLint 10 toolchain.
 
 ## Project structure
 
@@ -115,7 +123,7 @@ pnpm verify:release      # Verify the deployed asset hashes and performance repo
 pnpm deploy:cloudflare   # Deploy the verified dist/ directory to Cloudflare
 pnpm check               # Run Astro, ESLint, Stylelint, and Prettier checks
 pnpm fix                 # Apply supported automatic fixes
-pnpm security:audit
+pnpm security:check      # Audit advisories and verify registry signatures
 ```
 
 Husky and lint-staged run ESLint, Stylelint, and Prettier against staged files
