@@ -79,7 +79,7 @@ const SKILLS = [
 ---
 
 <section id="about">
-  <SectionHeader label="About" level={2} no="02" title="About Me" />
+  <SectionHeader label="About" level={2} no="01" title="About Me" />
 
   <div class="inner">
     <div class="pic">
@@ -308,14 +308,10 @@ const SKILLS = [
     gap: 10px;
     max-width: none;
     padding: 18px;
-    background: linear-gradient(
-      170deg,
-      var(--surface-raised),
-      color-mix(in oklab, var(--color-bg-deep) 22%, transparent) 65%,
-      color-mix(in oklab, var(--color-accent) 4%, transparent)
-    );
+    background: var(--surface-card);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-md);
+    box-shadow: inset 0 1px 0 var(--surface-raised);
   }
 
   .skillTitle {

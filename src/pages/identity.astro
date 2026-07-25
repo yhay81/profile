@@ -309,14 +309,10 @@ node verify-identity.mjs`;
     gap: 8px;
     align-content: start;
     padding: 16px 18px;
-    background: linear-gradient(
-      170deg,
-      var(--surface-raised),
-      color-mix(in oklab, var(--color-bg-deep) 22%, transparent) 65%,
-      color-mix(in oklab, var(--color-accent) 4%, transparent)
-    );
+    background: var(--surface-card);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-md);
+    box-shadow: inset 0 1px 0 var(--surface-raised);
   }
 
   .cardPair {
@@ -349,10 +345,10 @@ node verify-identity.mjs`;
     display: grid;
     gap: 12px;
     padding: 20px;
-    background: color-mix(in oklab, var(--surface-raised) 92%, transparent);
-    border: 1px solid var(--border-subtle);
-    border-left: 3px solid var(--color-accent);
+    background: var(--surface-card);
+    border: 1px solid var(--border-strong);
     border-radius: var(--radius-md);
+    box-shadow: inset 0 1px 0 var(--surface-raised);
 
     p {
       margin: 0;

@@ -36,9 +36,19 @@
     var(--color-text-strong) 2%,
     transparent
   );
+  --surface-card: color-mix(
+    in oklab,
+    var(--color-bg-deep) 92%,
+    var(--color-text-strong)
+  );
   --border-subtle: color-mix(
     in oklab,
     var(--color-text-strong) 14%,
+    transparent
+  );
+  --border-strong: color-mix(
+    in oklab,
+    var(--color-text-strong) 24%,
     transparent
   );
   --border-accent: color-mix(in oklab, var(--color-accent) 30%, transparent);
@@ -46,6 +56,14 @@
   --accent-glow: color-mix(in oklab, var(--color-accent) 8%, transparent);
   --info-glow: color-mix(in oklab, var(--color-info) 35%, transparent);
   --scrim: color-mix(in oklab, var(--color-bg-deep) 85%, transparent);
+
+  /* ---- Code surfaces ---- */
+  --color-code-bg: oklch(17.8% 0.0405 251.8deg);
+  --color-code-header: oklch(22.6% 0.052 251.4deg);
+  --color-code-text: oklch(91.5% 0.024 250deg);
+  --color-code-label: oklch(82.5% 0.035 251deg);
+  --color-code-muted: oklch(69.5% 0.038 251deg);
+  --border-code: color-mix(in oklab, var(--color-code-text) 20%, transparent);
 
   /* ---- Typography ---- */
 
