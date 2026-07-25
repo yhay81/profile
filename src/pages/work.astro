@@ -37,7 +37,7 @@ const FEATURED_PROJECTS = [
   <main class="workMain">
     <section aria-labelledby="work-title" class="workHero">
       <div class="heroCopy">
-        <p class="eyebrow">Products &amp; open source</p>
+        <p class="eyebrow"><span>00</span> Products &amp; open source</p>
         <h1 data-view-transition-name="page-title" id="work-title">
           Selected<br />Work
         </h1>
@@ -303,7 +303,7 @@ const FEATURED_PROJECTS = [
 
     <section aria-labelledby="more-work-title" class="moreWork reveal">
       <header class="moreHeader">
-        <p class="eyebrow">More work</p>
+        <p class="eyebrow"><span>05–06</span> More work</p>
         <h2 id="more-work-title">Useful, maintained, and exploratory.</h2>
       </header>
 
@@ -341,7 +341,7 @@ const FEATURED_PROJECTS = [
     </section>
 
     <section aria-labelledby="work-contact-title" class="workContact reveal">
-      <p class="eyebrow">Build with me</p>
+      <p class="eyebrow"><span>07</span> Build with me</p>
       <h2 id="work-contact-title">
         Have a difficult workflow that should become a useful product?
       </h2>
@@ -355,19 +355,19 @@ const FEATURED_PROJECTS = [
 
 <style>
   .workMain {
-    max-width: none;
+    max-width: 1600px;
     padding-top: var(--nav-height);
   }
 
   .workHero {
     display: grid;
-    grid-template-columns: minmax(0, 1.08fr) minmax(360px, 0.92fr);
-    gap: clamp(48px, 8vw, 120px);
-    align-items: end;
-    max-width: 1280px;
+    grid-template-columns: minmax(0, 0.9fr) minmax(360px, 1.1fr);
+    gap: clamp(48px, 7vw, 88px);
+    align-items: center;
+    max-width: 1000px;
     min-height: calc(100svh - var(--nav-height));
-    padding-top: clamp(72px, 12vh, 140px);
-    padding-bottom: clamp(72px, 12vh, 140px);
+    padding-top: clamp(72px, 11vh, 120px);
+    padding-bottom: clamp(72px, 11vh, 120px);
   }
 
   .eyebrow,
@@ -376,24 +376,34 @@ const FEATURED_PROJECTS = [
     margin: 0;
     font-family: var(--font-mono);
     font-size: var(--text-2xs);
-    color: var(--color-accent);
+    color: var(--color-text-soft);
     text-transform: uppercase;
     letter-spacing: 0.2em;
   }
 
+  .eyebrow {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+
+  .eyebrow span {
+    color: var(--color-accent);
+  }
+
   .heroCopy h1 {
     margin: 20px 0 28px;
-    font-size: clamp(4rem, 10vw, 9rem);
-    font-weight: 650;
-    line-height: 0.82;
-    letter-spacing: -0.075em;
-    text-shadow: 0 20px 60px var(--info-glow);
+    font-size: clamp(3rem, 7vw, 4.8rem);
+    font-weight: 600;
+    line-height: 0.94;
+    letter-spacing: -0.04em;
+    text-shadow: 0 10px 30px var(--accent-glow);
   }
 
   .heroSummary {
-    max-width: 640px;
+    max-width: 520px;
     margin: 0;
-    font-size: clamp(1.15rem, 2vw, 1.55rem);
+    font-size: var(--text-lg);
     line-height: 1.5;
     color: var(--color-text-soft);
   }
@@ -445,7 +455,7 @@ const FEATURED_PROJECTS = [
   }
 
   .featuredWork {
-    max-width: 1280px;
+    max-width: 1000px;
     margin: 0 auto;
     border-top: 1px solid var(--border-strong);
   }
@@ -453,10 +463,10 @@ const FEATURED_PROJECTS = [
   .project {
     display: grid;
     grid-template-columns: minmax(280px, 0.7fr) minmax(0, 1.3fr);
-    gap: clamp(48px, 7vw, 104px);
+    gap: clamp(48px, 6vw, 76px);
     align-items: center;
-    min-height: min(86vh, 920px);
-    padding: clamp(88px, 12vh, 144px) 0;
+    min-height: min(78vh, 780px);
+    padding: clamp(80px, 10vh, 112px) 0;
     scroll-margin-top: calc(var(--nav-height) + 24px);
     border-bottom: 1px solid var(--border-strong);
   }
@@ -480,13 +490,13 @@ const FEATURED_PROJECTS = [
   }
 
   .projectLabel span {
-    color: var(--color-text);
+    color: var(--color-accent);
   }
 
   .project h2 {
     margin: 20px 0 12px;
-    font-size: clamp(2.4rem, 5vw, 4.8rem);
-    letter-spacing: -0.055em;
+    font-size: clamp(2.2rem, 4vw, 3.6rem);
+    letter-spacing: -0.04em;
   }
 
   .projectRole {
@@ -498,7 +508,7 @@ const FEATURED_PROJECTS = [
 
   .projectSummary {
     margin: 0 0 18px;
-    font-size: var(--text-xl);
+    font-size: var(--text-lg);
     line-height: 1.42;
     color: var(--color-text-strong);
   }
@@ -560,13 +570,12 @@ const FEATURED_PROJECTS = [
   .productCanvas {
     display: block;
     min-width: 0;
-    min-height: 480px;
+    min-height: 420px;
     overflow: hidden;
-    color: var(--color-bg-deep);
-    border: 1px solid var(--border-strong);
+    color: var(--color-text-soft);
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
     border-radius: var(--radius-md);
-    box-shadow: 0 28px 80px
-      color-mix(in oklab, var(--color-bg-deep) 55%, transparent);
     transition:
       border-color var(--dur-slow) var(--ease-out),
       transform var(--dur-slow) var(--ease-out);
@@ -574,9 +583,9 @@ const FEATURED_PROJECTS = [
 
   .productCanvas:hover,
   .productCanvas:focus-visible {
-    color: var(--color-bg-deep);
+    color: var(--color-text-strong);
     border-color: var(--border-accent);
-    transform: translateY(-4px);
+    transform: translateY(-2px);
   }
 
   .canvasTopbar,
@@ -586,7 +595,7 @@ const FEATURED_PROJECTS = [
     display: flex;
     gap: 18px;
     align-items: center;
-    min-height: 58px;
+    min-height: 52px;
     padding: 0 clamp(18px, 3vw, 32px);
     font-family: var(--font-mono);
     font-size: 0.7rem;
@@ -596,23 +605,30 @@ const FEATURED_PROJECTS = [
   }
 
   .wasmhatchCanvas {
-    background: var(--color-text-strong);
+    background:
+      radial-gradient(
+        circle at 82% 16%,
+        color-mix(in oklab, var(--color-info) 10%, transparent),
+        transparent 38%
+      ),
+      var(--surface-card);
   }
 
   .wasmMark {
     display: grid;
     width: 28px;
     height: 28px;
-    color: var(--color-text-strong);
+    color: var(--color-accent);
     place-items: center;
-    background: var(--color-bg-deep);
+    background: var(--accent-tint);
+    border: 1px solid var(--border-accent);
     border-radius: var(--radius-sm);
   }
 
   .canvasStatus {
     margin-left: auto;
     font-weight: 500;
-    color: color-mix(in oklab, var(--color-bg-deep) 65%, transparent);
+    color: var(--color-text);
   }
 
   .wasmStage {
@@ -627,11 +643,12 @@ const FEATURED_PROJECTS = [
     font-size: clamp(2rem, 4.2vw, 4.5rem);
     font-weight: 750;
     line-height: 0.95;
+    color: var(--color-text-strong);
     letter-spacing: -0.06em;
   }
 
   .wasmHeadline strong {
-    color: var(--color-danger);
+    color: var(--color-accent);
   }
 
   .wasmChat {
@@ -641,12 +658,8 @@ const FEATURED_PROJECTS = [
     width: min(100%, 460px);
     padding: 18px 20px;
     margin-left: auto;
-    background: color-mix(
-      in oklab,
-      var(--color-text-strong) 72%,
-      var(--color-info)
-    );
-    border: 1px solid color-mix(in oklab, var(--color-bg-deep) 18%, transparent);
+    background: var(--surface-raised);
+    border: 1px solid var(--border-strong);
     border-radius: var(--radius-md);
   }
 
@@ -661,30 +674,33 @@ const FEATURED_PROJECTS = [
     font-size: var(--text-sm);
     font-weight: 650;
     line-height: 1.4;
+    color: var(--color-text-strong);
   }
 
   .chatAction {
     font-family: var(--font-mono);
     font-size: 0.68rem;
-    color: color-mix(in oklab, var(--color-bg-deep) 68%, transparent);
+    color: var(--color-text);
   }
 
   .chatAction span {
     color: var(--color-accent);
-    background: var(--color-bg-deep);
+    background: var(--accent-tint);
     border-radius: var(--radius-full);
   }
 
   .pylopdfCanvas {
-    background: color-mix(
-      in oklab,
-      var(--color-text-strong) 87%,
-      var(--color-danger)
-    );
+    background:
+      radial-gradient(
+        circle at 16% 78%,
+        color-mix(in oklab, var(--color-violet) 11%, transparent),
+        transparent 42%
+      ),
+      var(--surface-card);
   }
 
   .pylopdfNav {
-    color: var(--color-bg-deep);
+    color: var(--color-text-soft);
   }
 
   .pyLogo {
@@ -693,7 +709,7 @@ const FEATURED_PROJECTS = [
   }
 
   .pyLogo span {
-    color: var(--color-violet);
+    color: var(--color-accent);
   }
 
   .pylopdfNav > span:last-child {
@@ -713,15 +729,17 @@ const FEATURED_PROJECTS = [
   .pylopdfHeadline {
     position: relative;
     z-index: 2;
-    font-family: Georgia, serif;
+    font-family: var(--font-display);
     font-size: clamp(1.95rem, 3.8vw, 4rem);
-    font-weight: 700;
+    font-weight: 650;
     line-height: 0.98;
+    color: var(--color-text-strong);
     letter-spacing: -0.055em;
   }
 
   .pylopdfHeadline em {
-    color: var(--color-violet);
+    color: var(--color-accent);
+    font-style: normal;
   }
 
   .pdfDocument {
@@ -732,10 +750,8 @@ const FEATURED_PROJECTS = [
     min-height: 280px;
     padding: 30px 24px;
     overflow: hidden;
-    background: var(--color-text-strong);
-    box-shadow: 12px 16px 0
-      color-mix(in oklab, var(--color-violet) 22%, transparent);
-    transform: rotate(3deg);
+    background: var(--color-code-bg);
+    border: 1px solid var(--border-code);
   }
 
   .pdfFold {
@@ -746,8 +762,8 @@ const FEATURED_PROJECTS = [
     height: 42px;
     background: linear-gradient(
       45deg,
-      color-mix(in oklab, var(--color-info) 30%, var(--color-text-strong)) 50%,
-      color-mix(in oklab, var(--color-text-strong) 80%, var(--color-info)) 50%
+      color-mix(in oklab, var(--color-info) 18%, var(--color-code-bg)) 50%,
+      color-mix(in oklab, var(--color-code-text) 8%, var(--color-code-bg)) 50%
     );
   }
 
@@ -756,14 +772,14 @@ const FEATURED_PROJECTS = [
     font-family: var(--font-mono);
     font-size: 2.8rem;
     font-weight: 800;
-    color: var(--color-violet);
+    color: var(--color-accent);
   }
 
   .pdfLines {
     width: 100%;
     height: 7px;
     margin-bottom: 12px;
-    background: color-mix(in oklab, var(--color-bg-deep) 18%, transparent);
+    background: var(--border-code);
   }
 
   .pdfLines.short {
@@ -776,24 +792,22 @@ const FEATURED_PROJECTS = [
     font-family: var(--font-mono);
     font-size: 0.62rem;
     color: var(--color-text-strong);
-    background: var(--color-bg-deep);
+    background: var(--color-code-header);
   }
 
   .hayateCanvas {
-    background: color-mix(
-      in oklab,
-      var(--color-text-strong) 92%,
-      var(--color-accent)
-    );
+    background:
+      radial-gradient(
+        circle at 84% 20%,
+        color-mix(in oklab, var(--color-accent) 9%, transparent),
+        transparent 40%
+      ),
+      var(--surface-card);
   }
 
   .hayateBar {
-    color: var(--color-bg-deep);
-    background: color-mix(
-      in oklab,
-      var(--color-accent) 52%,
-      var(--color-text-strong)
-    );
+    color: var(--color-text-soft);
+    background: var(--accent-tint);
   }
 
   .hayateBrand {
@@ -805,7 +819,7 @@ const FEATURED_PROJECTS = [
     padding: 6px 10px;
     margin-left: auto;
     font-weight: 500;
-    border: 1px solid color-mix(in oklab, var(--color-bg-deep) 20%, transparent);
+    border: 1px solid var(--border-strong);
     border-radius: var(--radius-sm);
   }
 
@@ -822,14 +836,13 @@ const FEATURED_PROJECTS = [
     padding: 32px 24px;
     font-family: var(--font-mono);
     font-size: 0.68rem;
-    color: color-mix(in oklab, var(--color-bg-deep) 72%, transparent);
-    border-right: 1px solid
-      color-mix(in oklab, var(--color-bg-deep) 13%, transparent);
+    color: var(--color-text);
+    border-right: 1px solid var(--border-subtle);
   }
 
   .docsNav strong {
     margin-top: 10px;
-    color: var(--color-bg-deep);
+    color: var(--color-text-strong);
   }
 
   .docsContent {
@@ -843,7 +856,7 @@ const FEATURED_PROJECTS = [
     font-family: var(--font-mono);
     font-size: 0.65rem;
     font-weight: 800;
-    color: color-mix(in oklab, var(--color-bg-deep) 60%, transparent);
+    color: var(--color-accent);
     letter-spacing: 0.12em;
   }
 
@@ -852,12 +865,13 @@ const FEATURED_PROJECTS = [
     font-size: clamp(1.9rem, 3.5vw, 3.5rem);
     font-weight: 750;
     line-height: 1;
+    color: var(--color-text-strong);
     letter-spacing: -0.05em;
   }
 
   .docsText {
     font-size: var(--text-sm);
-    color: color-mix(in oklab, var(--color-bg-deep) 72%, transparent);
+    color: var(--color-text-soft);
   }
 
   .codePanel {
@@ -887,30 +901,33 @@ const FEATURED_PROJECTS = [
   }
 
   .catalogCanvas {
-    background: color-mix(
-      in oklab,
-      var(--color-info) 16%,
-      var(--color-text-strong)
-    );
+    background:
+      radial-gradient(
+        circle at 18% 20%,
+        color-mix(in oklab, var(--color-info) 11%, transparent),
+        transparent 42%
+      ),
+      var(--surface-card);
   }
 
   .catalogBar {
-    color: var(--color-bg-deep);
+    color: var(--color-text-soft);
   }
 
   .catalogMark {
     display: grid;
     width: 28px;
     height: 28px;
-    color: var(--color-text-strong);
+    color: var(--color-accent);
     place-items: center;
-    background: var(--color-violet);
+    background: var(--accent-tint);
+    border: 1px solid var(--border-accent);
     border-radius: var(--radius-sm);
   }
 
   .catalogOnline {
     margin-left: auto;
-    color: color-mix(in oklab, var(--color-bg-deep) 65%, transparent);
+    color: var(--color-text);
   }
 
   .catalogOnline::first-letter {
@@ -929,18 +946,19 @@ const FEATURED_PROJECTS = [
     font-size: clamp(2.1rem, 4vw, 4.2rem);
     font-weight: 800;
     line-height: 1.05;
+    color: var(--color-text-strong);
     letter-spacing: -0.055em;
   }
 
   .catalogHeadline strong {
-    color: var(--color-violet);
+    color: var(--color-accent);
   }
 
   .catalogCopy {
     max-width: 480px;
     margin-top: 18px;
     font-size: var(--text-sm);
-    color: color-mix(in oklab, var(--color-bg-deep) 72%, transparent);
+    color: var(--color-text-soft);
   }
 
   .catalogConnection {
@@ -952,12 +970,8 @@ const FEATURED_PROJECTS = [
     margin-top: 34px;
     font-family: var(--font-mono);
     font-size: 0.72rem;
-    background: color-mix(
-      in oklab,
-      var(--color-text-strong) 76%,
-      var(--color-info)
-    );
-    border: 1px solid color-mix(in oklab, var(--color-bg-deep) 18%, transparent);
+    background: var(--surface-raised);
+    border: 1px solid var(--border-strong);
     border-radius: var(--radius-sm);
   }
 
@@ -965,11 +979,11 @@ const FEATURED_PROJECTS = [
     grid-column: 1 / -1;
     font-size: 0.56rem;
     font-weight: 800;
-    color: color-mix(in oklab, var(--color-bg-deep) 58%, transparent);
+    color: var(--color-text);
   }
 
   .catalogConnection b {
-    color: var(--color-violet);
+    color: var(--color-accent);
   }
 
   .catalogStats {
@@ -979,16 +993,16 @@ const FEATURED_PROJECTS = [
     margin-top: auto;
     font-family: var(--font-mono);
     font-size: 0.65rem;
-    color: color-mix(in oklab, var(--color-bg-deep) 62%, transparent);
+    color: var(--color-text);
   }
 
   .catalogStats b {
-    color: var(--color-bg-deep);
+    color: var(--color-text-strong);
   }
 
   .moreWork,
   .workContact {
-    max-width: 1280px;
+    max-width: 1000px;
   }
 
   .moreHeader {
@@ -1001,8 +1015,8 @@ const FEATURED_PROJECTS = [
 
   .moreHeader h2,
   .workContact h2 {
-    font-size: clamp(2rem, 4.4vw, 4.4rem);
-    letter-spacing: -0.05em;
+    font-size: clamp(2rem, 3.8vw, 3.2rem);
+    letter-spacing: -0.035em;
   }
 
   .moreList {
@@ -1117,7 +1131,7 @@ const FEATURED_PROJECTS = [
     }
 
     .heroCopy h1 {
-      font-size: clamp(3.7rem, 21vw, 6rem);
+      font-size: clamp(3rem, 16vw, 4.2rem);
     }
 
     .projectIndex a {
