@@ -51,3 +51,7 @@
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
 /og.png
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/og-trust-control-plane.png
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/trust-graph.svg
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800

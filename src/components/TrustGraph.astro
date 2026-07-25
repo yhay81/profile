@@ -1,162 +1,197 @@
 ---
 /**
- * 現在のSigstore release planeと公開identifier adapterを1枚のSVGで示す。
- * 色はサイトのデザイントークン(CSS 変数)を参照する。
+ * 公開identifierの証拠とrelease provenanceを分離して示す。
+ * identity manifestを中心に置き、Sigstoreはその生成経路として表現する。
  */
 ---
 
 <figure class="graph">
-  <svg
-    aria-labelledby="trust-graph-title trust-graph-desc"
-    role="img"
-    viewBox="0 0 760 500"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <title id="trust-graph-title">Trust graph of my identities</title>
-    <desc id="trust-graph-desc">
-      A pinned GitHub Actions identity produces a Sigstore-attested identity
-      release. OpenPGP, public identifier adapters, and Ethereum proofs are
-      independently verified against that release.
-    </desc>
+  <img
+    class="desktopGraph"
+    alt="The canonical identity manifest at the center, with Sigstore and SLSA as its release provenance and OpenPGP, public adapters, Ethereum, ENS, and humanity witnesses as separate evidence."
+    decoding="async"
+    height="520"
+    src="/trust-graph.svg"
+    width="760"
+  />
 
-    <!-- edges -->
-    <g class="edges">
-      <path class="edge" d="M 190 96 L 328 208"></path>
-      <path class="edge" d="M 570 96 L 432 208"></path>
-      <path class="edge" d="M 172 250 L 278 250"></path>
-      <path class="edge" d="M 588 250 L 482 250"></path>
-      <path class="edge twoWay" d="M 380 292 L 380 384"></path>
-    </g>
+  <div class="mobileGraph" role="img" aria-labelledby="mobile-graph-title">
+    <p class="visuallyHidden" id="mobile-graph-title">
+      Evidence graph of my public identity
+    </p>
 
-    <!-- edge labels -->
-    <g class="edgeLabels">
-      <text x="202" y="166">OIDC certificate</text>
-      <text x="472" y="166">repo / workflow / ref</text>
-      <text x="178" y="238">compatibility</text>
-      <text x="486" y="238">signed claims</text>
-      <text x="396" y="330">EIP-712 /</text>
-      <text x="396" y="348">cross-proof</text>
-    </g>
+    <div class="mobilePlane">
+      <p class="planeLabel">Release provenance</p>
+      <p class="planeSource">GitHub Actions OIDC + pinned release policy</p>
+      <span class="connector" aria-hidden="true"></span>
+      <p class="planeNode">Sigstore + SLSA</p>
+      <p class="edgeNote">attests exact bytes</p>
+    </div>
 
-    <!-- nodes -->
-    <g class="node">
-      <rect height="56" rx="10" width="180" x="100" y="40"></rect>
-      <text class="nodeTitle" x="190" y="64">GitHub Actions</text>
-      <text class="nodeSub" x="190" y="84">OIDC · hosted runner</text>
-    </g>
+    <div class="mobileState">
+      <strong>Canonical identity state</strong>
+      <code>/.well-known/identity.json</code>
+      <span>claims + proof registry</span>
+    </div>
 
-    <g class="node">
-      <rect height="56" rx="10" width="180" x="480" y="40"></rect>
-      <text class="nodeTitle" x="570" y="64">Release policy</text>
-      <text class="nodeSub" x="570" y="84">exact workflow context</text>
-    </g>
+    <div class="mobileEvidence">
+      <p class="planeLabel">Independent evidence bindings</p>
+      <ul>
+        <li>OpenPGP compatibility proofs</li>
+        <li>DNS · WKD · Nostr adapters</li>
+        <li>Ethereum · ENS cross-proofs</li>
+        <li>Humanity witness · 0 active records</li>
+      </ul>
+    </div>
+  </div>
 
-    <g class="node">
-      <rect height="56" rx="10" width="164" x="8" y="222"></rect>
-      <text class="nodeTitle" x="90" y="246">OpenPGP</text>
-      <text class="nodeSub" x="90" y="266">compatibility proofs</text>
-    </g>
-
-    <g class="node">
-      <rect height="56" rx="10" width="164" x="588" y="222"></rect>
-      <text class="nodeTitle" x="670" y="246">Public adapters</text>
-      <text class="nodeSub" x="670" y="266">DNS · WKD · Nostr</text>
-    </g>
-
-    <g class="node keyNode">
-      <rect height="84" rx="10" width="204" x="278" y="208"></rect>
-      <text class="nodeTitle" x="380" y="240">Sigstore release</text>
-      <text class="nodeSub" x="380" y="262">manifest + archive</text>
-      <text class="nodeSub" x="380" y="280">SLSA provenance</text>
-    </g>
-
-    <g class="node">
-      <rect height="56" rx="10" width="240" x="260" y="384"></rect>
-      <text class="nodeTitle" x="380" y="408">Ethereum / ENS</text>
-      <text class="nodeSub" x="380" y="428">yhay81.eth ⇄ 0x1C04…C079</text>
-    </g>
-  </svg>
   <figcaption class="caption">
-    Release provenance and identifier control are separate checks; every edge
-    names the evidence it requires.
+    The manifest names the current identity state. Sigstore proves how that
+    state was released; each identifier still requires its own evidence.
   </figcaption>
 </figure>
 
 <style>
   .graph {
     max-width: 760px;
-    margin: 24px 0 0;
+    margin: 28px 0 0;
   }
 
-  svg {
+  .desktopGraph {
     width: 100%;
     height: auto;
   }
 
-  .edge {
-    stroke: var(--border-subtle);
-    stroke-width: 1.5;
-  }
-
-  .edge.twoWay {
-    stroke: var(--border-accent);
-    stroke-width: 2;
-  }
-
-  .edgeLabels text {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    fill: var(--color-text);
-  }
-
-  .node rect {
-    fill: var(--surface-subtle);
-    stroke: var(--border-subtle);
-  }
-
-  .keyNode rect {
-    fill: var(--accent-glow);
-    stroke: var(--border-accent);
-  }
-
-  .nodeTitle {
-    font-family: var(--font-display);
-    font-size: 16px;
-    font-weight: 600;
-    fill: var(--color-text-strong);
-    text-anchor: middle;
-  }
-
-  .nodeSub {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    fill: var(--color-text);
-    text-anchor: middle;
+  .mobileGraph {
+    display: none;
   }
 
   .caption {
+    max-width: 72ch;
     margin-top: 10px;
     font-family: var(--font-mono);
     font-size: var(--text-2xs);
     color: var(--color-text-soft);
   }
 
-  /* 狭い画面では縮小せず横スクロールで原寸に近い可読性を保つ */
+  .visuallyHidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
   @media (width <= 640px) {
     .graph {
-      overflow-x: auto;
+      margin-top: 32px;
     }
 
-    svg {
-      min-width: 620px;
+    .desktopGraph {
+      display: none;
     }
 
-    .edgeLabels text {
-      font-size: 14px;
+    .mobileGraph {
+      display: grid;
     }
 
-    .nodeSub {
-      font-size: 13px;
+    .mobilePlane,
+    .mobileEvidence {
+      padding: 20px 0;
+      border-block: 1px solid var(--border-subtle);
+    }
+
+    .mobileEvidence {
+      border-top: 0;
+    }
+
+    .planeLabel {
+      margin: 0 0 9px;
+      font-family: var(--font-mono);
+      font-size: var(--text-2xs);
+      color: var(--color-accent);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .planeSource,
+    .planeNode,
+    .edgeNote {
+      margin: 0;
+    }
+
+    .planeSource {
+      font-size: var(--text-sm);
+      color: var(--color-text-strong);
+    }
+
+    .connector {
+      display: block;
+      width: 1px;
+      height: 18px;
+      margin: 8px 0 8px 12px;
+      background: var(--border-accent);
+    }
+
+    .planeNode {
+      font-family: var(--font-display);
+      font-weight: 600;
+      color: var(--color-text-strong);
+    }
+
+    .edgeNote {
+      margin-top: 3px;
+      font-family: var(--font-mono);
+      font-size: var(--text-2xs);
+      color: var(--color-text-soft);
+    }
+
+    .mobileState {
+      display: grid;
+      gap: 4px;
+      padding: 20px;
+      background: var(--accent-glow);
+      border-block: 1px solid var(--border-accent);
+
+      & strong {
+        font-family: var(--font-display);
+        color: var(--color-text-strong);
+      }
+
+      & code {
+        overflow-wrap: anywhere;
+        font-size: var(--text-xs);
+        color: var(--color-accent);
+      }
+
+      & span {
+        font-size: var(--text-sm);
+        color: var(--color-text-soft);
+      }
+    }
+
+    .mobileEvidence ul {
+      display: grid;
+      gap: 8px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+
+      & li {
+        padding-bottom: 8px;
+        font-size: var(--text-sm);
+        color: var(--color-text-soft);
+        border-bottom: 1px solid var(--border-subtle);
+
+        &:last-child {
+          padding-bottom: 0;
+          border-bottom: 0;
+        }
+      }
     }
   }
 </style>

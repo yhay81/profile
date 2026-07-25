@@ -7,19 +7,19 @@ const PAGES = [
   { path: "/", lastmod: "2026-07-21", changefreq: "monthly", priority: "1.0" },
   {
     path: "/writing",
-    lastmod: "2026-07-21",
+    lastmod: "2026-07-25",
     changefreq: "monthly",
     priority: "0.7",
   },
   {
     path: "/trust-control-plane",
-    lastmod: "2026-07-21",
+    lastmod: "2026-07-25",
     changefreq: "yearly",
     priority: "0.7",
   },
   {
     path: "/identity",
-    lastmod: "2026-07-14",
+    lastmod: "2026-07-25",
     changefreq: "yearly",
     priority: "0.8",
   },
