@@ -24,16 +24,10 @@ const ROUTE_BUDGETS = [
   {
     path: "/identity",
     file: "identity.html",
-    // Astro's page-specific CSP adds hash metadata to the document while
-    // keeping the route comfortably below a 12 KiB compressed budget.
-    documentGzipBytes: 12_000,
-    initialJsGzipBytes: 0,
-  },
-  {
-    path: "/integrity",
-    file: "integrity.html",
-    documentGzipBytes: 15_000,
-    initialJsGzipBytes: 6_000,
+    // Identity proofs and the interactive release ledger intentionally share
+    // one canonical page. Keep their combined document and verifier bounded.
+    documentGzipBytes: 16_000,
+    initialJsGzipBytes: 2_000,
   },
   {
     path: "/siwe",

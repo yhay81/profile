@@ -6,6 +6,8 @@ import { join, resolve } from "node:path";
 import { parseArgs } from "node:util";
 
 const DEFAULT_BASE_URL = "https://yusuke-hayashi.com";
+const LEGACY_INTEGRITY_PATH = "/integrity";
+const CANONICAL_INTEGRITY_PATH = "/identity#release-integrity";
 
 const sha256 = (value) => createHash("sha256").update(value).digest("hex");
 
@@ -50,6 +52,41 @@ async function remoteBytes(baseUrl, path) {
     throw new Error(`${path} returned HTTP ${response.status}`);
   }
   return Buffer.from(await response.arrayBuffer());
+}
+
+async function verifyIntegrityRedirect({ artifactDir, baseUrl }) {
+  if (artifactDir) {
+    const redirects = await readFile(join(artifactDir, "_redirects"), "utf8");
+    const rules = redirects
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith("#"));
+    const expected = `${LEGACY_INTEGRITY_PATH} ${CANONICAL_INTEGRITY_PATH} 301`;
+    if (!rules.includes(expected)) {
+      throw new Error(`Missing static redirect: ${expected}`);
+    }
+    return;
+  }
+
+  const origin = new URL(baseUrl);
+  const response = await fetch(new URL(LEGACY_INTEGRITY_PATH, origin), {
+    headers: { "Cache-Control": "no-cache" },
+    redirect: "manual",
+  });
+  if (response.status !== 301) {
+    throw new Error(
+      `${LEGACY_INTEGRITY_PATH} returned HTTP ${response.status}, expected 301`,
+    );
+  }
+  const location = response.headers.get("location");
+  if (!location) throw new Error(`${LEGACY_INTEGRITY_PATH} has no Location`);
+  const destination = new URL(location, origin);
+  const expected = new URL(CANONICAL_INTEGRITY_PATH, origin);
+  if (destination.href !== expected.href) {
+    throw new Error(
+      `${LEGACY_INTEGRITY_PATH} redirects to ${destination.href}, expected ${expected.href}`,
+    );
+  }
 }
 
 async function main() {
@@ -128,10 +165,13 @@ async function main() {
     }
   }
 
+  await verifyIntegrityRedirect({ artifactDir, baseUrl: config.baseUrl });
+
   process.stdout.write(
     `Release verified: ${manifest.source.commit.slice(0, 12)}, ` +
       `${verified.length} exact files, ` +
       `${manifest.deployment.edgeTransforms?.length || 0} edge transform(s), ` +
+      `1 canonical redirect, ` +
       `sha256:${manifest.assetSet.sha256}\n`,
   );
 }

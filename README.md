@@ -21,22 +21,23 @@ node verify-identity.mjs
 
 ## Release integrity
 
-[`/integrity`](https://yusuke-hayashi.com/integrity) combines the source
-commit, reproducible-build provenance, performance contract, and identity
-proofs in one verification surface. Ordinary assets are verified by exact
-SHA-256 match. Because Cloudflare prepends a managed policy to `robots.txt`,
-the verifier checks the byte length and SHA-256 digest of its source-controlled
-suffix. The self-referential `release.json` and deployment configuration are
-outside the asset set, but remain covered by the archive attestation. The
-in-browser verifier is loaded only when requested.
+The [release-integrity section](https://yusuke-hayashi.com/identity#release-integrity)
+on `/identity` combines the source commit, reproducible-build provenance,
+performance contract, and identity proofs in one verification surface.
+Ordinary assets are verified by exact SHA-256 match. Because Cloudflare
+prepends a managed policy to `robots.txt`, the verifier checks the byte length
+and SHA-256 digest of its source-controlled suffix. The self-referential
+`release.json` and deployment configuration are outside the asset set, but
+remain covered by the archive attestation. The in-browser verifier is loaded
+only when requested. The former `/integrity` URL permanently redirects to this
+section.
 
-The home page remains focused on the profile itself. Deeper release and
-identity evidence is intentionally available through `/integrity` and
-`/identity`. The integrity documentation distinguishes build identity,
-artifact binding, and the public transparency record while making the limits
-of Sigstore explicit: it proves the relationship between a specific automation
-identity and specific bytes, not the truth of the site's claims, the absence of
-vulnerabilities, or a person's identity.
+The home page remains focused on the profile itself. Deeper identity and
+release evidence is intentionally consolidated on `/identity`. The page
+distinguishes build identity, artifact binding, and the public transparency
+record while making the limits of Sigstore explicit: it proves the relationship
+between a specific automation identity and specific bytes, not the truth of the
+site's claims, the absence of vulnerabilities, or a person's identity.
 
 ```sh
 node scripts/verify-release.mjs --base-url https://yusuke-hayashi.com
@@ -69,7 +70,7 @@ application-level reimplementations:
 - **Typography:** `system-ui` and `ui-monospace` only, avoiding font downloads,
   preloads, and render delays.
 - **JavaScript:** Limited to the SIWE demo (with `viem` imported on demand),
-  email copying, first-visit motion state, and the `/integrity` verifier.
+  email copying, first-visit motion state, and the `/identity` verifier.
   Cryptographic code, including OpenPGP and `viem`, is not imported until
   verification starts. The site uses no framework runtime, analytics, or
   third-party scripts.
@@ -98,8 +99,8 @@ application-level reimplementations:
 - `src/components/` — Reusable UI including `SectionHeader`, `CodeBlock`, and
   `TrustGraph`.
 - `src/pages/` — `/` (Hero, About, Writing, and Contact), `/identity` (trust
-  graph), `/integrity` (release ledger and browser verifier), `/keys`, `/proofs`,
-  `/siwe`, and static feed/sitemap endpoints.
+  graph, release ledger, and browser verifier), `/keys`, `/proofs`, `/siwe`, and
+  static feed/sitemap endpoints.
 - `src/lib/site.ts` — Shared profile metadata, social links, and key
   fingerprints.
 - `public/` — **Stable, externally referenced assets. Do not rename or move

@@ -1,14 +1,6 @@
 ---
-import "@/styles/article.css";
-
 import CodeBlock from "@/components/CodeBlock.astro";
-import SectionHeader from "@/components/SectionHeader.astro";
-import Base from "@/layouts/Base.astro";
-import { PROFILE_NAME } from "@/lib/site";
 
-const title = `Release Integrity | ${PROFILE_NAME}`;
-const description =
-  "A machine-verifiable record of this site's source commit, deployed bytes, performance contract, provenance, and cryptographic identity proofs.";
 const VERIFY_COMMAND = `# Verify the live deployment with Node.js 22+
 git clone https://github.com/yhay81/profile.git
 cd profile
@@ -26,165 +18,160 @@ const CHECKS = [
 ] as const;
 ---
 
-<Base description={description} path="/integrity" title={title}>
-  <main>
-    <section>
-      <SectionHeader
-        label="Release ledger"
-        no="SHA-256"
-        title="Release Integrity"
-      />
+<section
+  aria-labelledby="release-integrity-title"
+  class="releaseIntegrity"
+  id="release-integrity"
+>
+  <div class="sectionIntro">
+    <p class="sectionLabel">Release integrity</p>
+    <h2 id="release-integrity-title">Published bytes, verified</h2>
+    <p class="bodyText">
+      Do not trust the badge. Recompute it. This ledger binds the live bytes to
+      a Git commit, strict Sigstore/SLSA provenance, a reproducible build, a
+      performance contract, and the identity evidence above.
+    </p>
+  </div>
 
-      <p class="lead">
-        Do not trust the badge. Recompute it. This page binds the live bytes to
-        a Git commit, strict Sigstore/SLSA provenance, a reproducible build, a
-        performance contract, and my cryptographic identity.
-      </p>
+  <div class="releaseStrip" data-status="loading" id="release-strip">
+    <span aria-hidden="true" class="pulse"></span>
+    <span class="releaseLabel">LIVE RELEASE</span>
+    <strong id="release-status">loading manifest…</strong>
+  </div>
 
-      <div class="releaseStrip" data-status="loading" id="release-strip">
-        <span aria-hidden="true" class="pulse"></span>
-        <span class="releaseLabel">LIVE RELEASE</span>
-        <strong id="release-status">loading manifest…</strong>
-      </div>
-
-      <div class="ledger" aria-label="Current release">
-        <div class="ledgerRow">
-          <span class="key">source.commit</span>
-          <a
-            class="value code"
-            href="https://github.com/yhay81/profile/commits/main"
-            id="commit-link">—</a
-          >
-        </div>
-        <div class="ledgerRow">
-          <span class="key">assetSet.sha256</span>
-          <code class="value digest" id="asset-digest">—</code>
-        </div>
-        <div class="ledgerRow">
-          <span class="key">deployed.assets</span>
-          <span class="value" id="asset-count">—</span>
-        </div>
-        <div class="ledgerRow">
-          <span class="key">assetSet.scope</span>
-          <span class="value"
-            >exact assets + source-preserving edge transforms</span
-          >
-        </div>
-        <div class="ledgerRow">
-          <span class="key">edge.transforms</span>
-          <span class="value" id="edge-transforms">—</span>
-        </div>
-        <div class="ledgerRow">
-          <span class="key">build.provenance</span>
-          <a
-            class="value"
-            href="https://github.com/yhay81/profile/attestations"
-            rel="noreferrer"
-            target="_blank">SLSA v1 + Sigstore/Rekor ↗</a
-          >
-        </div>
-        <div class="ledgerRow">
-          <span class="key">runtime.code</span>
-          <span class="value">none — Cloudflare Static Assets</span>
-        </div>
-      </div>
-
-      <h2 class="heading">Performance contract</h2>
-      <p class="bodyText">
-        The build fails before deployment if any route crosses its compressed
-        HTML/initial-JavaScript budget, or if a font, third-party request, or
-        Cloudflare RUM reference appears.
-      </p>
-
-      <div class="contract">
-        <div class="contractHeader" aria-hidden="true">
-          <span>route</span><span>HTML gzip</span><span>JS gzip</span><span
-            >result</span
-          >
-        </div>
-        {
-          ["/", "/identity", "/integrity", "/siwe"].map((path) => (
-            <div class="contractRow" data-route={path}>
-              <code>{path}</code>
-              <span data-metric="html">—</span>
-              <span data-metric="js">—</span>
-              <span class="result" data-metric="status">
-                pending
-              </span>
-            </div>
-          ))
-        }
-      </div>
-      <p class="zeroContract" id="zero-contract">
-        0 third parties · 0 fonts · 0 RUM
-      </p>
-
-      <div class="verifyHeading">
-        <div>
-          <h2 class="heading">Browser verification console</h2>
-          <p class="bodyText">
-            Runs locally in this tab. Heavy cryptographic code is downloaded
-            only after you click.
-          </p>
-        </div>
-        <button class="runButton" id="run-proofs" type="button">
-          <span aria-hidden="true">▶</span> Run all proofs
-        </button>
-      </div>
-
-      <div
-        aria-atomic="true"
-        aria-live="polite"
-        class="verificationSummary"
-        id="verification-summary"
+  <div class="ledger" aria-label="Current release">
+    <div class="ledgerRow">
+      <span class="key">source.commit</span>
+      <a
+        class="value code"
+        href="https://github.com/yhay81/profile/commits/main"
+        id="commit-link">—</a
       >
-        IDLE · no verification has run in this tab
-      </div>
+    </div>
+    <div class="ledgerRow">
+      <span class="key">assetSet.sha256</span>
+      <code class="value digest" id="asset-digest">—</code>
+    </div>
+    <div class="ledgerRow">
+      <span class="key">deployed.assets</span>
+      <span class="value" id="asset-count">—</span>
+    </div>
+    <div class="ledgerRow">
+      <span class="key">assetSet.scope</span>
+      <span class="value">exact assets + source-preserving edge transforms</span
+      >
+    </div>
+    <div class="ledgerRow">
+      <span class="key">edge.transforms</span>
+      <span class="value" id="edge-transforms">—</span>
+    </div>
+    <div class="ledgerRow">
+      <span class="key">build.provenance</span>
+      <a
+        class="value"
+        href="https://github.com/yhay81/profile/attestations"
+        rel="noreferrer"
+        target="_blank">SLSA v1 + Sigstore/Rekor ↗</a
+      >
+    </div>
+    <div class="ledgerRow">
+      <span class="key">runtime.code</span>
+      <span class="value">none — Cloudflare Static Assets</span>
+    </div>
+  </div>
 
-      <ol class="checks" id="verification-checks">
-        {
-          CHECKS.map(([id, label], index) => (
-            <li data-check={id} data-status="idle">
-              <span class="checkIndex">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <span class="checkBody">
-                <strong>{label}</strong>
-                <span class="checkDetail">waiting</span>
-              </span>
-              <span aria-hidden="true" class="checkMark">
-                ·
-              </span>
-            </li>
-          ))
-        }
-      </ol>
+  <h3 class="heading">Performance contract</h3>
+  <p class="bodyText">
+    The build fails before deployment if any route crosses its compressed
+    HTML/initial-JavaScript budget, or if a font, third-party request, or
+    Cloudflare RUM reference appears.
+  </p>
 
-      <details class="manual" open>
-        <summary>Verify from a clean terminal</summary>
-        <div class="manualBody">
-          <CodeBlock
-            code={VERIFY_COMMAND}
-            label="Independent release check"
-            language="bash · Node.js 22+"
-            wrap
-          />
+  <div class="contract">
+    <div class="contractHeader" aria-hidden="true">
+      <span>route</span><span>HTML gzip</span><span>JS gzip</span><span
+        >result</span
+      >
+    </div>
+    {
+      ["/", "/identity", "/siwe"].map((path) => (
+        <div class="contractRow" data-route={path}>
+          <code>{path}</code>
+          <span data-metric="html">—</span>
+          <span data-metric="js">—</span>
+          <span class="result" data-metric="status">
+            pending
+          </span>
         </div>
-      </details>
+      ))
+    }
+  </div>
+  <p class="zeroContract" id="zero-contract">
+    0 third parties · 0 fonts · 0 RUM
+  </p>
 
-      <nav aria-label="Raw integrity artifacts" class="artifactLinks">
-        <a href="/.well-known/release.json">release.json</a>
-        <a href="/.well-known/performance.json">performance.json</a>
-        <a href="/.well-known/identity.json">identity.json</a>
-        <a
-          href="https://github.com/yhay81/profile/actions"
-          rel="noreferrer"
-          target="_blank">build logs ↗</a
-        >
-      </nav>
-    </section>
-  </main>
-</Base>
+  <div class="verifyHeading">
+    <div>
+      <h3 class="heading">Browser verification console</h3>
+      <p class="bodyText">
+        Runs locally in this tab. Heavy cryptographic code is downloaded only
+        after you click.
+      </p>
+    </div>
+    <button class="runButton" id="run-proofs" type="button">
+      <span aria-hidden="true">▶</span> Run all proofs
+    </button>
+  </div>
+
+  <div
+    aria-atomic="true"
+    aria-live="polite"
+    class="verificationSummary"
+    id="verification-summary"
+  >
+    IDLE · no verification has run in this tab
+  </div>
+
+  <ol class="checks" id="verification-checks">
+    {
+      CHECKS.map(([id, label], index) => (
+        <li data-check={id} data-status="idle">
+          <span class="checkIndex">{String(index + 1).padStart(2, "0")}</span>
+          <span class="checkBody">
+            <strong>{label}</strong>
+            <span class="checkDetail">waiting</span>
+          </span>
+          <span aria-hidden="true" class="checkMark">
+            ·
+          </span>
+        </li>
+      ))
+    }
+  </ol>
+
+  <details class="manual" open>
+    <summary>Verify from a clean terminal</summary>
+    <div class="manualBody">
+      <CodeBlock
+        code={VERIFY_COMMAND}
+        label="Independent release check"
+        language="bash · Node.js 22+"
+        wrap
+      />
+    </div>
+  </details>
+
+  <nav aria-label="Raw integrity artifacts" class="artifactLinks">
+    <a href="/.well-known/release.json">release.json</a>
+    <a href="/.well-known/performance.json">performance.json</a>
+    <a href="/.well-known/identity.json">identity.json</a>
+    <a
+      href="https://github.com/yhay81/profile/actions"
+      rel="noreferrer"
+      target="_blank">build logs ↗</a
+    >
+  </nav>
+</section>
 
 <script>
   interface PerformanceRoute {
@@ -319,6 +306,38 @@ const CHECKS = [
 </script>
 
 <style>
+  .releaseIntegrity {
+    padding-top: 72px;
+    margin-top: 72px;
+    border-top: 1px solid var(--border-strong);
+    scroll-margin-top: 88px;
+  }
+
+  .sectionIntro {
+    max-width: 72ch;
+  }
+
+  .sectionLabel {
+    margin: 0 0 10px;
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+
+  .sectionIntro h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    line-height: 1.15;
+    color: var(--color-text-strong);
+  }
+
+  .sectionIntro .bodyText {
+    margin-top: 16px;
+  }
+
   .releaseStrip {
     display: flex;
     gap: 10px;
@@ -578,6 +597,15 @@ const CHECKS = [
   }
 
   @media (width <= 640px) {
+    .releaseIntegrity {
+      padding-top: 48px;
+      margin-top: 48px;
+    }
+
+    .sectionIntro h2 {
+      font-size: var(--text-2xl);
+    }
+
     .ledgerRow {
       grid-template-columns: 1fr;
       gap: 2px;
