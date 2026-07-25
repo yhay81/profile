@@ -83,11 +83,10 @@ export interface NavLink {
   readonly label: string;
 }
 
-// Keys, Proofs, and SIWE are reachable from /identity and stay out of the nav.
+// Keys, Proofs, SIWE, and release verification are reachable from /identity.
 export const NAV_LINKS: readonly NavLink[] = [
   { href: "/#about", label: "About" },
   { href: "/writing", label: "Writing" },
   { href: "/identity", label: "Identity" },
-  { href: "/integrity", label: "Verify" },
   { href: "/#contact", label: "Contact" },
 ];

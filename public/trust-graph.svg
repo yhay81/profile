@@ -8,8 +8,8 @@
   </desc>
 
   <g fill="none" stroke="#d6ddfa" stroke-opacity=".18" stroke-width="1.5">
-    <path d="M180 86 324 142"/>
-    <path d="M580 86 436 142"/>
+    <path d="M180 86 324 132"/>
+    <path d="M580 86 436 132"/>
     <path d="M174 278H270"/>
     <path d="M586 278H490"/>
     <path d="M286 428 342 324" stroke="#04ffaa" stroke-opacity=".3" stroke-width="2"/>

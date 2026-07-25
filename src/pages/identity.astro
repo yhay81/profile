@@ -2,6 +2,7 @@
 import "@/styles/article.css";
 
 import CodeBlock from "@/components/CodeBlock.astro";
+import ReleaseIntegrity from "@/components/ReleaseIntegrity.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 import TrustGraph from "@/components/TrustGraph.astro";
 import Base from "@/layouts/Base.astro";
@@ -13,9 +14,9 @@ import {
   PROFILE_NAME,
 } from "@/lib/site";
 
-const title = `Verifiable Identity | ${PROFILE_NAME}`;
+const title = `Identity & Release Integrity | ${PROFILE_NAME}`;
 const description =
-  "How a Sigstore-attested release binds my public identifiers and how to verify it independently.";
+  "How my public identifiers and this site's deployed bytes are bound to verifiable evidence.";
 
 interface ProofCard {
   pair: string;
@@ -96,7 +97,7 @@ const PROOF_CARDS: ProofCard[] = [
     pair: "Deployment ⇄ source",
     method:
       "Sigstore/SLSA attestations over the identity manifest, deterministic release archive, and deployment archive",
-    href: "/integrity",
+    href: "#release-integrity",
     linkText: "release integrity",
     external: false,
   },
@@ -159,17 +160,28 @@ node verify-identity.mjs`;
 <Base description={description} path="/identity" title={title}>
   <main>
     <section>
-      <SectionHeader label="Identity" no="00" title="Verifiable Identity" />
+      <SectionHeader
+        label="Identity & integrity"
+        no="00"
+        title="Verifiable Identity"
+      />
 
       <p class="lead">
         Anyone can claim a name. This page shows the cryptographic links — DNS
         records, signed statements, and key notations — that let you verify this
-        site, my code, and my on-chain account all belong to the same person.
+        site, my code, and my on-chain account all belong to the same person,
+        then binds the deployed bytes back to their source.
       </p>
+
+      <nav aria-label="On this page" class="pageNav">
+        <a href="#identity-proofs">Identity proofs</a>
+        <a href="#release-integrity">Release integrity</a>
+        <a href="#verify-it-yourself">Verify it yourself</a>
+      </nav>
 
       <TrustGraph />
 
-      <h2 class="heading">The proofs</h2>
+      <h2 class="heading" id="identity-proofs">The proofs</h2>
 
       <div class="cards">
         {
@@ -190,7 +202,7 @@ node verify-identity.mjs`;
         }
       </div>
 
-      <h2 class="heading">Humanity status</h2>
+      <h2 class="heading" id="humanity-status">Humanity status</h2>
 
       <aside
         class="humanityStatus reveal"
@@ -219,7 +231,9 @@ node verify-identity.mjs`;
         </div>
       </aside>
 
-      <h2 class="heading">Verify it yourself</h2>
+      <ReleaseIntegrity />
+
+      <h2 class="heading" id="verify-it-yourself">Verify it yourself</h2>
 
       <p class="bodyText">
         Start from the pinned release policy: OIDC issuer, repository, workflow,
@@ -263,8 +277,8 @@ node verify-identity.mjs`;
         GitHub Actions also packages the manifest, schemas, policy, verifier,
         keys, and history into a deterministic identity release and attests both
         the manifest and archive with Sigstore/SLSA. The{" "}
-        <a href="/integrity">release ledger</a> separately binds every deployed byte
-        to its source commit.
+        <a href="#release-integrity">release ledger above</a> separately binds every
+        deployed byte to its source commit.
       </p>
 
       <CodeBlock
@@ -297,6 +311,37 @@ node verify-identity.mjs`;
 </Base>
 
 <style>
+  .pageNav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    padding-block: 14px;
+    margin-top: 28px;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    border-block: 1px solid var(--border-subtle);
+
+    a {
+      color: var(--color-text-strong);
+
+      &::before {
+        color: var(--color-accent);
+        content: "↳ ";
+      }
+
+      &:hover,
+      &:focus-visible {
+        color: var(--color-accent);
+      }
+    }
+  }
+
+  :global(#identity-proofs),
+  :global(#humanity-status),
+  :global(#verify-it-yourself) {
+    scroll-margin-top: 88px;
+  }
+
   .cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
