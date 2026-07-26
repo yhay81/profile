@@ -24,9 +24,9 @@ const ROUTE_BUDGETS = [
   {
     path: "/work",
     file: "work.html",
-    // The portfolio is intentionally a complete, zero-JavaScript work index.
-    // Its data-driven collections can grow while the document remains bounded.
-    documentGzipBytes: 20_000,
+    // The complete index remains available without JavaScript. A small inline
+    // enhancement turns its collection links into accessible tabs.
+    documentGzipBytes: 22_000,
     initialJsGzipBytes: 0,
   },
   {
