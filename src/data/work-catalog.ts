@@ -37,7 +37,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
         name: "AI伴走パートナーズ",
         description:
           "A public directory for finding and comparing AI adoption partners by service, technology, industry, company size, and region.",
-        signal: "Haya Inc. · Live service",
+        signal: "Haya Inc. · Featured above",
         lead: true,
         links: [
           {
@@ -71,20 +71,6 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
           {
             label: "Visit company",
             href: "https://haya-inc.co.jp/",
-          },
-        ],
-      },
-      {
-        id: "haya-salon",
-        field: "Member publication",
-        name: "haya Salon",
-        description:
-          "A members’ publication using short audio and weekly writing to turn practical AI use into better everyday decisions.",
-        signal: "Haya Inc. · Publishing",
-        links: [
-          {
-            label: "Visit salon",
-            href: "https://salon.haya.company/",
           },
         ],
       },
@@ -444,6 +430,24 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
           {
             label: "Source",
             href: "https://github.com/yhay81/code-sortings",
+          },
+        ],
+      },
+      {
+        id: "yomiage-kun",
+        field: "Local-first desktop",
+        name: "Yomiage-kun",
+        description:
+          "A desktop app that reads Discord text channels into voice through local Japanese speech engines, without a hosted intermediary.",
+        signal: "Rust · Tauri 2 · Discord Voice",
+        links: [
+          {
+            label: "Download",
+            href: "https://github.com/yhay81/yomiage-kun/releases",
+          },
+          {
+            label: "Source",
+            href: "https://github.com/yhay81/yomiage-kun",
           },
         ],
       },

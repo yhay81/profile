@@ -34,10 +34,10 @@ const FEATURED_PROJECTS = [
     field: "Identity observability",
   },
   {
-    id: "yomiage-kun",
+    id: "ai-partners-featured",
     index: "06",
-    name: "Yomiage-kun",
-    field: "Local-first desktop",
+    name: "AI伴走パートナーズ",
+    field: "AI adoption directory",
   },
 ] as const;
 ---
@@ -378,71 +378,82 @@ const FEATURED_PROJECTS = [
         </a>
       </article>
 
-      <article class="project reveal" id="yomiage-kun">
+      <article class="project reveal" id="ai-partners-featured">
         <div class="projectCopy">
-          <p class="projectLabel"><span>06</span> Local-first desktop</p>
-          <h2>Yomiage-kun</h2>
-          <p class="projectRole">Creator and maintainer · Windows + macOS</p>
+          <p class="projectLabel"><span>06</span> AI adoption directory</p>
+          <h2>AI伴走パートナーズ</h2>
+          <p class="projectRole">Lead builder · Haya Inc. · Live service</p>
           <p class="projectSummary">
-            A desktop app that reads Discord text channels into voice using
-            local Japanese speech engines.
+            A public directory for finding and comparing the right AI adoption
+            partner in Japan.
           </p>
           <p class="projectDetail">
-            Users bring their own Discord bot, credentials stay in the operating
-            system keychain, and generated audio moves from AivisSpeech or
-            VOICEVOX to Discord without a hosted intermediary.
+            Consultation needs, technology, industry, company size, and region
+            become practical filters, giving teams a clearer basis for
+            comparison before the first conversation.
           </p>
-          <ul aria-label="Yomiage-kun technologies" class="tags">
-            <li>Rust</li>
-            <li>Tauri 2</li>
-            <li>Discord Voice</li>
+          <ul aria-label="AI伴走パートナーズ capabilities" class="tags">
+            <li>Search</li>
+            <li>Comparison</li>
+            <li>AI adoption</li>
           </ul>
           <div class="projectLinks">
-            <a href="https://github.com/yhay81/yomiage-kun/releases">
-              Download ↗
-            </a>
-            <a href="https://github.com/yhay81/yomiage-kun">Source ↗</a>
+            <a href="https://ai-partners.info/">Open directory ↗</a>
           </div>
         </div>
 
         <a
-          aria-label="Download Yomiage-kun"
-          class="productCanvas yomiageCanvas"
-          href="https://github.com/yhay81/yomiage-kun/releases"
+          aria-label="Open AI伴走パートナーズ"
+          class="productCanvas partnersCanvas"
+          href="https://ai-partners.info/"
         >
-          <span class="yomiageBar">
-            <span aria-hidden="true" class="windowControls">
-              <i class="windowDot"></i><i class="windowDot"></i><i
-                class="windowDot"></i>
-            </span>
-            <span>Yomiage-kun</span>
-            <span class="yomiageLocal">● Local voice</span>
+          <span class="partnersBar">
+            <span class="partnersMark">伴</span>
+            <span>AI伴走パートナーズ</span>
+            <span class="partnersStatus">全国の支援会社を比較</span>
           </span>
-          <span class="yomiageStage">
-            <span class="voiceIntro">
-              <span class="voiceKicker">DISCORD × LOCAL TTS</span>
-              <span class="voiceTitle">Chat becomes<br />a shared voice.</span>
-              <span class="voiceEngine">AivisSpeech / VOICEVOX</span>
+          <span class="partnersStage">
+            <span class="partnersIntro">
+              <span class="partnersKicker">AI ADOPTION, MADE NAVIGABLE</span>
+              <span class="partnersHeadline">
+                Find the right<br /><strong>AI partner.</strong>
+              </span>
+              <span class="partnersSubline">
+                相談内容・技術・業界・地域から比較
+              </span>
             </span>
-            <span class="voicePlayer">
-              <span class="voiceChannel">
-                <span class="voiceAvatar">Y</span>
+            <span class="partnersSearch">
+              <span class="partnersQuery">
+                <small>相談できる会社を探す</small>
+                <b>生成AIを業務に導入したい</b>
+                <i aria-hidden="true">⌕</i>
+              </span>
+              <span class="partnersFilters">
+                <i>業務自動化</i>
+                <i>RAG</i>
+                <i>製造業</i>
+                <i>東京都</i>
+              </span>
+              <span class="partnersResult">
                 <span>
-                  <small>CONNECTED TO</small>
-                  <b>General / Voice</b>
+                  <small>01</small>
+                  <b>導入戦略・PoC</b>
                 </span>
-                <i class="voiceLive">LIVE</i>
+                <i>比較する ↗</i>
               </span>
-              <span aria-hidden="true" class="waveform">
-                <i class="waveBar"></i><i class="waveBar"></i><i class="waveBar"
-                ></i><i class="waveBar"></i><i class="waveBar"></i><i
-                  class="waveBar"></i><i class="waveBar"></i><i class="waveBar"
-                ></i><i class="waveBar"></i><i class="waveBar"></i><i
-                  class="waveBar"></i><i class="waveBar"></i>
+              <span class="partnersResult">
+                <span>
+                  <small>02</small>
+                  <b>生成AI・RAG</b>
+                </span>
+                <i>比較する ↗</i>
               </span>
-              <span class="voiceMessage">
-                <small>READING NOW</small>
-                リリースの準備ができました。
+              <span class="partnersResult">
+                <span>
+                  <small>03</small>
+                  <b>業務システム開発</b>
+                </span>
+                <i>比較する ↗</i>
               </span>
             </span>
           </span>
@@ -789,7 +800,7 @@ const FEATURED_PROJECTS = [
   .hayateBar,
   .catalogBar,
   .identityBar,
-  .yomiageBar {
+  .partnersBar {
     display: flex;
     gap: 18px;
     align-items: center;
@@ -1229,16 +1240,12 @@ const FEATURED_PROJECTS = [
     padding: clamp(34px, 5.5vw, 64px);
   }
 
-  .identityKicker,
-  .voiceKicker {
+  .identityKicker {
     font-family: var(--font-mono);
     font-size: 0.62rem;
     font-weight: 800;
-    letter-spacing: 0.16em;
-  }
-
-  .identityKicker {
     color: color-mix(in oklab, var(--color-bg-deep) 60%, transparent);
+    letter-spacing: 0.16em;
   }
 
   .identityHeadline {
@@ -1317,186 +1324,177 @@ const FEATURED_PROJECTS = [
     color: color-mix(in oklab, var(--color-bg-deep) 55%, transparent);
   }
 
-  .yomiageCanvas {
+  /* stylelint-disable no-descending-specificity -- The product mockup is
+     isolated inside its Astro-scoped canvas. */
+  .partnersCanvas {
     background: color-mix(
       in oklab,
-      var(--color-text-strong) 72%,
-      var(--color-danger)
+      var(--color-text-strong) 88%,
+      var(--color-info)
     );
   }
 
-  .yomiageBar {
+  .partnersBar {
     color: var(--color-bg-deep);
   }
 
-  .windowControls {
-    display: flex;
-    gap: 6px;
-  }
-
-  .windowDot {
-    width: 9px;
-    height: 9px;
-    background: var(--color-danger);
-    border-radius: var(--radius-full);
-  }
-
-  .windowDot:nth-child(2) {
-    background: var(--color-violet);
-  }
-
-  .windowDot:nth-child(3) {
-    background: var(--color-accent);
-  }
-
-  .yomiageLocal {
-    margin-left: auto;
-    color: color-mix(in oklab, var(--color-bg-deep) 70%, var(--color-accent));
-  }
-
-  .yomiageStage {
+  .partnersMark {
     display: grid;
-    grid-template-columns: minmax(0, 0.88fr) minmax(220px, 1.12fr);
+    width: 28px;
+    height: 28px;
+    font-weight: 850;
+    color: var(--color-text-strong);
+    place-items: center;
+    background: var(--color-bg-deep);
+    border-radius: var(--radius-sm);
+  }
+
+  .partnersStatus {
+    margin-left: auto;
+    color: color-mix(in oklab, var(--color-bg-deep) 62%, transparent);
+  }
+
+  .partnersStage {
+    display: grid;
+    grid-template-columns: minmax(0, 0.78fr) minmax(260px, 1.22fr);
     gap: clamp(24px, 4vw, 48px);
     align-items: center;
     min-height: 420px;
     padding: clamp(34px, 5.5vw, 64px);
   }
 
-  .voiceIntro {
+  .partnersIntro {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .voiceKicker {
+  .partnersKicker {
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    font-weight: 800;
     color: color-mix(in oklab, var(--color-bg-deep) 62%, transparent);
+    letter-spacing: 0.14em;
   }
 
-  .voiceTitle {
+  .partnersHeadline {
     margin-top: 16px;
-    font-size: clamp(2rem, 3.8vw, 3.8rem);
+    font-size: clamp(2rem, 3.8vw, 3.7rem);
     font-weight: 780;
     line-height: 0.98;
     letter-spacing: -0.055em;
   }
 
-  .voiceEngine {
-    padding-bottom: 4px;
-    margin-top: 26px;
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    font-weight: 750;
-    border-bottom: 2px solid var(--color-violet);
+  .partnersHeadline strong {
+    color: color-mix(in oklab, var(--color-bg-deep) 62%, var(--color-violet));
   }
 
-  .voicePlayer {
+  .partnersSubline {
+    margin-top: 28px;
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    color: color-mix(in oklab, var(--color-bg-deep) 68%, transparent);
+  }
+
+  .partnersSearch {
     display: flex;
     flex-direction: column;
-    min-height: 270px;
-    padding: 22px;
+    min-height: 296px;
+    padding: 20px;
     background: color-mix(
       in oklab,
-      var(--color-text-strong) 88%,
-      var(--color-info)
+      var(--color-text-strong) 96%,
+      var(--color-violet)
     );
     border: 1px solid color-mix(in oklab, var(--color-bg-deep) 16%, transparent);
     border-radius: var(--radius-md);
     box-shadow: 10px 12px 0
-      color-mix(in oklab, var(--color-violet) 26%, transparent);
+      color-mix(in oklab, var(--color-info) 22%, transparent);
   }
 
-  .voiceChannel {
+  .partnersQuery {
     display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 12px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 3px 16px;
     align-items: center;
-  }
-
-  .voiceChannel > span:nth-child(2) {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .voiceChannel small,
-  .voiceMessage small {
-    font-family: var(--font-mono);
-    font-size: 0.53rem;
-    color: color-mix(in oklab, var(--color-bg-deep) 52%, transparent);
-    letter-spacing: 0.1em;
-  }
-
-  .voiceChannel b {
-    font-size: var(--text-sm);
-  }
-
-  .voiceLive {
-    font-family: var(--font-mono);
-    font-size: 0.56rem;
-    font-style: normal;
-    font-weight: 800;
-    color: color-mix(in oklab, var(--color-bg-deep) 64%, var(--color-accent));
-  }
-
-  .voiceAvatar {
-    display: grid;
-    width: 38px;
-    height: 38px;
-    font-weight: 850;
-    color: var(--color-text-strong);
-    place-items: center;
-    background: var(--color-violet);
+    padding: 14px 16px;
+    background: var(--color-text-strong);
+    border: 1px solid color-mix(in oklab, var(--color-bg-deep) 14%, transparent);
     border-radius: var(--radius-sm);
   }
 
-  .waveform {
-    display: flex;
-    gap: 5px;
-    align-items: center;
-    height: 84px;
-    margin: 28px 0 22px;
+  .partnersQuery small {
+    grid-column: 1;
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    color: color-mix(in oklab, var(--color-bg-deep) 50%, transparent);
+    letter-spacing: 0.08em;
   }
 
-  .waveBar {
-    flex: 1;
-    height: 24%;
-    background: var(--color-violet);
+  .partnersQuery b {
+    grid-column: 1;
+    font-size: var(--text-sm);
+  }
+
+  .partnersQuery > i {
+    grid-row: 1 / 3;
+    grid-column: 2;
+    font-size: 1.25rem;
+    font-style: normal;
+    color: var(--color-violet);
+  }
+
+  .partnersFilters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 14px 0;
+  }
+
+  .partnersFilters i {
+    padding: 5px 8px;
+    font-family: var(--font-mono);
+    font-size: 0.52rem;
+    font-style: normal;
+    color: color-mix(in oklab, var(--color-bg-deep) 72%, transparent);
+    border: 1px solid color-mix(in oklab, var(--color-bg-deep) 18%, transparent);
     border-radius: var(--radius-full);
   }
 
-  .waveBar:nth-child(2),
-  .waveBar:nth-child(11) {
-    height: 54%;
+  .partnersResult {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 14px;
+    align-items: center;
+    padding: 10px 4px;
+    border-top: 1px solid
+      color-mix(in oklab, var(--color-bg-deep) 12%, transparent);
   }
 
-  .waveBar:nth-child(3),
-  .waveBar:nth-child(9) {
-    height: 76%;
+  .partnersResult > span {
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr);
+    gap: 8px;
+    align-items: center;
   }
 
-  .waveBar:nth-child(4),
-  .waveBar:nth-child(7) {
-    height: 42%;
+  .partnersResult small {
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    color: color-mix(in oklab, var(--color-bg-deep) 48%, transparent);
   }
 
-  .waveBar:nth-child(5),
-  .waveBar:nth-child(8) {
-    height: 88%;
+  .partnersResult b {
+    font-size: var(--text-xs);
   }
 
-  .waveBar:nth-child(6),
-  .waveBar:nth-child(10) {
-    height: 64%;
+  .partnersResult > i {
+    font-family: var(--font-mono);
+    font-size: 0.53rem;
+    font-style: normal;
+    color: color-mix(in oklab, var(--color-bg-deep) 62%, var(--color-violet));
   }
-
-  .voiceMessage {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    margin-top: auto;
-    font-size: var(--text-sm);
-    font-weight: 650;
-  }
+  /* stylelint-enable no-descending-specificity */
 
   .workCatalog,
   .workContact {
@@ -1935,7 +1933,7 @@ const FEATURED_PROJECTS = [
     .docsContent,
     .catalogStage,
     .identityStage,
-    .yomiageStage {
+    .partnersStage {
       padding: 28px 22px;
     }
 
@@ -2026,17 +2024,17 @@ const FEATURED_PROJECTS = [
       line-height: 1.5;
     }
 
-    .yomiageStage {
+    .partnersStage {
       grid-template-columns: 1fr;
       min-height: 0;
     }
 
-    .voiceTitle {
+    .partnersHeadline {
       font-size: clamp(2.2rem, 11vw, 3.2rem);
     }
 
-    .voicePlayer {
-      min-height: 240px;
+    .partnersSearch {
+      min-height: 280px;
     }
 
     .catalogHeader,
