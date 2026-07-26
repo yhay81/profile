@@ -28,6 +28,64 @@ const FEATURED_PROJECTS = [
     field: "PR verification integrity",
   },
 ] as const;
+
+const WORK_MARKS: Readonly<Record<string, string>> = {
+  "prooflock-index": "PL",
+  deban: "DE",
+  "civic-contribution-catalog": "CC",
+  "ai-partners": "AP",
+  "ai-demand": "AD",
+  "haya-inc": "HI",
+  "wiki-shindanshi": "診",
+  "wasmhatch-index": "WH",
+  hayasend: "HS",
+  clawsembly: "CL",
+  "clawsembly-kernel": "CK",
+  "engineering-bootcamp": "EB",
+  "wiki-kit": "WK",
+  "create-wiki-kit": "CW",
+  "knowledge-kit": "KK",
+  "create-knowledge-kit": "C·K",
+  "discovery-kit": "DK",
+  "create-discovery-kit": "CD",
+  "hayate-index": "HY",
+  "hayate-auth": "HA",
+  "hayate-mcp": "HM",
+  "hayate-openapi": "HO",
+  "hayate-fetch": "HF",
+  "create-hayate": "CH",
+  firsthand: "FH",
+  "public-data-catalog-index": "PD",
+  socialname: "SN",
+  "pylopdf-index": "PY",
+  foliomcp: "FM",
+  "gh-freshclone": "GF",
+  "ja-translation-todo": "JT",
+  gaslacker: "GA",
+  "code-sortings": "CS",
+  "yomiage-kun": "YK",
+  "profile-site": "YH",
+  "github-issues-wasm": "GI",
+  "pythonic-peano-arithmetic": "PP",
+  "frontend-handbook-ja": "FE",
+  sesforwader: "SF",
+};
+
+function workMark(id: string, name: string) {
+  const explicitMark = WORK_MARKS[id];
+  if (explicitMark) return explicitMark;
+
+  const words = name
+    .replace(/([a-z\d])([A-Z])/g, "$1 $2")
+    .split(/[^A-Za-z0-9]+/)
+    .filter(Boolean);
+
+  if (words.length > 1) {
+    return `${words[0][0]}${words[1][0]}`.toUpperCase();
+  }
+
+  return (words[0] ?? name).slice(0, 2).toUpperCase();
+}
 ---
 
 <Base
@@ -319,8 +377,8 @@ const FEATURED_PROJECTS = [
           <h2 id="work-catalog-title">The work keeps growing.</h2>
         </div>
         <p class="catalogIntroduction">
-          Five visible collections hold the complete public record. Scan their
-          shape, then open any row to inspect the work.
+          Five visible collections hold the complete public record. Open any
+          collection to scan its products, systems, and experiments.
         </p>
       </header>
 
@@ -356,6 +414,31 @@ const FEATURED_PROJECTS = [
                     class:list={["catalogItem", { catalogItemLead: item.lead }]}
                     id={item.id}
                   >
+                    <div
+                      aria-hidden="true"
+                      class="catalogItemVisual"
+                      data-family={String(groupIndex + 1)}
+                      style={`--visual-x: ${
+                        18 + ((itemIndex * 17 + groupIndex * 11) % 64)
+                      }%; --visual-y: ${
+                        24 + ((itemIndex * 13 + groupIndex * 7) % 52)
+                      }%;`}
+                    >
+                      <span class="catalogVisualChrome">
+                        <i />
+                        <i />
+                        <i />
+                        <b>
+                          {String(groupIndex + 1).padStart(2, "0")}—
+                          {String(itemIndex + 1).padStart(2, "0")}
+                        </b>
+                      </span>
+                      <strong>{workMark(item.id, item.name)}</strong>
+                      <span class="catalogVisualTrace">
+                        <i />
+                        <b />
+                      </span>
+                    </div>
                     <div class="catalogItemHeading">
                       <p class="catalogItemMeta">
                         {String(groupIndex + 1).padStart(2, "0")}.
@@ -1220,9 +1303,9 @@ const FEATURED_PROJECTS = [
   .catalogItem {
     display: grid;
     grid-template-columns:
-      minmax(205px, 0.3fr) minmax(280px, 0.46fr)
-      minmax(135px, 0.16fr) auto;
-    gap: 28px;
+      minmax(96px, 0.15fr) minmax(170px, 0.27fr) minmax(250px, 0.42fr)
+      minmax(120px, 0.16fr) auto;
+    gap: 24px;
     align-items: center;
     padding: 30px 0;
     border-bottom: 1px solid var(--border-subtle);
@@ -1231,6 +1314,175 @@ const FEATURED_PROJECTS = [
 
   .catalogItem:last-child {
     border-bottom: 0;
+  }
+
+  .catalogItemVisual {
+    position: relative;
+    min-width: 0;
+    min-height: 88px;
+    overflow: hidden;
+    color: var(--color-text-strong);
+    background:
+      radial-gradient(
+        circle at var(--visual-x) var(--visual-y),
+        var(--color-accent) 0 2px,
+        transparent 3px
+      ),
+      linear-gradient(
+        90deg,
+        transparent calc(var(--visual-x) - 0.5px),
+        color-mix(in oklab, var(--color-accent) 35%, transparent)
+          var(--visual-x),
+        transparent calc(var(--visual-x) + 0.5px)
+      ),
+      linear-gradient(
+        transparent calc(var(--visual-y) - 0.5px),
+        color-mix(in oklab, var(--color-text-strong) 14%, transparent)
+          var(--visual-y),
+        transparent calc(var(--visual-y) + 0.5px)
+      ),
+      color-mix(in oklab, var(--surface-card) 84%, var(--color-bg-deep));
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    transition:
+      border-color var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out);
+  }
+
+  .catalogItemVisual[data-family="2"] {
+    background:
+      radial-gradient(
+        circle at var(--visual-x) var(--visual-y),
+        var(--color-accent) 0 2px,
+        transparent 3px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        transparent 0 10px,
+        color-mix(in oklab, var(--color-text-strong) 8%, transparent) 10px 11px
+      ),
+      color-mix(in oklab, var(--surface-card) 90%, var(--color-bg-deep));
+  }
+
+  .catalogItemVisual[data-family="3"] {
+    background:
+      radial-gradient(
+        circle at var(--visual-x) var(--visual-y),
+        var(--color-accent) 0 2px,
+        transparent 3px
+      ),
+      repeating-linear-gradient(
+        135deg,
+        transparent 0 12px,
+        color-mix(in oklab, var(--color-accent) 9%, transparent) 12px 13px
+      ),
+      color-mix(in oklab, var(--surface-card) 86%, var(--color-bg-deep));
+  }
+
+  .catalogItemVisual[data-family="4"] {
+    background:
+      radial-gradient(
+        circle at var(--visual-x) var(--visual-y),
+        var(--color-accent) 0 2px,
+        transparent 3px
+      ),
+      radial-gradient(
+          circle,
+          color-mix(in oklab, var(--color-text-strong) 13%, transparent) 0 1px,
+          transparent 1.5px
+        )
+        0 0 / 12px 12px,
+      color-mix(in oklab, var(--surface-card) 88%, var(--color-bg-deep));
+  }
+
+  .catalogItemVisual[data-family="5"] {
+    background:
+      linear-gradient(
+        115deg,
+        transparent 0 var(--visual-x),
+        color-mix(in oklab, var(--color-accent) 16%, transparent)
+          var(--visual-x) calc(var(--visual-x) + 18%),
+        transparent calc(var(--visual-x) + 18%)
+      ),
+      color-mix(in oklab, var(--surface-card) 88%, var(--color-bg-deep));
+  }
+
+  .catalogVisualChrome {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    height: 22px;
+    padding: 0 8px;
+    border-bottom: 1px solid
+      color-mix(in oklab, var(--color-text-strong) 10%, transparent);
+  }
+
+  .catalogVisualChrome i {
+    width: 3px;
+    height: 3px;
+    background: color-mix(in oklab, var(--color-text-strong) 36%, transparent);
+    border-radius: var(--radius-full);
+  }
+
+  .catalogVisualChrome i:first-child {
+    background: var(--color-accent);
+  }
+
+  .catalogVisualChrome b {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.48rem;
+    font-weight: 600;
+    color: color-mix(in oklab, var(--color-text-strong) 48%, transparent);
+    letter-spacing: 0.06em;
+  }
+
+  .catalogItemVisual > strong {
+    position: absolute;
+    bottom: 10px;
+    left: 11px;
+    font-size: clamp(1.15rem, 2vw, 1.55rem);
+    line-height: 1;
+    letter-spacing: -0.06em;
+  }
+
+  .catalogVisualTrace {
+    position: absolute;
+    right: 10px;
+    bottom: 12px;
+    width: 26px;
+    height: 12px;
+    border-right: 1px solid
+      color-mix(in oklab, var(--color-text-strong) 20%, transparent);
+    border-bottom: 1px solid
+      color-mix(in oklab, var(--color-text-strong) 20%, transparent);
+  }
+
+  .catalogVisualTrace i,
+  .catalogVisualTrace b {
+    position: absolute;
+    display: block;
+    background: var(--color-accent);
+    border-radius: var(--radius-full);
+  }
+
+  .catalogVisualTrace i {
+    right: -2px;
+    bottom: -2px;
+    width: 4px;
+    height: 4px;
+  }
+
+  .catalogVisualTrace b {
+    top: -1px;
+    left: -1px;
+    width: 3px;
+    height: 3px;
+  }
+
+  .catalogItem:hover .catalogItemVisual {
+    border-color: var(--border-accent);
+    transform: translateY(-2px);
   }
 
   .catalogItemLead {
@@ -1260,6 +1512,12 @@ const FEATURED_PROJECTS = [
 
   .catalogItemLead .catalogItemDescription {
     color: color-mix(in oklab, var(--color-bg-deep) 76%, transparent);
+  }
+
+  .catalogItemLead .catalogItemVisual {
+    color: var(--color-text-strong);
+    background-color: var(--color-bg-deep);
+    border-color: color-mix(in oklab, var(--color-bg-deep) 24%, transparent);
   }
 
   .catalogItemLead .catalogItemLinks a {
@@ -1386,12 +1644,25 @@ const FEATURED_PROJECTS = [
     }
 
     .catalogItem {
-      grid-template-columns: minmax(200px, 0.36fr) minmax(0, 0.64fr);
+      grid-template-columns: 104px minmax(180px, 0.38fr) minmax(0, 0.62fr);
+    }
+
+    .catalogItemVisual {
+      grid-row: 1 / 3;
+      grid-column: 1;
+    }
+
+    .catalogItemHeading {
+      grid-column: 2;
+    }
+
+    .catalogItemDescription {
+      grid-column: 3;
     }
 
     .catalogItemSignal,
     .catalogItemLinks {
-      grid-column: 2;
+      grid-column: 2 / 4;
     }
 
     .catalogItemLinks {
@@ -1558,7 +1829,7 @@ const FEATURED_PROJECTS = [
 
     .catalogItem,
     .catalogItemLead {
-      grid-template-columns: 1fr;
+      grid-template-columns: 78px minmax(0, 1fr);
       gap: 16px;
     }
 
@@ -1570,11 +1841,22 @@ const FEATURED_PROJECTS = [
       padding: 24px 22px;
     }
 
+    .catalogItemVisual {
+      grid-row: 1;
+      grid-column: 1;
+      min-height: 72px;
+    }
+
+    .catalogItemHeading {
+      grid-column: 2;
+    }
+
+    .catalogItemDescription,
     .catalogItemSignal,
     .catalogItemLinks,
     .workContact h2,
     .workContact .contactLinks {
-      grid-column: 1;
+      grid-column: 1 / -1;
     }
 
     .catalogItemLinks {
@@ -1590,7 +1872,8 @@ const FEATURED_PROJECTS = [
     .indexArrow,
     .productCanvas,
     .catalogGroup summary,
-    .catalogGroupToggle {
+    .catalogGroupToggle,
+    .catalogItemVisual {
       transition: none;
     }
 
@@ -1599,7 +1882,8 @@ const FEATURED_PROJECTS = [
     }
 
     .productCanvas:hover,
-    .productCanvas:focus-visible {
+    .productCanvas:focus-visible,
+    .catalogItem:hover .catalogItemVisual {
       transform: none;
     }
   }
