@@ -451,8 +451,13 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
         name: "FolioMCP",
         description:
           "A full-stack workspace for uploading, organizing, and semantically searching documents, then exposing the resulting knowledge through managed MCP servers.",
-        signal: "Private product · Next.js · MCP",
-        links: [],
+        signal: "Private product · Cloudflare Access · MCP",
+        links: [
+          {
+            label: "Open private product",
+            href: "https://folio-mcp.com/",
+          },
+        ],
       },
       {
         id: "gh-freshclone",
