@@ -28,10 +28,10 @@ const FEATURED_PROJECTS = [
     field: "Verifiable data",
   },
   {
-    id: "socialname",
+    id: "prooflock",
     index: "05",
-    name: "SocialName",
-    field: "Identity observability",
+    name: "ProofLock",
+    field: "PR verification integrity",
   },
   {
     id: "ai-partners-featured",
@@ -313,66 +313,68 @@ const FEATURED_PROJECTS = [
         </a>
       </article>
 
-      <article class="project reveal" id="socialname">
+      <article class="project reveal" id="prooflock">
         <div class="projectCopy">
-          <p class="projectLabel"><span>05</span> Identity observability</p>
-          <h2>SocialName</h2>
-          <p class="projectRole">Creator and maintainer · Active development</p>
+          <p class="projectLabel"><span>05</span> PR verification integrity</p>
+          <h2>ProofLock</h2>
+          <p class="projectRole">Lead builder · Haya Inc. · Live GitHub App</p>
           <p class="projectSummary">
-            A local-first platform that turns public-identifier presence and
-            change into evidence-backed observations.
+            A GitHub App that protects the checks used to prove a pull request
+            is safe.
           </p>
           <p class="projectDetail">
-            One Rust engine powers CLI, desktop, API, and managed monitoring
-            while signed rules, deterministic classification, and explicit
-            consent prevent a matching username from becoming a false identity
-            claim.
+            It evaluates tests, workflows, policy, and other protected surfaces
+            against the base commit, then fails closed when the evidence is
+            incomplete or a pull request attempts to weaken its own guardrails.
           </p>
-          <ul aria-label="SocialName technologies" class="tags">
-            <li>Rust</li>
-            <li>Tauri</li>
-            <li>Evidence</li>
+          <ul aria-label="ProofLock technologies" class="tags">
+            <li>GitHub App</li>
+            <li>Cloudflare</li>
+            <li>Policy engine</li>
           </ul>
           <div class="projectLinks">
-            <a href="https://github.com/yhay81/socialname">Source ↗</a>
+            <a href="https://prooflock.yusuke-hayashi.com/">Open product ↗</a>
+            <a href="https://prooflock.yusuke-hayashi.com/status/v1.json">
+              Live status ↗
+            </a>
           </div>
         </div>
 
         <a
-          aria-label="Open the SocialName source repository"
-          class="productCanvas socialNameCanvas"
-          href="https://github.com/yhay81/socialname"
+          aria-label="Open ProofLock"
+          class="productCanvas proofLockCanvas"
+          href="https://prooflock.yusuke-hayashi.com/"
         >
-          <span class="identityBar">
-            <span class="identityMark">S</span>
-            <span>SocialName</span>
-            <span class="identityPrivacy">Local research</span>
+          <span class="proofBar">
+            <span class="proofMark">P</span>
+            <span>ProofLock</span>
+            <span class="proofStatus">GitHub App · Live</span>
           </span>
-          <span class="identityStage">
-            <span class="identityKicker">PUBLIC IDENTIFIER OBSERVABILITY</span>
-            <span class="identityHeadline">
-              A match is a signal.<br />
-              <strong>Evidence makes it useful.</strong>
+          <span class="proofStage">
+            <span class="proofKicker">PR VERIFICATION INTEGRITY</span>
+            <span class="proofHeadline">
+              Protect the proof,<br />
+              <strong>before merge.</strong>
             </span>
-            <span class="probePanel">
-              <span class="probeRow">
-                <span class="probeSite">github</span>
-                <span class="probeTrace">200 · profile markers</span>
-                <b class="probeFound">found</b>
+            <span class="proofPanel">
+              <span class="proofRow">
+                <span class="proofSurface">production code</span>
+                <span class="proofTrace">14 files changed</span>
+                <b class="proofPass">observed</b>
               </span>
-              <span class="probeRow">
-                <span class="probeSite">npm</span>
-                <span class="probeTrace">404 · absence marker</span>
-                <b class="probeAbsent">not found</b>
+              <span class="proofRow">
+                <span class="proofSurface">protected surfaces</span>
+                <span class="proofTrace">workflow + tests</span>
+                <b class="proofGuard">changed</b>
               </span>
-              <span class="probeRow">
-                <span class="probeSite">nostr</span>
-                <span class="probeTrace">redirect conflict</span>
-                <b class="probeReview">review</b>
+              <span class="proofRow">
+                <span class="proofSurface">decision</span>
+                <span class="proofTrace">base policy · current head</span>
+                <b class="proofGuard">approval required</b>
               </span>
             </span>
-            <span class="identityFoot">
-              deterministic result · evidence digest · user-owned cache
+            <span class="proofFoot">
+              base-SHA policy · deterministic rules · fail closed
             </span>
           </span>
         </a>
@@ -471,80 +473,88 @@ const FEATURED_PROJECTS = [
         </div>
         <p class="catalogIntroduction">
           Featured projects stay spacious above. The complete public record
-          below is organized into expandable collections, so new products,
-          repositories, and earlier work can be added without turning the page
-          into an endless wall.
+          below is organized into five parallel collections. Switch between them
+          to scan the work by purpose without turning the page into an endless
+          wall.
         </p>
       </header>
 
-      <nav aria-label="Work collections" class="catalogNavigation">
-        <ol>
+      <div data-work-catalog-tabs>
+        <nav aria-label="Work collections" class="catalogTabs">
+          <ol data-catalog-tab-list>
+            {
+              WORK_CATALOG.map((group, groupIndex) => (
+                <li>
+                  <a
+                    data-catalog-tab
+                    href={`#catalog-${group.id}`}
+                    id={`work-tab-${group.id}`}
+                  >
+                    <span>{String(groupIndex + 1).padStart(2, "0")}</span>
+                    <b>{group.label}</b>
+                    <small>{group.items.length} works</small>
+                  </a>
+                </li>
+              ))
+            }
+          </ol>
+        </nav>
+
+        <div class="catalogPanels">
           {
             WORK_CATALOG.map((group, groupIndex) => (
-              <li>
-                <a href={`#catalog-${group.id}`}>
-                  <span>{String(groupIndex + 1).padStart(2, "0")}</span>
-                  <b>{group.label}</b>
-                  <small>{group.items.length} works</small>
-                </a>
-              </li>
+              <section
+                class="catalogPanel"
+                data-catalog-panel
+                id={`catalog-${group.id}`}
+              >
+                <header class="catalogPanelHeader">
+                  <span class="catalogPanelIndex">
+                    {String(groupIndex + 1).padStart(2, "0")}
+                  </span>
+                  <span class="catalogPanelHeading">
+                    <small>{group.label}</small>
+                    <h3>{group.title}</h3>
+                  </span>
+                  <p class="catalogPanelDescription">{group.description}</p>
+                  <span class="catalogPanelCount">
+                    <b>{String(group.items.length).padStart(2, "0")}</b>
+                    <small>works</small>
+                  </span>
+                </header>
+
+                <div class="catalogItems">
+                  {group.items.map((item, itemIndex) => (
+                    <article
+                      class:list={[
+                        "catalogItem",
+                        { catalogItemLead: item.lead },
+                      ]}
+                      id={item.id}
+                    >
+                      <div class="catalogItemHeading">
+                        <p class="catalogItemMeta">
+                          {String(groupIndex + 1).padStart(2, "0")}.
+                          {String(itemIndex + 1).padStart(2, "0")}
+                          <span>·</span>
+                          {item.field}
+                        </p>
+                        <h4>{item.name}</h4>
+                      </div>
+                      <p class="catalogItemDescription">{item.description}</p>
+                      <p class="catalogItemSignal">{item.signal}</p>
+                      <div class="catalogItemLinks">
+                        {item.links.map((link) => (
+                          <a href={link.href}>{link.label} ↗</a>
+                        ))}
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
             ))
           }
-        </ol>
-      </nav>
-
-      <div class="catalogGroups">
-        {
-          WORK_CATALOG.map((group, groupIndex) => (
-            <details
-              class="catalogGroup"
-              id={`catalog-${group.id}`}
-              name="work-catalog"
-              open={group.open}
-            >
-              <summary>
-                <span class="catalogGroupIndex">
-                  {String(groupIndex + 1).padStart(2, "0")}
-                </span>
-                <span class="catalogGroupHeading">
-                  <small>{group.label}</small>
-                  <b>{group.title}</b>
-                </span>
-                <span class="catalogGroupDescription">{group.description}</span>
-                <span class="catalogGroupCount">
-                  {String(group.items.length).padStart(2, "0")}
-                </span>
-                <i aria-hidden="true" class="catalogGroupToggle" />
-              </summary>
-
-              <div class="catalogItems">
-                {group.items.map((item, itemIndex) => (
-                  <article
-                    class:list={["catalogItem", { catalogItemLead: item.lead }]}
-                    id={item.id}
-                  >
-                    <div class="catalogItemHeading">
-                      <p class="catalogItemMeta">
-                        {String(groupIndex + 1).padStart(2, "0")}.
-                        {String(itemIndex + 1).padStart(2, "0")}
-                        <span>·</span>
-                        {item.field}
-                      </p>
-                      <h3>{item.name}</h3>
-                    </div>
-                    <p class="catalogItemDescription">{item.description}</p>
-                    <p class="catalogItemSignal">{item.signal}</p>
-                    <div class="catalogItemLinks">
-                      {item.links.map((link) => (
-                        <a href={link.href}>{link.label} ↗</a>
-                      ))}
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </details>
-          ))
-        }
+        </div>
       </div>
     </section>
 
@@ -799,7 +809,7 @@ const FEATURED_PROJECTS = [
   .pylopdfNav,
   .hayateBar,
   .catalogBar,
-  .identityBar,
+  .proofBar,
   .partnersBar {
     display: flex;
     gap: 18px;
@@ -1204,7 +1214,7 @@ const FEATURED_PROJECTS = [
     color: var(--color-bg-deep);
   }
 
-  .socialNameCanvas {
+  .proofLockCanvas {
     background: color-mix(
       in oklab,
       var(--color-text-strong) 88%,
@@ -1212,11 +1222,11 @@ const FEATURED_PROJECTS = [
     );
   }
 
-  .identityBar {
+  .proofBar {
     color: var(--color-bg-deep);
   }
 
-  .identityMark {
+  .proofMark {
     display: grid;
     width: 28px;
     height: 28px;
@@ -1226,13 +1236,13 @@ const FEATURED_PROJECTS = [
     border-radius: var(--radius-full);
   }
 
-  .identityPrivacy {
+  .proofStatus {
     margin-left: auto;
     font-weight: 500;
     color: color-mix(in oklab, var(--color-bg-deep) 64%, transparent);
   }
 
-  .identityStage {
+  .proofStage {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -1240,7 +1250,7 @@ const FEATURED_PROJECTS = [
     padding: clamp(34px, 5.5vw, 64px);
   }
 
-  .identityKicker {
+  .proofKicker {
     font-family: var(--font-mono);
     font-size: 0.62rem;
     font-weight: 800;
@@ -1248,7 +1258,7 @@ const FEATURED_PROJECTS = [
     letter-spacing: 0.16em;
   }
 
-  .identityHeadline {
+  .proofHeadline {
     margin-top: 16px;
     font-size: clamp(2rem, 3.9vw, 4rem);
     font-weight: 780;
@@ -1256,11 +1266,11 @@ const FEATURED_PROJECTS = [
     letter-spacing: -0.055em;
   }
 
-  .identityHeadline strong {
+  .proofHeadline strong {
     color: color-mix(in oklab, var(--color-bg-deep) 72%, var(--color-accent));
   }
 
-  .probePanel {
+  .proofPanel {
     width: 100%;
     margin-top: 38px;
     overflow: hidden;
@@ -1273,9 +1283,9 @@ const FEATURED_PROJECTS = [
     border-radius: var(--radius-sm);
   }
 
-  .probeRow {
+  .proofRow {
     display: grid;
-    grid-template-columns: minmax(70px, 0.25fr) minmax(140px, 1fr) auto;
+    grid-template-columns: minmax(120px, 0.34fr) minmax(140px, 1fr) auto;
     gap: 14px;
     align-items: center;
     padding: 13px 16px;
@@ -1285,39 +1295,34 @@ const FEATURED_PROJECTS = [
       color-mix(in oklab, var(--color-bg-deep) 12%, transparent);
   }
 
-  .probeRow:last-child {
+  .proofRow:last-child {
     border-bottom: 0;
   }
 
-  .probeSite {
+  .proofSurface {
     font-weight: 800;
   }
 
-  .probeTrace {
+  .proofTrace {
     color: color-mix(in oklab, var(--color-bg-deep) 58%, transparent);
   }
 
-  .probeFound,
-  .probeAbsent,
-  .probeReview {
+  .proofPass,
+  .proofGuard {
     font-size: 0.62rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
   }
 
-  .probeFound {
+  .proofPass {
     color: color-mix(in oklab, var(--color-bg-deep) 64%, var(--color-accent));
   }
 
-  .probeAbsent {
-    color: var(--color-info);
-  }
-
-  .probeReview {
+  .proofGuard {
     color: var(--color-danger);
   }
 
-  .identityFoot {
+  .proofFoot {
     margin-top: auto;
     font-family: var(--font-mono);
     font-size: 0.61rem;
@@ -1529,13 +1534,14 @@ const FEATURED_PROJECTS = [
     color: var(--color-text-soft);
   }
 
-  .catalogNavigation {
-    margin-bottom: clamp(44px, 6vw, 68px);
+  .catalogTabs {
+    position: relative;
+    margin-bottom: clamp(32px, 5vw, 52px);
     overflow-x: auto;
     overscroll-behavior-inline: contain;
   }
 
-  .catalogNavigation ol {
+  .catalogTabs ol {
     display: grid;
     grid-template-columns: repeat(5, minmax(170px, 1fr));
     min-width: 850px;
@@ -1546,11 +1552,11 @@ const FEATURED_PROJECTS = [
     border-bottom: 1px solid var(--border-strong);
   }
 
-  .catalogNavigation li + li {
+  .catalogTabs li + li {
     border-left: 1px solid var(--border-subtle);
   }
 
-  .catalogNavigation a {
+  .catalogTabs a {
     display: grid;
     grid-template-columns: auto 1fr;
     gap: 8px 12px;
@@ -1559,148 +1565,129 @@ const FEATURED_PROJECTS = [
     color: var(--color-text-strong);
     transition:
       color var(--dur-base) var(--ease-out),
-      background-color var(--dur-base) var(--ease-out);
+      background-color var(--dur-base) var(--ease-out),
+      box-shadow var(--dur-base) var(--ease-out);
   }
 
-  .catalogNavigation a:hover,
-  .catalogNavigation a:focus-visible {
-    color: var(--color-bg-deep);
-    background: var(--color-accent);
+  .catalogTabs a:hover {
+    background: color-mix(in oklab, var(--color-accent) 6%, transparent);
   }
 
-  .catalogNavigation span,
-  .catalogNavigation small,
-  .catalogGroupIndex,
-  .catalogGroupCount,
+  .catalogTabs a:focus-visible {
+    position: relative;
+    z-index: 1;
+    outline: 2px solid var(--color-accent);
+    outline-offset: -4px;
+  }
+
+  .catalogTabs a[aria-selected="true"] {
+    color: var(--color-text-strong);
+    background: color-mix(in oklab, var(--color-accent) 9%, transparent);
+    box-shadow: inset 0 -3px var(--color-accent);
+  }
+
+  .catalogTabs span,
+  .catalogTabs small,
+  .catalogPanelIndex,
+  .catalogPanelCount,
   .catalogItemMeta,
   .catalogItemSignal {
     font-family: var(--font-mono);
     font-size: var(--text-2xs);
   }
 
-  .catalogNavigation span {
+  .catalogTabs span {
     color: var(--color-text);
   }
 
-  .catalogNavigation a:hover span,
-  .catalogNavigation a:focus-visible span,
-  .catalogNavigation a:hover small,
-  .catalogNavigation a:focus-visible small {
-    color: color-mix(in oklab, var(--color-bg-deep) 72%, transparent);
+  .catalogTabs a[aria-selected="true"] span {
+    color: var(--color-accent);
   }
 
-  .catalogNavigation b {
+  .catalogTabs b {
     align-self: start;
     font-size: var(--text-sm);
   }
 
-  .catalogNavigation small {
+  .catalogTabs small {
     grid-column: 2;
     align-self: end;
     color: var(--color-text-soft);
   }
 
-  .catalogGroups {
-    border-top: 1px solid var(--border-strong);
+  .catalogPanels {
+    min-height: 420px;
   }
 
-  .catalogGroup {
+  .catalogPanel {
+    border-top: 1px solid var(--border-strong);
     border-bottom: 1px solid var(--border-strong);
     scroll-margin-top: calc(var(--nav-height) + 24px);
   }
 
-  .catalogGroup summary {
-    display: grid;
-    grid-template-columns:
-      38px minmax(220px, 0.34fr) minmax(260px, 0.66fr)
-      34px 20px;
-    gap: 24px;
-    align-items: center;
-    padding: 30px 0;
-    cursor: pointer;
-    list-style: none;
-    transition: background-color var(--dur-base) var(--ease-out);
-  }
-
-  .catalogGroup summary::-webkit-details-marker {
+  .catalogPanel[hidden] {
     display: none;
   }
 
-  .catalogGroup summary:hover {
-    background: color-mix(in oklab, var(--color-accent) 6%, transparent);
+  .catalogPanelHeader {
+    display: grid;
+    grid-template-columns:
+      38px minmax(220px, 0.34fr) minmax(260px, 0.66fr)
+      minmax(48px, auto);
+    gap: 24px;
+    align-items: center;
+    padding: 30px 0;
+    border-bottom: 1px solid var(--border-subtle);
   }
 
-  .catalogGroup summary:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 6px;
-  }
-
-  .catalogGroupIndex,
-  .catalogGroupCount {
+  .catalogPanelIndex,
+  .catalogPanelCount {
     color: var(--color-text);
   }
 
-  .catalogGroupHeading {
+  .catalogPanelHeading {
     display: grid;
     gap: 6px;
   }
 
-  .catalogGroupHeading small {
+  .catalogPanelHeading small,
+  .catalogPanelCount small {
     font-family: var(--font-mono);
     font-size: var(--text-2xs);
     color: var(--color-text-soft);
   }
 
-  .catalogGroupHeading b {
+  .catalogPanelHeading h3 {
     font-size: clamp(1.25rem, 2vw, 1.65rem);
     line-height: 1.12;
     letter-spacing: -0.025em;
   }
 
-  .catalogGroupDescription {
+  .catalogPanelDescription {
     margin: 0;
     font-size: var(--text-sm);
     color: var(--color-text-soft);
   }
 
-  .catalogGroupCount {
+  .catalogPanelCount {
+    display: grid;
+    gap: 2px;
     text-align: right;
   }
 
-  .catalogGroupToggle {
-    position: relative;
-    display: block;
-    width: 20px;
-    height: 20px;
-    color: var(--color-text-strong);
-  }
-
-  .catalogGroupToggle::before,
-  .catalogGroupToggle::after {
-    position: absolute;
-    top: 9px;
-    left: 3px;
-    width: 14px;
-    height: 2px;
-    content: "";
-    background: currentcolor;
-    transition: transform var(--dur-base) var(--ease-out);
-  }
-
-  .catalogGroupToggle::after {
-    transform: rotate(90deg);
-  }
-
-  .catalogGroup[open] .catalogGroupToggle::after {
-    transform: rotate(90deg) scaleX(0);
-  }
-
-  .catalogGroup[open] summary {
-    border-bottom: 1px solid var(--border-subtle);
+  [data-work-tabs-ready="true"] .catalogPanel:not([hidden]) {
+    animation: catalog-panel-enter var(--dur-slow) var(--ease-out) both;
   }
 
   .catalogItems {
     padding-bottom: 28px;
+  }
+
+  @keyframes catalog-panel-enter {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
   }
 
   .catalogItem {
@@ -1734,7 +1721,7 @@ const FEATURED_PROJECTS = [
     border-radius: var(--radius-md);
   }
 
-  .catalogItemLead h3,
+  .catalogItemLead h4,
   .catalogItemLead .catalogItemLinks a {
     color: var(--color-bg-deep);
   }
@@ -1777,12 +1764,12 @@ const FEATURED_PROJECTS = [
     color: var(--color-accent);
   }
 
-  .catalogItem h3 {
+  .catalogItem h4 {
     font-size: var(--text-xl);
     letter-spacing: -0.02em;
   }
 
-  .catalogItemLead h3 {
+  .catalogItemLead h4 {
     font-size: clamp(1.7rem, 3vw, 2.4rem);
   }
 
@@ -1867,10 +1854,10 @@ const FEATURED_PROJECTS = [
       min-height: 430px;
     }
 
-    .catalogGroup summary {
+    .catalogPanelHeader {
       grid-template-columns:
-        36px minmax(210px, 0.42fr) minmax(0, 0.58fr) 32px
-        20px;
+        36px minmax(210px, 0.42fr) minmax(0, 0.58fr)
+        minmax(48px, auto);
     }
 
     .catalogItem {
@@ -1932,7 +1919,7 @@ const FEATURED_PROJECTS = [
     .pylopdfStage,
     .docsContent,
     .catalogStage,
-    .identityStage,
+    .proofStage,
     .partnersStage {
       padding: 28px 22px;
     }
@@ -2000,27 +1987,27 @@ const FEATURED_PROJECTS = [
       display: none;
     }
 
-    .identityPrivacy {
+    .proofStatus {
       display: none;
     }
 
-    .identityStage {
+    .proofStage {
       min-height: 380px;
     }
 
-    .identityHeadline {
+    .proofHeadline {
       font-size: clamp(2rem, 10vw, 3rem);
     }
 
-    .probeTrace {
+    .proofTrace {
       display: none;
     }
 
-    .probeRow {
-      grid-template-columns: minmax(70px, 1fr) auto;
+    .proofRow {
+      grid-template-columns: minmax(120px, 1fr) auto;
     }
 
-    .identityFoot {
+    .proofFoot {
       line-height: 1.5;
     }
 
@@ -2051,30 +2038,26 @@ const FEATURED_PROJECTS = [
       font-size: var(--text-md);
     }
 
-    .catalogNavigation {
+    .catalogTabs {
       margin-right: calc(var(--page-padding) * -1);
     }
 
-    .catalogNavigation ol {
+    .catalogTabs ol {
       min-width: 780px;
     }
 
-    .catalogGroup summary {
-      grid-template-columns: 28px minmax(0, 1fr) 28px 20px;
+    .catalogPanelHeader {
+      grid-template-columns: 28px minmax(0, 1fr) auto;
       gap: 14px;
       padding: 24px 0;
     }
 
-    .catalogGroupDescription {
+    .catalogPanelDescription {
       grid-column: 2 / -1;
       font-size: var(--text-xs);
     }
 
-    .catalogGroupCount {
-      align-self: start;
-    }
-
-    .catalogGroupToggle {
+    .catalogPanelCount {
       align-self: start;
     }
 
@@ -2111,11 +2094,12 @@ const FEATURED_PROJECTS = [
   @media (prefers-reduced-motion: reduce) {
     .indexArrow,
     .productCanvas,
-    .catalogNavigation a,
-    .catalogGroup summary,
-    .catalogGroupToggle::before,
-    .catalogGroupToggle::after {
+    .catalogTabs a {
       transition: none;
+    }
+
+    [data-work-tabs-ready="true"] .catalogPanel:not([hidden]) {
+      animation: none;
     }
 
     .productCanvas:hover,
@@ -2124,3 +2108,7 @@ const FEATURED_PROJECTS = [
     }
   }
 </style>
+
+<script>
+  import "../scripts/work-catalog-tabs";
+</script>

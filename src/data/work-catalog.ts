@@ -18,7 +18,6 @@ export type WorkCatalogGroup = Readonly<{
   label: string;
   title: string;
   description: string;
-  open?: boolean;
   items: readonly WorkCatalogItem[];
 }>;
 
@@ -29,8 +28,26 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
     title: "Products and public platforms",
     description:
       "AI adoption, browser-native software, publishing, education, and the infrastructure that makes those products dependable.",
-    open: true,
     items: [
+      {
+        id: "prooflock-index",
+        field: "PR verification integrity",
+        name: "ProofLock",
+        description:
+          "A live GitHub App that prevents pull requests from silently weakening the checks, workflows, and policy used to prove they are safe.",
+        signal: "Haya Inc. · Featured above",
+        lead: true,
+        links: [
+          {
+            label: "Open product",
+            href: "https://prooflock.yusuke-hayashi.com/",
+          },
+          {
+            label: "Live status",
+            href: "https://prooflock.yusuke-hayashi.com/status/v1.json",
+          },
+        ],
+      },
       {
         id: "ai-partners",
         field: "AI adoption directory",
@@ -38,7 +55,6 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
         description:
           "A public directory for finding and comparing AI adoption partners by service, technology, industry, company size, and region.",
         signal: "Haya Inc. · Featured above",
-        lead: true,
         links: [
           {
             label: "Open directory",
@@ -366,12 +382,85 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       "Useful public infrastructure in different forms: developer tooling, translation coordination, interactive computation, and this site itself.",
     items: [
       {
+        id: "firsthand",
+        field: "Source-backed job search",
+        name: "Firsthand",
+        description:
+          "A live Japanese job-search service built from employers’ official career pages, with source links, freshness, change history, and evidence attached.",
+        signal: "Cloudflare · Live service",
+        links: [
+          {
+            label: "Search jobs",
+            href: "https://firsthand.work/",
+          },
+        ],
+      },
+      {
+        id: "public-data-catalog-index",
+        field: "Verifiable public data",
+        name: "Public Data Catalog",
+        description:
+          "Japanese-first, tested retrieval recipes that take people and AI agents from a concrete question to a reproducible, attributable public-data result.",
+        signal: "MCP · Featured above",
+        links: [
+          {
+            label: "Open catalog",
+            href: "https://public-data-catalog-mcp.yusuke8h.workers.dev/",
+          },
+          {
+            label: "Source",
+            href: "https://github.com/yhay81/public-data-catalog",
+          },
+        ],
+      },
+      {
+        id: "socialname",
+        field: "Identity observability",
+        name: "SocialName",
+        description:
+          "A local-first system that turns public-identifier presence and change into evidence-backed observations without treating a matching username as an identity claim.",
+        signal: "Rust · Tauri · Active development",
+        links: [
+          {
+            label: "Source",
+            href: "https://github.com/yhay81/socialname",
+          },
+        ],
+      },
+      {
+        id: "pylopdf-index",
+        field: "Python + Rust",
+        name: "pylopdf",
+        description:
+          "A compact Python API for editing, rendering, extracting, and generating PDFs, backed by a Rust core and shipped as small wheels.",
+        signal: "PyPI · Featured above",
+        links: [
+          {
+            label: "Documentation",
+            href: "https://yhay81.github.io/pylopdf/",
+          },
+          {
+            label: "Source",
+            href: "https://github.com/yhay81/pylopdf",
+          },
+        ],
+      },
+      {
+        id: "foliomcp",
+        field: "Semantic document platform",
+        name: "FolioMCP",
+        description:
+          "A full-stack workspace for uploading, organizing, and semantically searching documents, then exposing the resulting knowledge through managed MCP servers.",
+        signal: "Private product · Next.js · MCP",
+        links: [],
+      },
+      {
         id: "gh-freshclone",
         field: "Developer infrastructure",
         name: "gh-freshclone",
         description:
           "Compiles and proves the fastest trustworthy baseline for an unfamiliar repository in an isolated container, then records reusable evidence.",
-        signal: "Python · Containers · Alpha",
+        signal: "Python · Containers · Evidence receipts",
         links: [
           {
             label: "Source",
