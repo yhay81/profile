@@ -85,7 +85,6 @@ export interface NavLink {
 
 // Keys, Proofs, SIWE, and release verification are reachable from /identity.
 export const NAV_LINKS: readonly NavLink[] = [
-  { href: "/#about", label: "About" },
   { href: "/work", label: "Work" },
   { href: "/writing", label: "Writing" },
   { href: "/identity", label: "Identity" },
