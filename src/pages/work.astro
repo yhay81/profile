@@ -472,89 +472,65 @@ const FEATURED_PROJECTS = [
           <h2 id="work-catalog-title">The work keeps growing.</h2>
         </div>
         <p class="catalogIntroduction">
-          Featured projects stay spacious above. The complete public record
-          below is organized into five parallel collections. Switch between them
-          to scan the work by purpose without turning the page into an endless
-          wall.
+          Five visible collections hold the complete public record. Scan their
+          shape, then open any row to inspect the work.
         </p>
       </header>
 
-      <div data-work-catalog-tabs>
-        <nav aria-label="Work collections" class="catalogTabs">
-          <ol data-catalog-tab-list>
-            {
-              WORK_CATALOG.map((group, groupIndex) => (
-                <li>
-                  <a
-                    data-catalog-tab
-                    href={`#catalog-${group.id}`}
-                    id={`work-tab-${group.id}`}
+      <div class="catalogGroups" data-work-catalog>
+        {
+          WORK_CATALOG.map((group, groupIndex) => (
+            <details
+              class="catalogGroup"
+              id={`catalog-${group.id}`}
+              name="work-catalog"
+            >
+              <summary>
+                <span class="catalogGroupIndex">
+                  {String(groupIndex + 1).padStart(2, "0")}
+                </span>
+                <span class="catalogGroupHeading">
+                  <small>{group.label}</small>
+                  <b>{group.title}</b>
+                </span>
+                <span class="catalogGroupDescription">{group.description}</span>
+                <span class="catalogGroupAction">
+                  <small class="catalogGroupClosed">
+                    View {String(group.items.length).padStart(2, "0")} works
+                  </small>
+                  <small class="catalogGroupOpened">Close collection</small>
+                </span>
+                <i aria-hidden="true" class="catalogGroupToggle" />
+              </summary>
+
+              <div class="catalogItems">
+                {group.items.map((item, itemIndex) => (
+                  <article
+                    class:list={["catalogItem", { catalogItemLead: item.lead }]}
+                    id={item.id}
                   >
-                    <span>{String(groupIndex + 1).padStart(2, "0")}</span>
-                    <b>{group.label}</b>
-                    <small>{group.items.length} works</small>
-                  </a>
-                </li>
-              ))
-            }
-          </ol>
-        </nav>
-
-        <div class="catalogPanels">
-          {
-            WORK_CATALOG.map((group, groupIndex) => (
-              <section
-                class="catalogPanel"
-                data-catalog-panel
-                id={`catalog-${group.id}`}
-              >
-                <header class="catalogPanelHeader">
-                  <span class="catalogPanelIndex">
-                    {String(groupIndex + 1).padStart(2, "0")}
-                  </span>
-                  <span class="catalogPanelHeading">
-                    <small>{group.label}</small>
-                    <h3>{group.title}</h3>
-                  </span>
-                  <p class="catalogPanelDescription">{group.description}</p>
-                  <span class="catalogPanelCount">
-                    <b>{String(group.items.length).padStart(2, "0")}</b>
-                    <small>works</small>
-                  </span>
-                </header>
-
-                <div class="catalogItems">
-                  {group.items.map((item, itemIndex) => (
-                    <article
-                      class:list={[
-                        "catalogItem",
-                        { catalogItemLead: item.lead },
-                      ]}
-                      id={item.id}
-                    >
-                      <div class="catalogItemHeading">
-                        <p class="catalogItemMeta">
-                          {String(groupIndex + 1).padStart(2, "0")}.
-                          {String(itemIndex + 1).padStart(2, "0")}
-                          <span>·</span>
-                          {item.field}
-                        </p>
-                        <h4>{item.name}</h4>
-                      </div>
-                      <p class="catalogItemDescription">{item.description}</p>
-                      <p class="catalogItemSignal">{item.signal}</p>
-                      <div class="catalogItemLinks">
-                        {item.links.map((link) => (
-                          <a href={link.href}>{link.label} ↗</a>
-                        ))}
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              </section>
-            ))
-          }
-        </div>
+                    <div class="catalogItemHeading">
+                      <p class="catalogItemMeta">
+                        {String(groupIndex + 1).padStart(2, "0")}.
+                        {String(itemIndex + 1).padStart(2, "0")}
+                        <span>·</span>
+                        {item.field}
+                      </p>
+                      <h3>{item.name}</h3>
+                    </div>
+                    <p class="catalogItemDescription">{item.description}</p>
+                    <p class="catalogItemSignal">{item.signal}</p>
+                    <div class="catalogItemLinks">
+                      {item.links.map((link) => (
+                        <a href={link.href}>{link.label} ↗</a>
+                      ))}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </details>
+          ))
+        }
       </div>
     </section>
 
@@ -1513,7 +1489,7 @@ const FEATURED_PROJECTS = [
     grid-template-columns: minmax(250px, 0.42fr) minmax(0, 0.58fr);
     gap: clamp(44px, 7vw, 88px);
     align-items: start;
-    margin-bottom: clamp(48px, 7vw, 72px);
+    margin-bottom: clamp(32px, 5vw, 48px);
   }
 
   .catalogHeader h2,
@@ -1534,156 +1510,134 @@ const FEATURED_PROJECTS = [
     color: var(--color-text-soft);
   }
 
-  .catalogTabs {
-    position: relative;
-    margin-bottom: clamp(32px, 5vw, 52px);
-    overflow-x: auto;
-    overscroll-behavior-inline: contain;
-  }
-
-  .catalogTabs ol {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(170px, 1fr));
-    min-width: 850px;
-    padding: 0;
-    margin: 0;
-    list-style: none;
-    border-top: 1px solid var(--border-strong);
-    border-bottom: 1px solid var(--border-strong);
-  }
-
-  .catalogTabs li + li {
-    border-left: 1px solid var(--border-subtle);
-  }
-
-  .catalogTabs a {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 8px 12px;
-    min-height: 118px;
-    padding: 20px;
-    color: var(--color-text-strong);
-    transition:
-      color var(--dur-base) var(--ease-out),
-      background-color var(--dur-base) var(--ease-out),
-      box-shadow var(--dur-base) var(--ease-out);
-  }
-
-  .catalogTabs a:hover {
-    background: color-mix(in oklab, var(--color-accent) 6%, transparent);
-  }
-
-  .catalogTabs a:focus-visible {
-    position: relative;
-    z-index: 1;
-    outline: 2px solid var(--color-accent);
-    outline-offset: -4px;
-  }
-
-  .catalogTabs a[aria-selected="true"] {
-    color: var(--color-text-strong);
-    background: color-mix(in oklab, var(--color-accent) 9%, transparent);
-    box-shadow: inset 0 -3px var(--color-accent);
-  }
-
-  .catalogTabs span,
-  .catalogTabs small,
-  .catalogPanelIndex,
-  .catalogPanelCount,
+  .catalogGroupIndex,
+  .catalogGroupAction,
   .catalogItemMeta,
   .catalogItemSignal {
     font-family: var(--font-mono);
     font-size: var(--text-2xs);
   }
 
-  .catalogTabs span {
-    color: var(--color-text);
-  }
-
-  .catalogTabs a[aria-selected="true"] span {
-    color: var(--color-accent);
-  }
-
-  .catalogTabs b {
-    align-self: start;
-    font-size: var(--text-sm);
-  }
-
-  .catalogTabs small {
-    grid-column: 2;
-    align-self: end;
-    color: var(--color-text-soft);
-  }
-
-  .catalogPanels {
-    min-height: 420px;
-  }
-
-  .catalogPanel {
+  .catalogGroups {
     border-top: 1px solid var(--border-strong);
+  }
+
+  .catalogGroup {
     border-bottom: 1px solid var(--border-strong);
     scroll-margin-top: calc(var(--nav-height) + 24px);
   }
 
-  .catalogPanel[hidden] {
+  .catalogGroup summary {
+    display: grid;
+    grid-template-columns: 38px minmax(300px, 1fr) minmax(128px, auto) 18px;
+    gap: 24px;
+    align-items: center;
+    padding: 17px 0;
+    cursor: pointer;
+    list-style: none;
+    transition:
+      color var(--dur-base) var(--ease-out),
+      background-color var(--dur-base) var(--ease-out);
+  }
+
+  .catalogGroup summary::-webkit-details-marker {
     display: none;
   }
 
-  .catalogPanelHeader {
-    display: grid;
-    grid-template-columns:
-      38px minmax(220px, 0.34fr) minmax(260px, 0.66fr)
-      minmax(48px, auto);
-    gap: 24px;
-    align-items: center;
-    padding: 30px 0;
+  .catalogGroup summary:hover {
+    background: color-mix(in oklab, var(--color-accent) 5%, transparent);
+  }
+
+  .catalogGroup summary:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 6px;
+  }
+
+  .catalogGroup[open] summary {
     border-bottom: 1px solid var(--border-subtle);
   }
 
-  .catalogPanelIndex,
-  .catalogPanelCount {
+  .catalogGroupIndex {
+    grid-column: 1;
     color: var(--color-text);
   }
 
-  .catalogPanelHeading {
+  .catalogGroupHeading {
     display: grid;
+    grid-column: 2;
     gap: 6px;
   }
 
-  .catalogPanelHeading small,
-  .catalogPanelCount small {
+  .catalogGroupHeading small {
     font-family: var(--font-mono);
     font-size: var(--text-2xs);
     color: var(--color-text-soft);
   }
 
-  .catalogPanelHeading h3 {
+  .catalogGroupHeading b {
     font-size: clamp(1.25rem, 2vw, 1.65rem);
     line-height: 1.12;
     letter-spacing: -0.025em;
   }
 
-  .catalogPanelDescription {
+  .catalogGroupDescription {
+    display: none;
     margin: 0;
     font-size: var(--text-sm);
     color: var(--color-text-soft);
   }
 
-  .catalogPanelCount {
-    display: grid;
-    gap: 2px;
-    text-align: right;
+  .catalogGroup[open] .catalogGroupDescription {
+    display: block;
+    grid-row: 2;
+    grid-column: 2 / 4;
+    max-width: 680px;
+    padding-bottom: 6px;
   }
 
-  [data-work-tabs-ready="true"] .catalogPanel:not([hidden]) {
-    animation: catalog-panel-enter var(--dur-slow) var(--ease-out) both;
+  .catalogGroupAction {
+    grid-column: 3;
+    min-width: 128px;
+    color: var(--color-text);
+    text-align: right;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .catalogGroupOpened {
+    display: none;
+  }
+
+  .catalogGroup[open] .catalogGroupClosed {
+    display: none;
+  }
+
+  .catalogGroup[open] .catalogGroupOpened {
+    display: inline;
+    color: var(--color-accent);
+  }
+
+  .catalogGroupToggle {
+    grid-column: 4;
+    width: 10px;
+    height: 10px;
+    border-right: 1.5px solid currentcolor;
+    border-bottom: 1.5px solid currentcolor;
+    transform: rotate(45deg) translate(-2px, -2px);
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+
+  .catalogGroup[open] .catalogGroupToggle {
+    color: var(--color-accent);
+    transform: rotate(225deg) translate(-2px, -2px);
   }
 
   .catalogItems {
     padding-bottom: 28px;
+    animation: catalog-group-enter var(--dur-slow) var(--ease-out) both;
   }
 
-  @keyframes catalog-panel-enter {
+  @keyframes catalog-group-enter {
     from {
       opacity: 0;
       transform: translateY(8px);
@@ -1721,7 +1675,7 @@ const FEATURED_PROJECTS = [
     border-radius: var(--radius-md);
   }
 
-  .catalogItemLead h4,
+  .catalogItemLead h3,
   .catalogItemLead .catalogItemLinks a {
     color: var(--color-bg-deep);
   }
@@ -1764,12 +1718,12 @@ const FEATURED_PROJECTS = [
     color: var(--color-accent);
   }
 
-  .catalogItem h4 {
+  .catalogItem h3 {
     font-size: var(--text-xl);
     letter-spacing: -0.02em;
   }
 
-  .catalogItemLead h4 {
+  .catalogItemLead h3 {
     font-size: clamp(1.7rem, 3vw, 2.4rem);
   }
 
@@ -1854,10 +1808,8 @@ const FEATURED_PROJECTS = [
       min-height: 430px;
     }
 
-    .catalogPanelHeader {
-      grid-template-columns:
-        36px minmax(210px, 0.42fr) minmax(0, 0.58fr)
-        minmax(48px, auto);
+    .catalogGroup summary {
+      grid-template-columns: 36px minmax(260px, 1fr) minmax(128px, auto) 18px;
     }
 
     .catalogItem {
@@ -2038,26 +1990,27 @@ const FEATURED_PROJECTS = [
       font-size: var(--text-md);
     }
 
-    .catalogTabs {
-      margin-right: calc(var(--page-padding) * -1);
-    }
-
-    .catalogTabs ol {
-      min-width: 780px;
-    }
-
-    .catalogPanelHeader {
-      grid-template-columns: 28px minmax(0, 1fr) auto;
+    .catalogGroup summary {
+      grid-template-columns: 28px minmax(0, 1fr) 18px;
       gap: 14px;
       padding: 24px 0;
     }
 
-    .catalogPanelDescription {
+    .catalogGroupDescription {
+      grid-row: 3;
       grid-column: 2 / -1;
       font-size: var(--text-xs);
     }
 
-    .catalogPanelCount {
+    .catalogGroupAction {
+      grid-row: 2;
+      grid-column: 2 / -1;
+      justify-self: start;
+      min-width: 0;
+      text-align: left;
+    }
+
+    .catalogGroupToggle {
       align-self: start;
     }
 
@@ -2094,11 +2047,12 @@ const FEATURED_PROJECTS = [
   @media (prefers-reduced-motion: reduce) {
     .indexArrow,
     .productCanvas,
-    .catalogTabs a {
+    .catalogGroup summary,
+    .catalogGroupToggle {
       transition: none;
     }
 
-    [data-work-tabs-ready="true"] .catalogPanel:not([hidden]) {
+    .catalogItems {
       animation: none;
     }
 
@@ -2110,5 +2064,5 @@ const FEATURED_PROJECTS = [
 </style>
 
 <script>
-  import "../scripts/work-catalog-tabs";
+  import "../scripts/work-catalog-accordion";
 </script>
