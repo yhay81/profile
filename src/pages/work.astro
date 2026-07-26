@@ -26,6 +26,261 @@ const FEATURED_PROJECTS = [
     name: "Public Data Catalog",
     field: "Verifiable data",
   },
+  {
+    id: "socialname",
+    index: "05",
+    name: "SocialName",
+    field: "Identity observability",
+  },
+  {
+    id: "yomiage-kun",
+    index: "06",
+    name: "Yomiage-kun",
+    field: "Local-first desktop",
+  },
+] as const;
+
+const SUPPORTING_PROJECTS = [
+  {
+    index: "07",
+    field: "Developer infrastructure",
+    name: "gh-freshclone",
+    description:
+      "Compiles and proves the fastest trustworthy baseline for an unfamiliar repository in an isolated container, then records reusable evidence.",
+    signal: "Python · Containers · Alpha",
+    links: [
+      {
+        label: "Source",
+        href: "https://github.com/yhay81/gh-freshclone",
+      },
+    ],
+  },
+  {
+    index: "08",
+    field: "Translation infrastructure",
+    name: "ja-translation-todo",
+    description:
+      "A public registry for safely discovering, verifying, and coordinating Japanese OSS translation work across people and AI agents.",
+    signal: "Web · REST · OpenAPI · MCP",
+    links: [
+      {
+        label: "Open service",
+        href: "https://ja.yusuke-hayashi.com",
+      },
+      {
+        label: "Source",
+        href: "https://github.com/yhay81/ja-translation-todo",
+      },
+    ],
+  },
+  {
+    index: "09",
+    field: "Google Apps Script",
+    name: "GASlacker",
+    description:
+      "A zero-dependency Slack Web API client for Google Apps Script with broad API coverage, retries, uploads, and OAuth.",
+    signal: "TypeScript · 168 API methods",
+    links: [
+      {
+        label: "Documentation",
+        href: "https://yhay81.github.io/GASlacker/",
+      },
+      {
+        label: "Source",
+        href: "https://github.com/yhay81/GASlacker",
+      },
+    ],
+  },
+  {
+    index: "10",
+    field: "Email infrastructure",
+    name: "HayaSend",
+    description:
+      "Resend-compatible, AWS-native email infrastructure that keeps delivery, metadata, and operational control in the user's own account.",
+    signal: "Haya Inc. · TypeScript · Early alpha",
+    links: [
+      {
+        label: "Source",
+        href: "https://github.com/haya-inc/hayasend",
+      },
+    ],
+  },
+  {
+    index: "11",
+    field: "Browser agent runtime",
+    name: "Clawsembly",
+    description:
+      "An evidence-gated embedding boundary for running upstream OpenClaw browser-locally with explicit capabilities and compatibility proofs.",
+    signal: "Haya Inc. · WebAssembly · Security",
+    links: [
+      {
+        label: "Documentation",
+        href: "https://haya-inc.github.io/clawsembly/",
+      },
+      {
+        label: "Source",
+        href: "https://github.com/haya-inc/clawsembly",
+      },
+    ],
+  },
+  {
+    index: "12",
+    field: "Interactive experiment",
+    name: "Code Sortings",
+    description:
+      "Sorting algorithms run in Python through Pyodide and a Web Worker, then become an interactive visual execution trace.",
+    signal: "Python · Pyodide · TypeScript",
+    links: [
+      {
+        label: "Open experiment",
+        href: "https://sort.yusuke-hayashi.com",
+      },
+      {
+        label: "Source",
+        href: "https://github.com/yhay81/code-sortings",
+      },
+    ],
+  },
+] as const;
+
+const ECOSYSTEMS = [
+  {
+    index: "13",
+    name: "Hayate ecosystem",
+    description:
+      "A web-standards-first Python application model extended into authentication, MCP, OpenAPI, client-side Fetch, and project scaffolding.",
+    items: [
+      {
+        name: "hayate-auth",
+        detail: "OAuth 2.1 · Passkeys · API keys",
+        href: "https://github.com/hayatepy/hayate-auth",
+      },
+      {
+        name: "hayate-mcp",
+        detail: "Streamable HTTP · OAuth resource server",
+        href: "https://github.com/hayatepy/hayate-mcp",
+      },
+      {
+        name: "hayate-openapi",
+        detail: "OpenAPI 3.1 · TypeScript types",
+        href: "https://github.com/hayatepy/hayate-openapi",
+      },
+      {
+        name: "hayate-fetch",
+        detail: "Shared WHATWG Fetch client",
+        href: "https://github.com/hayatepy/hayate-fetch",
+      },
+      {
+        name: "create-hayate",
+        detail: "ASGI · Workers · MCP scaffolding",
+        href: "https://github.com/hayatepy/create-hayate",
+      },
+    ],
+  },
+  {
+    index: "14",
+    name: "Knowledge systems",
+    description:
+      "Repository-native kits that help humans and agents turn raw material into maintained, navigable, and reusable organizational knowledge.",
+    items: [
+      {
+        name: "Wiki Kit",
+        detail: "LLM-maintained knowledge base",
+        href: "https://github.com/haya-inc/wiki-kit-template",
+      },
+      {
+        name: "create-wiki-kit",
+        detail: "One-command project creation",
+        href: "https://github.com/haya-inc/create-wiki-kit",
+      },
+      {
+        name: "Knowledge Kit",
+        detail: "Structured knowledge workflow",
+        href: "https://github.com/haya-inc/knowledge-kit-template",
+      },
+      {
+        name: "Discovery Kit",
+        detail: "Evidence-led discovery workspace",
+        href: "https://github.com/haya-inc/discovery-kit-template",
+      },
+    ],
+  },
+  {
+    index: "15",
+    name: "Browser agent stack",
+    description:
+      "A connected set of browser-native systems for useful AI work, controlled embedding, and a replaceable execution kernel.",
+    items: [
+      {
+        name: "WasmHatch",
+        detail: "User-facing browser AI",
+        href: "https://github.com/haya-inc/wasmhatch",
+      },
+      {
+        name: "Clawsembly",
+        detail: "Capability-safe host boundary",
+        href: "https://github.com/haya-inc/clawsembly",
+      },
+      {
+        name: "Clawsembly Kernel",
+        detail: "Clean-room browser execution kernel",
+        href: "https://github.com/haya-inc/clawsembly-kernel",
+      },
+    ],
+  },
+  {
+    index: "16",
+    name: "Engineering practice",
+    description:
+      "The delivery layer around the products: practical engineering education and a profile site whose releases are reproducible and verifiable.",
+    items: [
+      {
+        name: "Engineering Bootcamp",
+        detail: "Purpose-to-verification curriculum",
+        href: "https://bootcamp.haya-inc.co.jp",
+      },
+      {
+        name: "This site",
+        detail: "Astro · View Transitions · Sigstore · SLSA",
+        href: "https://github.com/yhay81/profile",
+      },
+    ],
+  },
+] as const;
+
+const EARLIER_WORK = [
+  {
+    index: "17",
+    period: "2023",
+    name: "GitHub Issues × Rust WebAssembly",
+    description:
+      "A browser experiment that compiles Rust to WebAssembly and displays GitHub issues.",
+    href: "https://github.com/yhay81/github-issues-with-rust-webassembly",
+  },
+  {
+    index: "18",
+    period: "2018–2025",
+    name: "Pythonic Peano Arithmetic",
+    description:
+      "An executable exploration of building algebra from the Peano axioms.",
+    href: "https://github.com/yhay81/pythonic-peano-arithmetic",
+  },
+  {
+    index: "19",
+    period: "2018",
+    name: "Front-end Interview Handbook · Japanese",
+    description:
+      "A sustained series of merged contributions that completed and maintained the Japanese translation.",
+    href: "https://github.com/yangshun/front-end-interview-handbook/pulls?q=is%3Apr+author%3Ayhay81+is%3Amerged",
+  },
+  {
+    index: "20",
+    period: "2018",
+    name: "sesforwader",
+    description:
+      "A small Python package for forwarding email received through Amazon SES.",
+    href: "https://github.com/yhay81/sesforwader",
+  },
 ] as const;
 ---
 
@@ -299,49 +554,244 @@ const FEATURED_PROJECTS = [
           </span>
         </a>
       </article>
+
+      <article class="project reveal" id="socialname">
+        <div class="projectCopy">
+          <p class="projectLabel"><span>05</span> Identity observability</p>
+          <h2>SocialName</h2>
+          <p class="projectRole">Creator and maintainer · Active development</p>
+          <p class="projectSummary">
+            A local-first platform that turns public-identifier presence and
+            change into evidence-backed observations.
+          </p>
+          <p class="projectDetail">
+            One Rust engine powers CLI, desktop, API, and managed monitoring
+            while signed rules, deterministic classification, and explicit
+            consent prevent a matching username from becoming a false identity
+            claim.
+          </p>
+          <ul aria-label="SocialName technologies" class="tags">
+            <li>Rust</li>
+            <li>Tauri</li>
+            <li>Evidence</li>
+          </ul>
+          <div class="projectLinks">
+            <a href="https://github.com/yhay81/socialname">Source ↗</a>
+          </div>
+        </div>
+
+        <a
+          aria-label="Open the SocialName source repository"
+          class="productCanvas socialNameCanvas"
+          href="https://github.com/yhay81/socialname"
+        >
+          <span class="identityBar">
+            <span class="identityMark">S</span>
+            <span>SocialName</span>
+            <span class="identityPrivacy">Local research</span>
+          </span>
+          <span class="identityStage">
+            <span class="identityKicker">PUBLIC IDENTIFIER OBSERVABILITY</span>
+            <span class="identityHeadline">
+              A match is a signal.<br />
+              <strong>Evidence makes it useful.</strong>
+            </span>
+            <span class="probePanel">
+              <span class="probeRow">
+                <span class="probeSite">github</span>
+                <span class="probeTrace">200 · profile markers</span>
+                <b class="probeFound">found</b>
+              </span>
+              <span class="probeRow">
+                <span class="probeSite">npm</span>
+                <span class="probeTrace">404 · absence marker</span>
+                <b class="probeAbsent">not found</b>
+              </span>
+              <span class="probeRow">
+                <span class="probeSite">nostr</span>
+                <span class="probeTrace">redirect conflict</span>
+                <b class="probeReview">review</b>
+              </span>
+            </span>
+            <span class="identityFoot">
+              deterministic result · evidence digest · user-owned cache
+            </span>
+          </span>
+        </a>
+      </article>
+
+      <article class="project reveal" id="yomiage-kun">
+        <div class="projectCopy">
+          <p class="projectLabel"><span>06</span> Local-first desktop</p>
+          <h2>Yomiage-kun</h2>
+          <p class="projectRole">Creator and maintainer · Windows + macOS</p>
+          <p class="projectSummary">
+            A desktop app that reads Discord text channels into voice using
+            local Japanese speech engines.
+          </p>
+          <p class="projectDetail">
+            Users bring their own Discord bot, credentials stay in the operating
+            system keychain, and generated audio moves from AivisSpeech or
+            VOICEVOX to Discord without a hosted intermediary.
+          </p>
+          <ul aria-label="Yomiage-kun technologies" class="tags">
+            <li>Rust</li>
+            <li>Tauri 2</li>
+            <li>Discord Voice</li>
+          </ul>
+          <div class="projectLinks">
+            <a href="https://github.com/yhay81/yomiage-kun/releases">
+              Download ↗
+            </a>
+            <a href="https://github.com/yhay81/yomiage-kun">Source ↗</a>
+          </div>
+        </div>
+
+        <a
+          aria-label="Download Yomiage-kun"
+          class="productCanvas yomiageCanvas"
+          href="https://github.com/yhay81/yomiage-kun/releases"
+        >
+          <span class="yomiageBar">
+            <span aria-hidden="true" class="windowControls">
+              <i class="windowDot"></i><i class="windowDot"></i><i
+                class="windowDot"></i>
+            </span>
+            <span>Yomiage-kun</span>
+            <span class="yomiageLocal">● Local voice</span>
+          </span>
+          <span class="yomiageStage">
+            <span class="voiceIntro">
+              <span class="voiceKicker">DISCORD × LOCAL TTS</span>
+              <span class="voiceTitle">Chat becomes<br />a shared voice.</span>
+              <span class="voiceEngine">AivisSpeech / VOICEVOX</span>
+            </span>
+            <span class="voicePlayer">
+              <span class="voiceChannel">
+                <span class="voiceAvatar">Y</span>
+                <span>
+                  <small>CONNECTED TO</small>
+                  <b>General / Voice</b>
+                </span>
+                <i class="voiceLive">LIVE</i>
+              </span>
+              <span aria-hidden="true" class="waveform">
+                <i class="waveBar"></i><i class="waveBar"></i><i class="waveBar"
+                ></i><i class="waveBar"></i><i class="waveBar"></i><i
+                  class="waveBar"></i><i class="waveBar"></i><i class="waveBar"
+                ></i><i class="waveBar"></i><i class="waveBar"></i><i
+                  class="waveBar"></i><i class="waveBar"></i>
+              </span>
+              <span class="voiceMessage">
+                <small>READING NOW</small>
+                リリースの準備ができました。
+              </span>
+            </span>
+          </span>
+        </a>
+      </article>
     </div>
 
     <section aria-labelledby="more-work-title" class="moreWork reveal">
       <header class="moreHeader">
-        <p class="eyebrow"><span>05–06</span> More work</p>
-        <h2 id="more-work-title">Useful, maintained, and exploratory.</h2>
+        <p class="eyebrow"><span>07–12</span> More public systems</p>
+        <h2 id="more-work-title">
+          Useful infrastructure, shipped in different forms.
+        </h2>
       </header>
 
       <div class="moreList">
-        <article class="moreProject">
-          <div>
-            <p class="moreMeta">05 · Google Apps Script</p>
-            <h3>GASlacker</h3>
-          </div>
-          <p>
-            A zero-runtime-dependency Slack Web API client for Google Apps
-            Script, with broad API coverage, retries, uploads, and OAuth.
-          </p>
-          <div class="moreLinks">
-            <a href="https://yhay81.github.io/GASlacker/">Website ↗</a>
-            <a href="https://github.com/yhay81/GASlacker">Source ↗</a>
-          </div>
-        </article>
-
-        <article class="moreProject">
-          <div>
-            <p class="moreMeta">06 · Interactive experiment</p>
-            <h3>Code Sortings</h3>
-          </div>
-          <p>
-            Sorting algorithms executed in Python through Pyodide and a Web
-            Worker, then translated into an interactive visual trace.
-          </p>
-          <div class="moreLinks">
-            <a href="https://sort.yusuke-hayashi.com">Open experiment ↗</a>
-            <a href="https://github.com/yhay81/code-sortings">Source ↗</a>
-          </div>
-        </article>
+        {
+          SUPPORTING_PROJECTS.map((project) => (
+            <article class="moreProject">
+              <div>
+                <p class="moreMeta">
+                  {project.index} · {project.field}
+                </p>
+                <h3>{project.name}</h3>
+              </div>
+              <p>{project.description}</p>
+              <p class="moreSignal">{project.signal}</p>
+              <div class="moreLinks">
+                {project.links.map((link) => (
+                  <a href={link.href}>{link.label} ↗</a>
+                ))}
+              </div>
+            </article>
+          ))
+        }
       </div>
     </section>
 
+    <section aria-labelledby="ecosystems-title" class="ecosystems reveal">
+      <header class="moreHeader">
+        <p class="eyebrow"><span>13–16</span> Ecosystems</p>
+        <h2 id="ecosystems-title">
+          Built beyond the boundary of a single repository.
+        </h2>
+      </header>
+
+      <div class="ecosystemList">
+        {
+          ECOSYSTEMS.map((ecosystem) => (
+            <article class="ecosystem">
+              <header class="ecosystemIntro">
+                <p class="moreMeta">{ecosystem.index} · Connected work</p>
+                <h3>{ecosystem.name}</h3>
+                <p>{ecosystem.description}</p>
+              </header>
+              <ul class="ecosystemItems">
+                {ecosystem.items.map((item) => (
+                  <li>
+                    <a class="ecosystemLink" href={item.href}>
+                      <span class="ecosystemItemCopy">
+                        <b>{item.name}</b>
+                        <small>{item.detail}</small>
+                      </span>
+                      <i aria-hidden="true" class="ecosystemArrow">
+                        ↗
+                      </i>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section aria-labelledby="earlier-work-title" class="earlierWork reveal">
+      <header class="moreHeader">
+        <p class="eyebrow"><span>17–20</span> Earlier work</p>
+        <h2 id="earlier-work-title">
+          Small systems that show where the current work came from.
+        </h2>
+      </header>
+
+      <ol class="earlierList">
+        {
+          EARLIER_WORK.map((project) => (
+            <li>
+              <a class="earlierLink" href={project.href}>
+                <span class="earlierIndex">{project.index}</span>
+                <span class="earlierCopy">
+                  <b>{project.name}</b>
+                  <small>{project.description}</small>
+                </span>
+                <span class="earlierPeriod">{project.period}</span>
+                <i aria-hidden="true" class="earlierArrow">
+                  ↗
+                </i>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
     <section aria-labelledby="work-contact-title" class="workContact reveal">
-      <p class="eyebrow"><span>07</span> Build with me</p>
+      <p class="eyebrow"><span>21</span> Build with me</p>
       <h2 id="work-contact-title">
         Have a difficult workflow that should become a useful product?
       </h2>
@@ -591,7 +1041,9 @@ const FEATURED_PROJECTS = [
   .canvasTopbar,
   .pylopdfNav,
   .hayateBar,
-  .catalogBar {
+  .catalogBar,
+  .identityBar,
+  .yomiageBar {
     display: flex;
     gap: 18px;
     align-items: center;
@@ -995,7 +1447,314 @@ const FEATURED_PROJECTS = [
     color: var(--color-bg-deep);
   }
 
+  .socialNameCanvas {
+    background: color-mix(
+      in oklab,
+      var(--color-text-strong) 88%,
+      var(--color-accent)
+    );
+  }
+
+  .identityBar {
+    color: var(--color-bg-deep);
+  }
+
+  .identityMark {
+    display: grid;
+    width: 28px;
+    height: 28px;
+    color: var(--color-bg-deep);
+    place-items: center;
+    background: var(--color-accent);
+    border-radius: var(--radius-full);
+  }
+
+  .identityPrivacy {
+    margin-left: auto;
+    font-weight: 500;
+    color: color-mix(in oklab, var(--color-bg-deep) 64%, transparent);
+  }
+
+  .identityStage {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: 420px;
+    padding: clamp(34px, 5.5vw, 64px);
+  }
+
+  .identityKicker,
+  .voiceKicker {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+  }
+
+  .identityKicker {
+    color: color-mix(in oklab, var(--color-bg-deep) 60%, transparent);
+  }
+
+  .identityHeadline {
+    margin-top: 16px;
+    font-size: clamp(2rem, 3.9vw, 4rem);
+    font-weight: 780;
+    line-height: 1;
+    letter-spacing: -0.055em;
+  }
+
+  .identityHeadline strong {
+    color: color-mix(in oklab, var(--color-bg-deep) 72%, var(--color-accent));
+  }
+
+  .probePanel {
+    width: 100%;
+    margin-top: 38px;
+    overflow: hidden;
+    background: color-mix(
+      in oklab,
+      var(--color-text-strong) 72%,
+      var(--color-accent)
+    );
+    border: 1px solid color-mix(in oklab, var(--color-bg-deep) 16%, transparent);
+    border-radius: var(--radius-sm);
+  }
+
+  .probeRow {
+    display: grid;
+    grid-template-columns: minmax(70px, 0.25fr) minmax(140px, 1fr) auto;
+    gap: 14px;
+    align-items: center;
+    padding: 13px 16px;
+    font-family: var(--font-mono);
+    font-size: 0.67rem;
+    border-bottom: 1px solid
+      color-mix(in oklab, var(--color-bg-deep) 12%, transparent);
+  }
+
+  .probeRow:last-child {
+    border-bottom: 0;
+  }
+
+  .probeSite {
+    font-weight: 800;
+  }
+
+  .probeTrace {
+    color: color-mix(in oklab, var(--color-bg-deep) 58%, transparent);
+  }
+
+  .probeFound,
+  .probeAbsent,
+  .probeReview {
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .probeFound {
+    color: color-mix(in oklab, var(--color-bg-deep) 64%, var(--color-accent));
+  }
+
+  .probeAbsent {
+    color: var(--color-info);
+  }
+
+  .probeReview {
+    color: var(--color-danger);
+  }
+
+  .identityFoot {
+    margin-top: auto;
+    font-family: var(--font-mono);
+    font-size: 0.61rem;
+    color: color-mix(in oklab, var(--color-bg-deep) 55%, transparent);
+  }
+
+  .yomiageCanvas {
+    background: color-mix(
+      in oklab,
+      var(--color-text-strong) 72%,
+      var(--color-danger)
+    );
+  }
+
+  .yomiageBar {
+    color: var(--color-bg-deep);
+  }
+
+  .windowControls {
+    display: flex;
+    gap: 6px;
+  }
+
+  .windowDot {
+    width: 9px;
+    height: 9px;
+    background: var(--color-danger);
+    border-radius: var(--radius-full);
+  }
+
+  .windowDot:nth-child(2) {
+    background: var(--color-violet);
+  }
+
+  .windowDot:nth-child(3) {
+    background: var(--color-accent);
+  }
+
+  .yomiageLocal {
+    margin-left: auto;
+    color: color-mix(in oklab, var(--color-bg-deep) 70%, var(--color-accent));
+  }
+
+  .yomiageStage {
+    display: grid;
+    grid-template-columns: minmax(0, 0.88fr) minmax(220px, 1.12fr);
+    gap: clamp(24px, 4vw, 48px);
+    align-items: center;
+    min-height: 420px;
+    padding: clamp(34px, 5.5vw, 64px);
+  }
+
+  .voiceIntro {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .voiceKicker {
+    color: color-mix(in oklab, var(--color-bg-deep) 62%, transparent);
+  }
+
+  .voiceTitle {
+    margin-top: 16px;
+    font-size: clamp(2rem, 3.8vw, 3.8rem);
+    font-weight: 780;
+    line-height: 0.98;
+    letter-spacing: -0.055em;
+  }
+
+  .voiceEngine {
+    padding-bottom: 4px;
+    margin-top: 26px;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 750;
+    border-bottom: 2px solid var(--color-violet);
+  }
+
+  .voicePlayer {
+    display: flex;
+    flex-direction: column;
+    min-height: 270px;
+    padding: 22px;
+    background: color-mix(
+      in oklab,
+      var(--color-text-strong) 88%,
+      var(--color-info)
+    );
+    border: 1px solid color-mix(in oklab, var(--color-bg-deep) 16%, transparent);
+    border-radius: var(--radius-md);
+    box-shadow: 10px 12px 0
+      color-mix(in oklab, var(--color-violet) 26%, transparent);
+  }
+
+  .voiceChannel {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .voiceChannel > span:nth-child(2) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .voiceChannel small,
+  .voiceMessage small {
+    font-family: var(--font-mono);
+    font-size: 0.53rem;
+    color: color-mix(in oklab, var(--color-bg-deep) 52%, transparent);
+    letter-spacing: 0.1em;
+  }
+
+  .voiceChannel b {
+    font-size: var(--text-sm);
+  }
+
+  .voiceLive {
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    font-style: normal;
+    font-weight: 800;
+    color: color-mix(in oklab, var(--color-bg-deep) 64%, var(--color-accent));
+  }
+
+  .voiceAvatar {
+    display: grid;
+    width: 38px;
+    height: 38px;
+    font-weight: 850;
+    color: var(--color-text-strong);
+    place-items: center;
+    background: var(--color-violet);
+    border-radius: var(--radius-sm);
+  }
+
+  .waveform {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    height: 84px;
+    margin: 28px 0 22px;
+  }
+
+  .waveBar {
+    flex: 1;
+    height: 24%;
+    background: var(--color-violet);
+    border-radius: var(--radius-full);
+  }
+
+  .waveBar:nth-child(2),
+  .waveBar:nth-child(11) {
+    height: 54%;
+  }
+
+  .waveBar:nth-child(3),
+  .waveBar:nth-child(9) {
+    height: 76%;
+  }
+
+  .waveBar:nth-child(4),
+  .waveBar:nth-child(7) {
+    height: 42%;
+  }
+
+  .waveBar:nth-child(5),
+  .waveBar:nth-child(8) {
+    height: 88%;
+  }
+
+  .waveBar:nth-child(6),
+  .waveBar:nth-child(10) {
+    height: 64%;
+  }
+
+  .voiceMessage {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: auto;
+    font-size: var(--text-sm);
+    font-weight: 650;
+  }
+
   .moreWork,
+  .ecosystems,
+  .earlierWork,
   .workContact {
     max-width: 1000px;
   }
@@ -1014,14 +1773,20 @@ const FEATURED_PROJECTS = [
     letter-spacing: -0.035em;
   }
 
+  .moreHeader h2 {
+    scroll-margin-top: calc(var(--nav-height) + 72px);
+  }
+
   .moreList {
     border-top: 1px solid var(--border-strong);
   }
 
   .moreProject {
     display: grid;
-    grid-template-columns: minmax(200px, 0.3fr) minmax(280px, 0.5fr) auto;
-    gap: 36px;
+    grid-template-columns:
+      minmax(190px, 0.28fr) minmax(280px, 0.46fr)
+      minmax(150px, 0.18fr) auto;
+    gap: 30px;
     align-items: center;
     padding: 34px 0;
     border-bottom: 1px solid var(--border-strong);
@@ -1037,11 +1802,132 @@ const FEATURED_PROJECTS = [
     color: var(--color-text-soft);
   }
 
+  .moreProject .moreSignal {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    line-height: 1.55;
+    color: var(--color-text);
+  }
+
   .moreLinks {
     display: flex;
     flex-direction: column;
     gap: 10px;
     align-items: flex-start;
+  }
+
+  .ecosystemList,
+  .earlierList {
+    border-top: 1px solid var(--border-strong);
+  }
+
+  .ecosystem {
+    display: grid;
+    grid-template-columns: minmax(260px, 0.42fr) minmax(0, 0.58fr);
+    gap: clamp(44px, 7vw, 84px);
+    padding: clamp(48px, 7vw, 76px) 0;
+    border-bottom: 1px solid var(--border-strong);
+  }
+
+  .ecosystemIntro h3 {
+    margin: 12px 0 18px;
+    font-size: clamp(1.8rem, 3vw, 2.7rem);
+    letter-spacing: -0.035em;
+  }
+
+  .ecosystemIntro > p:last-child {
+    margin: 0;
+    color: var(--color-text-soft);
+  }
+
+  .ecosystemItems {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .ecosystemItems li {
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .ecosystemLink {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 20px;
+    align-items: center;
+    padding: 17px 0;
+    color: var(--color-text-strong);
+  }
+
+  .ecosystemItemCopy {
+    display: grid;
+    gap: 4px;
+  }
+
+  .ecosystemItems b {
+    font-size: var(--text-md);
+  }
+
+  .ecosystemItems small {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--color-text);
+  }
+
+  .ecosystemArrow,
+  .earlierArrow {
+    font-style: normal;
+    color: var(--color-accent);
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+
+  .ecosystemLink:hover .ecosystemArrow,
+  .ecosystemLink:focus-visible .ecosystemArrow,
+  .earlierLink:hover .earlierArrow,
+  .earlierLink:focus-visible .earlierArrow {
+    transform: translate(3px, -3px);
+  }
+
+  .earlierList {
+    padding: 0;
+    margin-bottom: 0;
+    list-style: none;
+  }
+
+  .earlierList li {
+    border-bottom: 1px solid var(--border-strong);
+  }
+
+  .earlierLink {
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr) auto 18px;
+    gap: 24px;
+    align-items: center;
+    padding: 25px 0;
+    color: var(--color-text-strong);
+  }
+
+  .earlierIndex,
+  .earlierPeriod {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--color-text);
+  }
+
+  .earlierCopy {
+    display: grid;
+    gap: 5px;
+  }
+
+  .earlierCopy b {
+    font-size: var(--text-lg);
+  }
+
+  .earlierCopy small {
+    max-width: 680px;
+    font-size: var(--text-sm);
+    color: var(--color-text-soft);
   }
 
   .workContact {
@@ -1111,6 +1997,11 @@ const FEATURED_PROJECTS = [
       grid-column: 2;
       flex-direction: row;
     }
+
+    .ecosystem {
+      grid-template-columns: 1fr;
+      gap: 34px;
+    }
   }
 
   @media (width <= 640px) {
@@ -1121,8 +2012,10 @@ const FEATURED_PROJECTS = [
 
     .workHero {
       grid-template-columns: minmax(0, 1fr);
+      gap: 36px;
       min-height: auto;
-      padding-top: 88px;
+      padding-top: 64px;
+      padding-bottom: 48px;
     }
 
     .heroCopy h1 {
@@ -1132,6 +2025,7 @@ const FEATURED_PROJECTS = [
     .projectIndex a {
       grid-template-columns: 28px 1fr 20px;
       gap: 10px;
+      padding: 16px 0;
     }
 
     .indexField {
@@ -1154,7 +2048,9 @@ const FEATURED_PROJECTS = [
     .wasmStage,
     .pylopdfStage,
     .docsContent,
-    .catalogStage {
+    .catalogStage,
+    .identityStage,
+    .yomiageStage {
       padding: 28px 22px;
     }
 
@@ -1221,6 +2117,43 @@ const FEATURED_PROJECTS = [
       display: none;
     }
 
+    .identityPrivacy {
+      display: none;
+    }
+
+    .identityStage {
+      min-height: 380px;
+    }
+
+    .identityHeadline {
+      font-size: clamp(2rem, 10vw, 3rem);
+    }
+
+    .probeTrace {
+      display: none;
+    }
+
+    .probeRow {
+      grid-template-columns: minmax(70px, 1fr) auto;
+    }
+
+    .identityFoot {
+      line-height: 1.5;
+    }
+
+    .yomiageStage {
+      grid-template-columns: 1fr;
+      min-height: 0;
+    }
+
+    .voiceTitle {
+      font-size: clamp(2.2rem, 11vw, 3.2rem);
+    }
+
+    .voicePlayer {
+      min-height: 240px;
+    }
+
     .moreHeader,
     .moreProject,
     .workContact {
@@ -1249,16 +2182,39 @@ const FEATURED_PROJECTS = [
     .workContact {
       gap: 20px;
     }
+
+    .ecosystem {
+      padding: 50px 0;
+    }
+
+    .earlierLink {
+      grid-template-columns: 30px minmax(0, 1fr) 18px;
+      gap: 14px;
+    }
+
+    .earlierPeriod {
+      display: none;
+    }
+
+    .earlierCopy small {
+      font-size: var(--text-xs);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .indexArrow,
-    .productCanvas {
+    .productCanvas,
+    .ecosystemArrow,
+    .earlierArrow {
       transition: none;
     }
 
     .productCanvas:hover,
-    .productCanvas:focus-visible {
+    .productCanvas:focus-visible,
+    .ecosystemLink:hover .ecosystemArrow,
+    .ecosystemLink:focus-visible .ecosystemArrow,
+    .earlierLink:hover .earlierArrow,
+    .earlierLink:focus-visible .earlierArrow {
       transform: none;
     }
   }
