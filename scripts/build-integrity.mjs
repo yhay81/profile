@@ -24,7 +24,9 @@ const ROUTE_BUDGETS = [
   {
     path: "/work",
     file: "work.html",
-    documentGzipBytes: 12_000,
+    // The portfolio is intentionally a complete, zero-JavaScript work index:
+    // featured products, public systems, ecosystems, and earlier work.
+    documentGzipBytes: 18_000,
     initialJsGzipBytes: 0,
   },
   {
