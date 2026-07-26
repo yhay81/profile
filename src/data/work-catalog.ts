@@ -49,12 +49,40 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
         ],
       },
       {
+        id: "deban",
+        field: "Opportunity discovery",
+        name: "DEBAN / 出番",
+        description:
+          "A web service that turns the feeling of wanting to do something into small challenges people can discover, try on, and join.",
+        signal: "Haya Inc. · Live product · Cloudflare",
+        links: [
+          {
+            label: "Open product",
+            href: "https://deban.yusuke8h.workers.dev/",
+          },
+        ],
+      },
+      {
+        id: "civic-contribution-catalog",
+        field: "Civic contribution platform",
+        name: "Civic Contribution Catalog",
+        description:
+          "A structured catalog where people and AI agents can discover public-contribution opportunities, prepare useful deliverables, and act with policy and evidence attached.",
+        signal: "Haya Inc. · Live service · Agent-ready",
+        links: [
+          {
+            label: "Open catalog",
+            href: "https://civic.haya-inc.co.jp/",
+          },
+        ],
+      },
+      {
         id: "ai-partners",
         field: "AI adoption directory",
         name: "AI伴走パートナーズ",
         description:
           "A public directory for finding and comparing AI adoption partners by service, technology, industry, company size, and region.",
-        signal: "Haya Inc. · Featured above",
+        signal: "Haya Inc. · Live directory",
         links: [
           {
             label: "Open directory",
@@ -376,14 +404,14 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
   },
   {
     id: "public-systems",
-    label: "Independent · Public systems",
-    title: "Tools, services, and experiments",
+    label: "Independent · Products & systems",
+    title: "Public services and software",
     description:
-      "Useful public infrastructure in different forms: developer tooling, translation coordination, interactive computation, and this site itself.",
+      "Independent public products and services, followed by developer systems, translation infrastructure, interactive computation, and this site itself.",
     items: [
       {
         id: "firsthand",
-        field: "Source-backed job search",
+        field: "Evidence-backed job platform",
         name: "Firsthand",
         description:
           "A live Japanese job-search service built from employers’ official career pages, with source links, freshness, change history, and evidence attached.",
@@ -401,7 +429,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
         name: "Public Data Catalog",
         description:
           "Japanese-first, tested retrieval recipes that take people and AI agents from a concrete question to a reproducible, attributable public-data result.",
-        signal: "MCP · Featured above",
+        signal: "MCP · Open source",
         links: [
           {
             label: "Open catalog",
