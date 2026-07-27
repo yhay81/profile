@@ -6,7 +6,7 @@ import { PROFILE_EMAIL, SOCIAL_LINKS } from "@/lib/site";
 <aside class="side">
   <ul class="socialList">
     {
-      SOCIAL_LINKS.map((link) => (
+      SOCIAL_LINKS.filter((link) => link.showInSide !== false).map((link) => (
         <li>
           <a
             class="socialLink"

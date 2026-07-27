@@ -5,7 +5,12 @@ import Hero from "@/components/Hero.astro";
 import Writing from "@/components/Writing.astro";
 import Base from "@/layouts/Base.astro";
 import { sha256CspHash } from "@/lib/csp";
-import { PROFILE_EMAIL, PROFILE_NAME, PROFILE_URL } from "@/lib/site";
+import {
+  ORCID_URL,
+  PROFILE_EMAIL,
+  PROFILE_NAME,
+  PROFILE_URL,
+} from "@/lib/site";
 
 const description =
   "Tokyo-based AI adoption consultant and software engineer helping teams turn AI plans into reliable products people can use.";
@@ -13,7 +18,7 @@ const description =
 const structuredData = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "ProfilePage",
-  dateModified: "2026-07-25",
+  dateModified: "2026-07-28",
   mainEntity: {
     "@type": "Person",
     name: PROFILE_NAME,
@@ -27,6 +32,7 @@ const structuredData = JSON.stringify({
       "https://github.com/yhay81",
       "https://twitter.com/yhay81",
       "https://www.linkedin.com/in/yhay81",
+      ORCID_URL,
       "https://zenn.dev/yhay81",
       "https://keyoxide.org/b22b98abb2d503307ab6a3160718efa6506bb669",
     ],
