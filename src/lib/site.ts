@@ -2,6 +2,8 @@ export const PROFILE_NAME = "Yusuke Hayashi";
 export const PROFILE_EMAIL = "yusuke8h@gmail.com";
 export const PROFILE_URL = "https://yusuke-hayashi.com";
 export const PROFILE_REPOSITORY = "https://github.com/yhay81/profile";
+export const ORCID_ID = "0009-0008-1145-8072";
+export const ORCID_URL = `https://orcid.org/${ORCID_ID}`;
 export const COPYRIGHT_START_YEAR = 2022;
 export const MAIN_COLOR = "#04ffaa";
 
@@ -16,7 +18,7 @@ export const IPFS_IDENTITY_GATEWAY = `https://ipfs.io/ipfs/${IPFS_IDENTITY_CID}/
 export const KEYOXIDE_URL = `https://keyoxide.org/${PGP_FINGERPRINT_HEX}`;
 
 export type IconName =
-  "github" | "x" | "linkedin" | "zenn" | "key" | "shield" | "mail";
+  "github" | "x" | "linkedin" | "orcid" | "zenn" | "key" | "shield" | "mail";
 
 export interface SocialLink {
   readonly id: string;
@@ -25,6 +27,7 @@ export interface SocialLink {
   readonly url: string;
   readonly description: string;
   readonly external: boolean;
+  readonly showInSide?: boolean;
 }
 
 export const SOCIAL_LINKS: readonly SocialLink[] = [
@@ -51,6 +54,15 @@ export const SOCIAL_LINKS: readonly SocialLink[] = [
     url: "https://www.linkedin.com/in/yhay81",
     description: "Professional profile",
     external: true,
+  },
+  {
+    id: "social-orcid",
+    name: "ORCID",
+    icon: "orcid",
+    url: ORCID_URL,
+    description: "Researcher and contributor record",
+    external: true,
+    showInSide: false,
   },
   {
     id: "social-zenn",
