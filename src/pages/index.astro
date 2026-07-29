@@ -6,6 +6,7 @@ import Writing from "@/components/Writing.astro";
 import Base from "@/layouts/Base.astro";
 import { sha256CspHash } from "@/lib/csp";
 import {
+  GOOGLE_SCHOLAR_URL,
   ORCID_URL,
   PROFILE_EMAIL,
   PROFILE_NAME,
@@ -18,7 +19,7 @@ const description =
 const structuredData = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "ProfilePage",
-  dateModified: "2026-07-28",
+  dateModified: "2026-07-29",
   mainEntity: {
     "@type": "Person",
     name: PROFILE_NAME,
@@ -33,6 +34,7 @@ const structuredData = JSON.stringify({
       "https://twitter.com/yhay81",
       "https://www.linkedin.com/in/yhay81",
       ORCID_URL,
+      GOOGLE_SCHOLAR_URL,
       "https://zenn.dev/yhay81",
       "https://keyoxide.org/b22b98abb2d503307ab6a3160718efa6506bb669",
     ],

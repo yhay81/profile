@@ -4,6 +4,8 @@ export const PROFILE_URL = "https://yusuke-hayashi.com";
 export const PROFILE_REPOSITORY = "https://github.com/yhay81/profile";
 export const ORCID_ID = "0009-0008-1145-8072";
 export const ORCID_URL = `https://orcid.org/${ORCID_ID}`;
+export const GOOGLE_SCHOLAR_URL =
+  "https://scholar.google.com/citations?user=A3mvIIUAAAAJ";
 export const COPYRIGHT_START_YEAR = 2022;
 export const MAIN_COLOR = "#04ffaa";
 
@@ -18,7 +20,15 @@ export const IPFS_IDENTITY_GATEWAY = `https://ipfs.io/ipfs/${IPFS_IDENTITY_CID}/
 export const KEYOXIDE_URL = `https://keyoxide.org/${PGP_FINGERPRINT_HEX}`;
 
 export type IconName =
-  "github" | "x" | "linkedin" | "orcid" | "zenn" | "key" | "shield" | "mail";
+  | "github"
+  | "x"
+  | "linkedin"
+  | "orcid"
+  | "scholar"
+  | "zenn"
+  | "key"
+  | "shield"
+  | "mail";
 
 export interface SocialLink {
   readonly id: string;
@@ -61,6 +71,15 @@ export const SOCIAL_LINKS: readonly SocialLink[] = [
     icon: "orcid",
     url: ORCID_URL,
     description: "Researcher and contributor record",
+    external: true,
+    showInSide: false,
+  },
+  {
+    id: "social-google-scholar",
+    name: "Google Scholar",
+    icon: "scholar",
+    url: GOOGLE_SCHOLAR_URL,
+    description: "Publications and citation profile",
     external: true,
     showInSide: false,
   },
