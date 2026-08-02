@@ -2,6 +2,18 @@
   "source": "https://zenn.dev/yhay81/feed?all=1",
   "entries": [
     {
+      "date": "2026-07-28",
+      "title": "OpenTelemetry Collectorの永続キューはどこまで守れる？強制終了とACK（成功応答）喪失を実測",
+      "url": "https://zenn.dev/yhay81/articles/202607-otel-collector-persistent-queue",
+      "external": true
+    },
+    {
+      "date": "2026-07-25",
+      "title": "候補者の状態から逆算する、ベンチャーのエンジニア採用チャネル設計",
+      "url": "https://zenn.dev/yhay81/articles/202601-venture-engineer-hiring-channels",
+      "external": true
+    },
+    {
       "date": "2026-07-24",
       "title": "Sigstore入門：どこで使われ、どう使えるのか",
       "url": "https://zenn.dev/yhay81/articles/202607-sigstore-guide",
