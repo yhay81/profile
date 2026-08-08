@@ -40,11 +40,11 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
         links: [
           {
             label: "Open product",
-            href: "https://prooflock.yusuke-hayashi.com/",
+            href: "https://prooflock.haya.works/",
           },
           {
             label: "Live status",
-            href: "https://prooflock.yusuke-hayashi.com/status/v1.json",
+            href: "https://prooflock.haya.works/status/v1.json",
           },
         ],
       },
@@ -615,10 +615,6 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
           "A zero-dependency Slack Web API client for Google Apps Script with broad API coverage, retries, uploads, and OAuth.",
         signal: "TypeScript · 168 API methods",
         links: [
-          {
-            label: "Documentation",
-            href: "https://yhay81.github.io/GASlacker/",
-          },
           {
             label: "Source",
             href: "https://github.com/yhay81/GASlacker",
