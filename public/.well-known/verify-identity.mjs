@@ -37565,14 +37565,14 @@ var expected_identity_default = {
   baseUrl: "https://yusuke-hayashi.com",
   subject: "https://yusuke-hayashi.com",
   displayName: "Yusuke Hayashi",
-  releaseRevision: 8,
+  releaseRevision: 9,
   domains: [
     "yusuke-hayashi.com",
     "haya.company",
     "haya-inc.co.jp"
   ],
   manifest: {
-    issuedAt: "2026-07-24T12:55:00.000Z",
+    issuedAt: "2026-08-08T18:00:00.000Z",
     expiresAt: "2027-07-13T00:00:00.000Z"
   },
   openpgp: {
@@ -37619,7 +37619,18 @@ var expected_identity_default = {
     handle: "yhay81",
     repository: "yhay81/profile",
     branch: "main",
-    provenanceWorkflow: ".github/workflows/cloudflare.yml"
+    provenanceWorkflow: ".github/workflows/cloudflare.yml",
+    governance: {
+      requiredRuleTypes: [
+        "deletion",
+        "non_fast_forward",
+        "required_signatures",
+        "pull_request",
+        "required_status_checks"
+      ],
+      allowedMergeMethods: ["squash"],
+      requiredStatusChecks: ["build", "gitleaks"]
+    }
   },
   sigstore: {
     type: "github-actions-sigstore",
@@ -39162,6 +39173,11 @@ function normalizeFingerprint(value) {
 function openPgpUri(fingerprint) {
   return `openpgp4fpr:${normalizeFingerprint(fingerprint).toLowerCase()}`;
 }
+function sameStringSet(actual, expected) {
+  const left = [...new Set(actual)].sort();
+  const right = [...new Set(expected)].sort();
+  return left.length === right.length && left.every((value, index2) => value === right[index2]);
+}
 function describeAjvErrors(errors) {
   return (errors ?? []).map((error) => `${error.instancePath || "/"} ${error.message}`).join("; ");
 }
@@ -39388,6 +39404,25 @@ async function verifySshGitSignature({ payload, signature, allowedSigners, ident
   } finally {
     await rm2(temporary, { recursive: true, force: true });
   }
+}
+function assertBranchGovernance(rules, governance) {
+  invariant5(Boolean(governance), "branch governance expectations are not configured");
+  invariant5(Array.isArray(rules), "branch rule response is not a list");
+  const enforced = new Map(rules.map((rule) => [rule.type, rule.parameters ?? {}]));
+  for (const type of governance.requiredRuleTypes) {
+    invariant5(enforced.has(type), `branch rule ${type} is no longer enforced`);
+  }
+  const allowedMerges = enforced.get("pull_request")?.allowed_merge_methods ?? [];
+  invariant5(
+    sameStringSet(allowedMerges, governance.allowedMergeMethods),
+    `allowed merge methods changed to ${[...allowedMerges].sort().join(", ") || "(none declared)"}`
+  );
+  const statusChecks = (enforced.get("required_status_checks")?.required_status_checks ?? []).map((entry) => entry.context);
+  invariant5(
+    sameStringSet(statusChecks, governance.requiredStatusChecks),
+    `required status checks changed to ${[...statusChecks].sort().join(", ") || "(none declared)"}`
+  );
+  return `${governance.requiredRuleTypes.length} enforced rule(s); merges limited to ${governance.allowedMergeMethods.join(", ")}; ${governance.requiredStatusChecks.join(" + ")} required`;
 }
 async function verifyGitHubCommit(response, verificationKeyOrOptions) {
   invariant5(response?.commit?.verification?.verified === true, "GitHub main commit is not verified");
@@ -40165,19 +40200,24 @@ async function runVerification({
       invariant5(records.includes(`did=${expected.bluesky.did}`), "Bluesky DID TXT record changed");
       return expected.bluesky.did;
     }));
-    results.push(await check("github-main-signature", async () => {
+    results.push(await check("github-branch-governance", async () => {
+      const { repository, branch, sshAllowedSigners, sshSigningIdentity } = expected.github;
       const response = JSON.parse(await http.text(
-        `https://api.github.com/repos/${expected.github.repository}/commits/${expected.github.branch}`
+        `https://api.github.com/repos/${repository}/commits/${branch}`
       ));
-      if (expected.github.sshAllowedSigners?.length) {
-        await verifyGitHubCommit(response, {
-          sshAllowedSigners: expected.github.sshAllowedSigners,
-          sshSigningIdentity: expected.github.sshSigningIdentity
-        });
+      if (sshAllowedSigners?.length) {
+        await verifyGitHubCommit(response, { sshAllowedSigners, sshSigningIdentity });
         return `${response.sha.slice(0, 12)} (SSH signature pinned to hardware-backed signing key)`;
       }
-      await verifyGitHubCommit(response, await getRootKey());
-      return `${response.sha.slice(0, 12)} (OpenPGP compatibility signature pinned to configured key)`;
+      invariant5(
+        response?.commit?.verification?.verified === true,
+        "branch head is not a verified signed commit"
+      );
+      const rules = JSON.parse(await http.text(
+        `https://api.github.com/repos/${repository}/rules/branches/${branch}`
+      ));
+      const summary = assertBranchGovernance(rules, expected.github.governance);
+      return `${response.sha.slice(0, 12)} signed by the forge under ${summary}`;
     }, { availabilityIsWarning: true }));
     results.push(await check("keyoxide-profile", async () => {
       const page = await http.text(`https://keyoxide.org/${expected.openpgp.fingerprint.toLowerCase()}`);

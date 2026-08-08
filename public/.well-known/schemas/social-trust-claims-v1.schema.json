@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yusuke-hayashi.com/.well-known/schemas/social-trust-claims-v1.schema.json",
+  "title": "Yusuke Hayashi social trust claims",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "subject",
+    "reviewedAt",
+    "reviewIntervalDays",
+    "claims"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "subject": {
+      "const": "https://yusuke-hayashi.com"
+    },
+    "reviewedAt": {
+      "type": "string",
+      "format": "date"
+    },
+    "reviewIntervalDays": {
+      "type": "integer",
+      "minimum": 30,
+      "maximum": 366
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/claim"
+      }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "name", "url", "checkedAt"],
+      "properties": {
+        "type": {
+          "enum": [
+            "official-record",
+            "controlled-profile",
+            "issuer-guidance",
+            "issuer-verification"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "checkedAt": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "evidenceMethodId",
+        "name",
+        "issuer",
+        "claimType",
+        "assertionStatus",
+        "subjectBinding",
+        "validity",
+        "disclosureClass",
+        "repositoryHandling",
+        "sources",
+        "trustLimit",
+        "lastReviewedAt",
+        "nextAction"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "evidenceMethodId": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "issuer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "claimType": {
+          "enum": ["education", "qualification", "publication", "employment"]
+        },
+        "assertionStatus": {
+          "enum": [
+            "issuer-verified",
+            "corroborated",
+            "self-reported",
+            "expired",
+            "unconfirmed"
+          ]
+        },
+        "subjectBinding": {
+          "enum": [
+            "issuer-verified",
+            "controlled-profile-cross-link",
+            "self-report-only",
+            "unconfirmed"
+          ]
+        },
+        "validity": {
+          "enum": [
+            "active",
+            "no-expiration",
+            "expired",
+            "not-applicable",
+            "unconfirmed"
+          ]
+        },
+        "disclosureClass": {
+          "enum": ["public", "selective-disclosure"]
+        },
+        "repositoryHandling": {
+          "enum": ["public-link-only", "metadata-only", "do-not-store"]
+        },
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/source"
+          }
+        },
+        "trustLimit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "lastReviewedAt": {
+          "type": "string",
+          "format": "date"
+        },
+        "nextAction": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}
