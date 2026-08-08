@@ -616,6 +616,10 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
         signal: "TypeScript · 168 API methods",
         links: [
           {
+            label: "Documentation",
+            href: "https://gaslacker.yhay81.com",
+          },
+          {
             label: "Source",
             href: "https://github.com/yhay81/GASlacker",
           },
