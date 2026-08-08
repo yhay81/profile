@@ -131,6 +131,7 @@ pnpm install
 pnpm dev                 # Start the local server at http://localhost:4321
 pnpm build               # Build and verify the static site in dist/
 pnpm verify:release      # Verify the deployed asset hashes and performance report
+pnpm verify:links        # Verify every published external link still resolves
 pnpm deploy:cloudflare   # Deploy the verified dist/ directory to Cloudflare
 pnpm typecheck           # Type-check with the native TypeScript 7 compiler
 pnpm check               # Run TypeScript, Astro, ESLint, Stylelint, and Prettier
@@ -163,6 +164,13 @@ standard revalidation behavior.
 After deployment, CI verifies every asset in the release manifest, the
 published identity CLI, security headers, and the absence of RUM. A separate
 daily workflow monitors the deployed bytes and identity claims, including DNS.
+
+Hash verification proves that the published bytes are the built bytes. It says
+nothing about whether the destinations those bytes name still exist, so the
+same daily workflow requests every external link as an independent job. A
+third party that is merely unreachable therefore cannot mask an integrity
+failure, and neither failure can go unread: a failing schedule opens a tracking
+issue instead of only turning a check red.
 
 CI builds the same commit twice and requires the SHA-256 digests of the
 fixed-metadata `site-dist.tar.gz` archives to match. Builds from `main` receive

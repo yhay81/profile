@@ -40,11 +40,11 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
         links: [
           {
             label: "Open product",
-            href: "https://prooflock.yusuke-hayashi.com/",
+            href: "https://prooflock.haya.works/",
           },
           {
             label: "Live status",
-            href: "https://prooflock.yusuke-hayashi.com/status/v1.json",
+            href: "https://prooflock.haya.works/status/v1.json",
           },
         ],
       },
@@ -159,8 +159,8 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
         field: "Email infrastructure",
         name: "HayaSend",
         description:
-          "Resend-compatible, AWS-native email infrastructure that keeps delivery, metadata, and operational control in the user’s account.",
-        signal: "Haya Inc. · Early alpha",
+          "An early-beta, customer-owned transactional email foundation with Resend-compatible APIs, durable delivery records, and deployable infrastructure.",
+        signal: "Haya Inc. · Early beta",
         links: [
           {
             label: "Source",
@@ -173,8 +173,8 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
         field: "Browser agent runtime",
         name: "Clawsembly",
         description:
-          "An evidence-gated embedding boundary for running upstream OpenClaw browser-locally with explicit capabilities and compatibility proofs.",
-        signal: "Haya Inc. · Security",
+          "An evidence-gated, capability-safe embedding SDK for running an unmodified upstream OpenClaw release inside the browser.",
+        signal: "Haya Inc. · SDK · Security",
         links: [
           {
             label: "Documentation",
@@ -314,14 +314,14 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
     label: "Open source · Ecosystems",
     title: "Systems that grow beyond one repository",
     description:
-      "Connected components for Python applications, authentication, MCP, OpenAPI, client-side Fetch, and repeatable project creation.",
+      "Connected components for Python applications, authentication, MCP, OpenAPI, operational administration, hypermedia, client-side Fetch, and repeatable project creation.",
     items: [
       {
         id: "hayate-index",
         field: "Python web framework",
         name: "hayate",
         description:
-          "A standards-first Python application model built around ASGI, Web Workers, and the browser platform.",
+          "A web-standards-first Python framework spanning ASGI, Cloudflare Workers, and AWS Lambda.",
         signal: "Hayate · Featured above",
         links: [
           {
@@ -369,6 +369,34 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
           {
             label: "Source",
             href: "https://github.com/hayatepy/hayate-openapi",
+          },
+        ],
+      },
+      {
+        id: "hayate-admin",
+        field: "Operational administration",
+        name: "hayate-admin",
+        description:
+          "Secure checked-SQL operational administration for Hayate applications.",
+        signal: "Hayate · Open source",
+        links: [
+          {
+            label: "Source",
+            href: "https://github.com/hayatepy/hayate-admin",
+          },
+        ],
+      },
+      {
+        id: "hayate-htmx",
+        field: "Full-stack hypermedia",
+        name: "hayate-htmx",
+        description:
+          "A full-stack hypermedia integration that connects Hayate applications to htmx while keeping server-rendered interactions explicit.",
+        signal: "Hayate · Open source",
+        links: [
+          {
+            label: "Source",
+            href: "https://github.com/hayatepy/hayate-htmx",
           },
         ],
       },
@@ -446,12 +474,72 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
         field: "Identity observability",
         name: "SocialName",
         description:
-          "A local-first system that turns public-identifier presence and change into evidence-backed observations without treating a matching username as an identity claim.",
-        signal: "Rust · Tauri · Active development",
+          "An installable, local-first public-identifier observability platform with a Rust engine, CLI and Tauri desktop clients, deterministic evidence, and consent-bound managed workflows.",
+        signal: "Rust · CLI · Tauri · Active development",
         links: [
           {
             label: "Source",
             href: "https://github.com/yhay81/socialname",
+          },
+        ],
+      },
+      {
+        id: "bounded-cli-suite",
+        field: "Bounded agent tooling",
+        name: "Bounded CLI suite",
+        description:
+          "Eight single-purpose CLIs for querying local files, observing command effects, producing verification receipts, auditing database changes, controlling processes, inspecting nested artifacts, diagnosing web paths, and transforming media.",
+        signal: "8 tools · Single-purpose · Evidence-backed",
+        links: [
+          {
+            label: "sqrail",
+            href: "https://github.com/yhay81/sqrail",
+          },
+          {
+            label: "cmdtrail",
+            href: "https://github.com/yhay81/cmdtrail",
+          },
+          {
+            label: "taskattest",
+            href: "https://github.com/yhay81/taskattest",
+          },
+          {
+            label: "dmlpact",
+            href: "https://github.com/yhay81/dmlpact",
+          },
+          {
+            label: "procherd",
+            href: "https://github.com/yhay81/procherd",
+          },
+          {
+            label: "blobdive",
+            href: "https://github.com/yhay81/blobdive",
+          },
+          {
+            label: "hopwhy",
+            href: "https://github.com/yhay81/hopwhy",
+          },
+          {
+            label: "avpact",
+            href: "https://github.com/yhay81/avpact",
+          },
+        ],
+      },
+      {
+        id: "tool-shelf",
+        field: "Public web tools",
+        name: "Tool Shelf",
+        description:
+          "A public shelf where small, sign-up-free Japanese web tools can be compared side by side.",
+        signal: "Japanese web tools · No sign-up",
+        links: [
+          {
+            label: "Open shelf",
+            href: "https://tools.yhay81.com",
+          },
+          {
+            label: "Source",
+            href: "https://github.com/yhay81/tool-shelf",
           },
         ],
       },
@@ -529,7 +617,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
         links: [
           {
             label: "Documentation",
-            href: "https://yhay81.github.io/GASlacker/",
+            href: "https://gaslacker.yhay81.com",
           },
           {
             label: "Source",

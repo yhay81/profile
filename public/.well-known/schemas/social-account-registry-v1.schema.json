@@ -1,0 +1,626 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yusuke-hayashi.com/.well-known/schemas/social-account-registry-v1.schema.json",
+  "title": "Yusuke Hayashi social account registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "subject",
+    "reviewedAt",
+    "reviewIntervalDays",
+    "avatarPolicy",
+    "accounts"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "subject": {
+      "const": "https://yusuke-hayashi.com"
+    },
+    "reviewedAt": {
+      "type": "string",
+      "format": "date"
+    },
+    "reviewIntervalDays": {
+      "type": "integer",
+      "minimum": 30,
+      "maximum": 366
+    },
+    "avatarPolicy": {
+      "$ref": "#/$defs/avatarPolicy"
+    },
+    "accounts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/account"
+      }
+    }
+  },
+  "$defs": {
+    "avatarTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "accountId",
+        "desiredVariant",
+        "status",
+        "lastCheckedAt",
+        "nextAction"
+      ],
+      "properties": {
+        "accountId": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "desiredVariant": {
+          "enum": ["illustration", "portrait"]
+        },
+        "status": {
+          "enum": ["aligned", "different", "inherited", "unconfirmed", "not-supported"]
+        },
+        "lastCheckedAt": {
+          "type": "string",
+          "format": "date"
+        },
+        "nextAction": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "avatarVariant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url"],
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "immutableReference": {
+          "type": "string",
+          "pattern": "^ipfs://b[a-z2-7]+/[a-zA-Z0-9._-]+$"
+        }
+      }
+    },
+    "avatarPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "defaultVariant",
+        "exceptionRule",
+        "variants",
+        "canonicalizationStatus",
+        "reviewedAt",
+        "nextAction",
+        "targets"
+      ],
+      "properties": {
+        "defaultVariant": {
+          "const": "illustration"
+        },
+        "exceptionRule": {
+          "const": "portrait-for-linkedin-and-services-with-professional-headshot-norms"
+        },
+        "variants": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["illustration", "portrait"],
+          "properties": {
+            "illustration": {
+              "$ref": "#/$defs/avatarVariant"
+            },
+            "portrait": {
+              "$ref": "#/$defs/avatarVariant"
+            }
+          }
+        },
+        "canonicalizationStatus": {
+          "enum": ["illustration-controlled-hosting-pending", "aligned"]
+        },
+        "reviewedAt": {
+          "type": "string",
+          "format": "date"
+        },
+        "nextAction": {
+          "type": "string",
+          "minLength": 1
+        },
+        "targets": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/avatarTarget"
+          }
+        }
+      }
+    },
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url", "role"],
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "role": {
+          "enum": ["canonical", "secondary-review"]
+        }
+      }
+    },
+    "profileLink": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "url"],
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        }
+      }
+    },
+    "profileBaseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "displayName",
+        "bio",
+        "website",
+        "handleCandidates",
+        "additionalLinks",
+        "privacyActions",
+        "updateStatus"
+      ],
+      "properties": {
+        "displayName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "bio": {
+          "type": "string",
+          "minLength": 1
+        },
+        "website": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "handleCandidates": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^@[A-Za-z0-9._-]+$"
+          }
+        },
+        "additionalLinks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/profileLink"
+          }
+        },
+        "privacyActions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "updateStatus": {
+          "enum": ["aligned", "review-needed", "reauth-required"]
+        },
+        "lastAlignedAt": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "updateStatus": {
+                "const": "aligned"
+              }
+            },
+            "required": ["updateStatus"]
+          },
+          "then": {
+            "required": ["lastAlignedAt"]
+          }
+        }
+      ]
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "url", "checkedAt"],
+      "properties": {
+        "type": {
+          "enum": [
+            "signed-manifest",
+            "domain-binding",
+            "oauth-link",
+            "cross-link",
+            "public-profile"
+          ]
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "checkedAt": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "federatedLoginDependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "serviceName",
+        "criticality",
+        "independentRecovery",
+        "lastConfirmedAt"
+      ],
+      "properties": {
+        "serviceName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "criticality": {
+          "enum": ["critical", "high", "normal"]
+        },
+        "independentRecovery": {
+          "type": "boolean"
+        },
+        "lastConfirmedAt": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "connectionInventoryBreakdown": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["category", "count", "countIsMinimum"],
+      "properties": {
+        "category": {
+          "type": "string",
+          "minLength": 1
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "countIsMinimum": {
+          "type": "boolean"
+        }
+      }
+    },
+    "connectionInventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reviewedAt",
+        "status",
+        "totalCount",
+        "countIsMinimum",
+        "breakdown"
+      ],
+      "properties": {
+        "reviewedAt": {
+          "type": "string",
+          "format": "date"
+        },
+        "status": {
+          "enum": ["complete", "partial"]
+        },
+        "totalCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "countIsMinimum": {
+          "type": "boolean"
+        },
+        "breakdown": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/connectionInventoryBreakdown"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "complete"
+              }
+            },
+            "required": ["status"]
+          },
+          "then": {
+            "properties": {
+              "countIsMinimum": {
+                "const": false
+              },
+              "breakdown": {
+                "items": {
+                  "properties": {
+                    "countIsMinimum": {
+                      "const": false
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "federatedLogin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "capability",
+        "usageStatus",
+        "dependencyReviewStatus",
+        "dependentServices"
+      ],
+      "properties": {
+        "capability": {
+          "enum": ["supported", "limited"]
+        },
+        "usageStatus": {
+          "enum": ["used", "not-used", "unconfirmed"]
+        },
+        "dependencyReviewStatus": {
+          "enum": ["reviewed", "partial", "unreviewed"]
+        },
+        "dependencyReviewedAt": {
+          "type": "string",
+          "format": "date"
+        },
+        "connectionInventory": {
+          "$ref": "#/$defs/connectionInventory"
+        },
+        "dependentServices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/federatedLoginDependency"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "usageStatus": {
+                "const": "used"
+              }
+            },
+            "required": ["usageStatus"]
+          },
+          "then": {
+            "anyOf": [
+              {
+                "properties": {
+                  "dependentServices": {
+                    "minItems": 1
+                  }
+                }
+              },
+              {
+                "required": ["connectionInventory"],
+                "properties": {
+                  "connectionInventory": {
+                    "properties": {
+                      "totalCount": {
+                        "minimum": 1
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "dependencyReviewStatus": {
+                "enum": ["reviewed", "partial"]
+              }
+            },
+            "required": ["dependencyReviewStatus"]
+          },
+          "then": {
+            "required": ["dependencyReviewedAt"]
+          }
+        }
+      ]
+    },
+    "account": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "serviceName",
+        "category",
+        "priority",
+        "registrationStatus",
+        "accessStatus",
+        "officialUrl",
+        "profiles",
+        "evidence",
+        "trustContribution",
+        "trustLimit",
+        "lastReviewedAt",
+        "nextAction"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "serviceName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "category": {
+          "enum": [
+            "professional",
+            "research",
+            "developer",
+            "publishing",
+            "social",
+            "avatar",
+            "credential",
+            "community",
+            "product",
+            "identity-provider"
+          ]
+        },
+        "accountVisibility": {
+          "enum": ["public-profile", "private-authentication", "mixed", "unknown"]
+        },
+        "federatedLogin": {
+          "$ref": "#/$defs/federatedLogin"
+        },
+        "priority": {
+          "enum": ["core", "recommended", "conditional", "not-planned"]
+        },
+        "registrationStatus": {
+          "enum": ["registered", "unconfirmed", "not-planned", "retired"]
+        },
+        "accessStatus": {
+          "enum": ["confirmed", "unconfirmed", "not-applicable"]
+        },
+        "accessConfirmedAt": {
+          "type": "string",
+          "format": "date"
+        },
+        "registrationConfirmedAt": {
+          "type": "string",
+          "format": "date"
+        },
+        "officialUrl": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "profiles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/profile"
+          }
+        },
+        "profileBaseline": {
+          "$ref": "#/$defs/profileBaseline"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "trustContribution": {
+          "type": "string",
+          "minLength": 1
+        },
+        "trustLimit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "lastReviewedAt": {
+          "type": "string",
+          "format": "date"
+        },
+        "nextAction": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "registrationStatus": {
+                "const": "registered"
+              }
+            },
+            "required": ["registrationStatus"]
+          },
+          "then": {
+            "required": ["registrationConfirmedAt"],
+            "properties": {
+              "accessStatus": {
+                "enum": ["confirmed", "unconfirmed"]
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "accountVisibility": {
+                      "const": "private-authentication"
+                    }
+                  },
+                  "required": ["accountVisibility"]
+                },
+                "else": {
+                  "properties": {
+                    "profiles": {
+                      "minItems": 1
+                    },
+                    "evidence": {
+                      "minItems": 1
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "else": {
+            "properties": {
+              "accessStatus": {
+                "const": "not-applicable"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "accessStatus": {
+                "const": "confirmed"
+              }
+            },
+            "required": ["accessStatus"]
+          },
+          "then": {
+            "required": ["accessConfirmedAt"]
+          }
+        }
+      ]
+    }
+  }
+}

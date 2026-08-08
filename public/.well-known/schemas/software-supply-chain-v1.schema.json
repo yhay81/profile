@@ -1,0 +1,248 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yusuke-hayashi.com/.well-known/schemas/software-supply-chain-v1.schema.json",
+  "title": "Yusuke Hayashi software supply-chain policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "reviewedAt",
+    "verification",
+    "github",
+    "pypi",
+    "npm",
+    "oci",
+    "mcpRegistry"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "reviewedAt": {
+      "type": "string",
+      "format": "date"
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pypiAttestationsVersion"],
+      "properties": {
+        "pypiAttestationsVersion": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        }
+      }
+    },
+    "github": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactAttestations"],
+      "properties": {
+        "artifactAttestations": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/githubAttestation" }
+        }
+      }
+    },
+    "pypi": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requiredPredicateType",
+        "requireAllReleaseFiles",
+        "requireTransparencyLog",
+        "projects",
+        "legacyProjects"
+      ],
+      "properties": {
+        "requiredPredicateType": {
+          "const": "https://docs.pypi.org/attestations/publish/v1"
+        },
+        "requireAllReleaseFiles": { "const": true },
+        "requireTransparencyLog": { "const": true },
+        "projects": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "publisher"],
+            "properties": {
+              "name": { "$ref": "#/$defs/packageName" },
+              "publisher": { "$ref": "#/$defs/publisher" }
+            }
+          }
+        },
+        "legacyProjects": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "policy"],
+            "properties": {
+              "name": { "$ref": "#/$defs/packageName" },
+              "policy": {
+                "const": "release-blocked-until-trusted-publishing"
+              }
+            }
+          }
+        }
+      }
+    },
+    "npm": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "requiredPublishingMode",
+        "minimumNodeVersion",
+        "minimumNpmVersion",
+        "packages"
+      ],
+      "properties": {
+        "status": { "enum": ["active", "no-public-packages"] },
+        "requiredPublishingMode": { "const": "trusted-publisher" },
+        "minimumNodeVersion": { "type": "string" },
+        "minimumNpmVersion": { "type": "string" },
+        "packages": { "type": "array" }
+      }
+    },
+    "oci": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requiredPublishingMode",
+        "requiredAttestations",
+        "repositories"
+      ],
+      "properties": {
+        "requiredPublishingMode": { "const": "github-oidc" },
+        "requiredAttestations": {
+          "type": "array",
+          "contains": { "const": "https://slsa.dev/provenance/v1" }
+        },
+        "repositories": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ociRepository" }
+        }
+      }
+    },
+    "mcpRegistry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["servers"],
+      "properties": {
+        "servers": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/mcpServer" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "packageName": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-z0-9][a-z0-9._-]*$"
+    },
+    "repository": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+    },
+    "publisher": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "repository",
+        "workflow",
+        "environment",
+        "requiredEnvironment"
+      ],
+      "properties": {
+        "kind": { "const": "GitHub" },
+        "repository": { "$ref": "#/$defs/repository" },
+        "workflow": {
+          "type": "string",
+          "pattern": "^[^/]+\\.ya?ml$"
+        },
+        "environment": { "type": ["string", "null"] },
+        "requiredEnvironment": { "const": "pypi" }
+      }
+    },
+    "githubAttestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "repository",
+        "workflow",
+        "sourceRef",
+        "environment",
+        "predicateType",
+        "storage"
+      ],
+      "properties": {
+        "name": { "type": "string" },
+        "repository": { "$ref": "#/$defs/repository" },
+        "workflow": {
+          "type": "string",
+          "pattern": "^\\.github/workflows/[^/]+\\.ya?ml$"
+        },
+        "sourceRef": {
+          "type": "string",
+          "pattern": "^refs/(heads|tags)/"
+        },
+        "environment": { "type": ["string", "null"] },
+        "predicateType": { "const": "https://slsa.dev/provenance/v1" },
+        "storage": { "const": "github" }
+      }
+    },
+    "ociRepository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "registry",
+        "status",
+        "sourceRepository",
+        "workflow",
+        "storage"
+      ],
+      "properties": {
+        "name": { "type": "string" },
+        "registry": { "enum": ["aws-ecr", "ghcr", "docker-hub"] },
+        "status": {
+          "enum": ["active", "blocked-missing-workload-identity"]
+        },
+        "sourceRepository": { "$ref": "#/$defs/repository" },
+        "workflow": {
+          "type": "string",
+          "pattern": "^\\.github/workflows/[^/]+\\.ya?ml$"
+        },
+        "storage": { "const": "oci-registry" }
+      }
+    },
+    "mcpServer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "sourceRepository",
+        "workflow",
+        "authentication",
+        "artifactAttestation"
+      ],
+      "properties": {
+        "name": { "type": "string" },
+        "sourceRepository": { "$ref": "#/$defs/repository" },
+        "workflow": { "type": "string" },
+        "authentication": { "const": "github-oidc" },
+        "artifactAttestation": { "const": "github" }
+      }
+    }
+  }
+}

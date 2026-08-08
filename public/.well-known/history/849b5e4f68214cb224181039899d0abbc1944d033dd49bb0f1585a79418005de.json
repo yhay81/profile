@@ -2,8 +2,8 @@
   "$schema": "https://yusuke-hayashi.com/.well-known/schemas/identity-history-v1.schema.json",
   "schemaVersion": 1,
   "subject": "https://yusuke-hayashi.com",
-  "updatedAt": "2026-08-08",
-  "previousVersionSha256": "849b5e4f68214cb224181039899d0abbc1944d033dd49bb0f1585a79418005de",
+  "updatedAt": "2026-07-23",
+  "previousVersionSha256": "992bf85a8a25eb12087a77179ed4c8e7b3466631febadc6ac053c1d84f181202",
   "events": [
     {
       "id": "2026-07-12/openpgp-key-rotation",
@@ -181,25 +181,6 @@
       "evidence": [
         "https://etherscan.io/tx/0x0c72e7af2643015902dab7adb0890d52307c823589c20fd9575d5fdedcc930bc",
         "https://app.ens.domains/yhay81.eth"
-      ]
-    },
-    {
-      "id": "2026-08-08/branch-governance-verification",
-      "effectiveAt": "2026-08-08",
-      "type": "proof-published",
-      "summary": "Release 9 replaces the branch head signature check with branch governance verification. Pull-request governance means the forge writes the head commit, so no signature on it can name the subject; the verifier now pins the enforced rule set instead of asserting a signer it cannot observe.",
-      "identifiers": {
-        "releaseRevision": "9",
-        "repository": "yhay81/profile",
-        "branch": "main",
-        "previousCheck": "github-main-signature",
-        "currentCheck": "github-branch-governance",
-        "allowedMergeMethods": "squash",
-        "requiredStatusChecks": "build, gitleaks"
-      },
-      "evidence": [
-        "https://api.github.com/repos/yhay81/profile/rules/branches/main",
-        "https://yusuke-hayashi.com/.well-known/verify-identity.mjs"
       ]
     }
   ]

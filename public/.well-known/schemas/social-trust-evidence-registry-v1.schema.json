@@ -1,0 +1,327 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yusuke-hayashi.com/.well-known/schemas/social-trust-evidence-registry-v1.schema.json",
+  "title": "Yusuke Hayashi social trust evidence registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "subject",
+    "reviewedAt",
+    "reviewIntervalDays",
+    "prohibitedContent",
+    "evidenceMethods"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "subject": {
+      "const": "https://yusuke-hayashi.com"
+    },
+    "reviewedAt": {
+      "type": "string",
+      "format": "date"
+    },
+    "reviewIntervalDays": {
+      "type": "integer",
+      "minimum": 30,
+      "maximum": 366
+    },
+    "prohibitedContent": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "evidenceMethods": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/evidenceMethod"
+      }
+    }
+  },
+  "$defs": {
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "url", "checkedAt"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "checkedAt": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "url", "checkedAt"],
+      "properties": {
+        "type": {
+          "enum": [
+            "issuer-public-record",
+            "issuer-signed-credential",
+            "official-registry",
+            "signed-attestation",
+            "selective-verification-receipt"
+          ]
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "checkedAt": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "evidenceMethod": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "category",
+        "priority",
+        "dimensions",
+        "disclosureClass",
+        "repositoryHandling",
+        "verificationMode",
+        "evidenceStrength",
+        "subjectStatus",
+        "references",
+        "evidence",
+        "safeClaim",
+        "trustLimit",
+        "lastReviewedAt",
+        "nextAction"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "category": {
+          "enum": [
+            "civil-identity",
+            "reachability",
+            "financial-relationship",
+            "organization",
+            "education",
+            "qualification",
+            "publication",
+            "research",
+            "professional",
+            "reputation",
+            "financial-due-diligence"
+          ]
+        },
+        "priority": {
+          "enum": [
+            "core",
+            "recommended",
+            "conditional",
+            "private-only",
+            "rejected"
+          ]
+        },
+        "dimensions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "legal-identity",
+              "reachability",
+              "transaction-capability",
+              "organization-authority",
+              "education",
+              "qualification",
+              "publication",
+              "research-contribution",
+              "professional-output",
+              "third-party-reputation",
+              "financial-due-diligence"
+            ]
+          }
+        },
+        "disclosureClass": {
+          "enum": [
+            "public",
+            "selective-disclosure",
+            "private-never-publish"
+          ]
+        },
+        "repositoryHandling": {
+          "enum": [
+            "public-link-only",
+            "metadata-only",
+            "claim-only",
+            "do-not-store"
+          ]
+        },
+        "verificationMode": {
+          "enum": [
+            "government-credential",
+            "issuer-record",
+            "official-registry",
+            "regulated-intermediary",
+            "possession-challenge",
+            "counterparty-attestation",
+            "credit-bureau-record",
+            "self-report",
+            "invalid-generalization"
+          ]
+        },
+        "evidenceStrength": {
+          "enum": ["strong", "moderate", "weak", "contextual", "rejected"]
+        },
+        "subjectStatus": {
+          "enum": [
+            "verified",
+            "unconfirmed",
+            "not-collected",
+            "not-applicable"
+          ]
+        },
+        "references": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/reference"
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "safeClaim": {
+          "type": "string",
+          "minLength": 1
+        },
+        "trustLimit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "lastReviewedAt": {
+          "type": "string",
+          "format": "date"
+        },
+        "nextAction": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "subjectStatus": {
+                "const": "verified"
+              }
+            },
+            "required": ["subjectStatus"]
+          },
+          "then": {
+            "properties": {
+              "evidence": {
+                "minItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "disclosureClass": {
+                "const": "private-never-publish"
+              }
+            },
+            "required": ["disclosureClass"]
+          },
+          "then": {
+            "properties": {
+              "repositoryHandling": {
+                "const": "do-not-store"
+              },
+              "evidence": {
+                "maxItems": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "priority": {
+                "const": "rejected"
+              }
+            },
+            "required": ["priority"]
+          },
+          "then": {
+            "properties": {
+              "verificationMode": {
+                "const": "invalid-generalization"
+              },
+              "evidenceStrength": {
+                "const": "rejected"
+              },
+              "subjectStatus": {
+                "const": "not-applicable"
+              },
+              "repositoryHandling": {
+                "const": "do-not-store"
+              },
+              "evidence": {
+                "maxItems": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "repositoryHandling": {
+                "const": "public-link-only"
+              }
+            },
+            "required": ["repositoryHandling"]
+          },
+          "then": {
+            "properties": {
+              "disclosureClass": {
+                "const": "public"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -25,6 +25,7 @@
     "security:signatures": "pnpm audit signatures",
     "security:check": "pnpm security:audit && pnpm security:signatures",
     "sync:writing": "node scripts/sync-writing.mjs",
+    "verify:links": "node scripts/check-links.mjs",
     "verify:release": "node scripts/verify-release.mjs",
     "fix": "pnpm lint:style:fix && pnpm lint:eslint:fix && pnpm lint:prettier:fix",
     "prepare": "husky"
