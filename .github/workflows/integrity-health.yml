@@ -20,7 +20,10 @@ jobs:
           node-version: "24"
       - name: Verify release manifest and every deployed asset
         run: node scripts/verify-release.mjs --base-url https://yusuke-hayashi.com
+      # Each verification below runs even when an earlier one fails. A single
+      # failing claim must not hide the state of the remaining claims.
       - name: Verify identity signatures and public claims
+        if: "!cancelled()"
         shell: bash
         run: |
           curl --fail --silent --show-error \
@@ -29,6 +32,7 @@ jobs:
             --output verify-identity.mjs
           node verify-identity.mjs --report identity-health.json
       - name: Verify security headers and RUM absence
+        if: "!cancelled()"
         shell: bash
         run: |
           curl --fail --silent --show-error \
@@ -47,3 +51,77 @@ jobs:
           name: production-integrity-${{ github.run_id }}
           path: identity-health.json
           retention-days: 30
+
+  # Published bytes are verified by hash, which says nothing about whether the
+  # destinations they name still exist. External links are checked separately so
+  # that an unreachable third party cannot mask an integrity failure.
+  verify-links:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout link checker source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: "24"
+      - name: Verify every published external link
+        run: node scripts/check-links.mjs --base-url https://yusuke-hayashi.com
+
+  # An unattended schedule that only turns a check red is easy to stop reading.
+  # Failures therefore open a tracking issue, which notifies and stays visible
+  # until it is closed.
+  report-failure:
+    needs: [verify-production, verify-links]
+    if: >-
+      always() && github.event_name == 'schedule' &&
+      contains(needs.*.result, 'failure')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Open a tracking issue for the failing schedule
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          PRODUCTION_RESULT: ${{ needs.verify-production.result }}
+          LINKS_RESULT: ${{ needs.verify-links.result }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          title='Production integrity health is failing'
+          existing="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open \
+            --limit 100 --json number,title \
+            --jq "map(select(.title == \"$title\")) | .[0].number // empty")"
+
+          if [[ -n "$existing" ]]; then
+            echo "Issue #${existing} already tracks this failure."
+            exit 0
+          fi
+
+          {
+            echo 'The daily production integrity schedule failed.'
+            echo
+            echo '| Job | Result |'
+            echo '| --- | --- |'
+            echo "| verify-production | ${PRODUCTION_RESULT} |"
+            echo "| verify-links | ${LINKS_RESULT} |"
+            echo
+            echo "First failing run: ${RUN_URL}"
+            echo
+            echo 'Reproduce locally:'
+            echo
+            echo '```sh'
+            echo 'node scripts/verify-release.mjs --base-url https://yusuke-hayashi.com'
+            echo 'node scripts/check-links.mjs --base-url https://yusuke-hayashi.com'
+            echo 'curl -sO https://yusuke-hayashi.com/.well-known/verify-identity.mjs'
+            echo 'node verify-identity.mjs'
+            echo '```'
+            echo
+            echo 'One issue is opened per failure streak. Close it once the'
+            echo 'schedule is green again; a later failure opens a new one.'
+          } > issue-body.md
+
+          gh issue create --repo "$GITHUB_REPOSITORY" \
+            --title "$title" --body-file issue-body.md
