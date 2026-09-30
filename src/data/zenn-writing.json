@@ -2,6 +2,36 @@
   "source": "https://zenn.dev/yhay81/feed?all=1",
   "entries": [
     {
+      "date": "2026-08-23",
+      "title": "AIエージェントシステムの費用はどう決まる？API利用料から運用費まで",
+      "url": "https://zenn.dev/yhay81/articles/202608-llm-api-cost-guide",
+      "external": true
+    },
+    {
+      "date": "2026-08-23",
+      "title": "AIエージェントシステム観測の基本構造：費用・遅延・品質をつなぐ",
+      "url": "https://zenn.dev/yhay81/articles/202608-llm-api-observability-guide",
+      "external": true
+    },
+    {
+      "date": "2026-08-22",
+      "title": "LLM APIの提供経路を理解する：AWS・GCP・Azure・直API・AI Gatewayの違い",
+      "url": "https://zenn.dev/yhay81/articles/202608-llm-api-landscape",
+      "external": true
+    },
+    {
+      "date": "2026-08-22",
+      "title": "LLM APIの費用はなぜ増える？コスト構造と最適化の基本",
+      "url": "https://zenn.dev/yhay81/articles/202608-llm-api-cost-guide-for-beginners",
+      "external": true
+    },
+    {
+      "date": "2026-08-22",
+      "title": "LLM APIコスト最適化 実践教科書",
+      "url": "https://zenn.dev/yhay81/books/llm-api-cost-optimization",
+      "external": true
+    },
+    {
       "date": "2026-07-28",
       "title": "OpenTelemetry Collectorの永続キューはどこまで守れる？強制終了とACK（成功応答）喪失を実測",
       "url": "https://zenn.dev/yhay81/articles/202607-otel-collector-persistent-queue",
