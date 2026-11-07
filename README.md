@@ -161,6 +161,14 @@ checks and a dependency audit, verifies two reproducible builds, issues SLSA
 artifact and SPDX SBOM attestations, and deploys directly to Cloudflare Workers
 Static Assets. No Worker code runs on requests.
 
+Pull requests run only the checks and builds, and merging deploys nothing. A
+release is a manual run of the workflow from `main`, which repeats the checks
+for the merged commit and then attests and deploys exactly what it built:
+
+```sh
+gh workflow run cloudflare.yml --ref main
+```
+
 `build.format: "file"` and
 `assets.html_handling: "drop-trailing-slash"` preserve extensionless URLs such
 as `/keys` without redirects. The sitemap is a static endpoint at
@@ -175,11 +183,11 @@ standard revalidation behavior.
 
 After deployment, CI verifies every asset in the release manifest, the
 published identity CLI, security headers, and the absence of RUM. A separate
-daily workflow monitors the deployed bytes and identity claims, including DNS.
+weekly workflow monitors the deployed bytes and identity claims, including DNS.
 
 Hash verification proves that the published bytes are the built bytes. It says
 nothing about whether the destinations those bytes name still exist, so the
-same daily workflow requests every external link as an independent job. A
+same weekly workflow requests every external link as an independent job. A
 third party that is merely unreachable therefore cannot mask an integrity
 failure, and neither failure can go unread: a failing schedule opens a tracking
 issue instead of only turning a check red.

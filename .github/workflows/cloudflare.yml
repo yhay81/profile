@@ -1,5 +1,8 @@
 name: Deploy Astro site to Cloudflare
 
+# Pull requests run the checks and the reproducible build. A manual run from
+# main repeats them for the merged commit, then attests and deploys exactly
+# what it built. Merging alone deploys nothing.
 on:
   pull_request:
   workflow_dispatch:
@@ -111,14 +114,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: node dist/.well-known/verify-identity.mjs --artifact-dir dist --local-only --report identity-health.json
       - name: Upload verifiable site artifact
-        if: github.event_name == 'push'
+        if: github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: site-dist-${{ github.sha }}
           path: site-dist.tar.gz
           retention-days: 30
       - name: Upload identity attestation subjects
-        if: github.event_name == 'push'
+        if: github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: identity-subjects-${{ github.sha }}
@@ -130,7 +133,7 @@ jobs:
           retention-days: 30
 
   attest:
-    if: github.event_name == 'push'
+    if: github.ref == 'refs/heads/main'
     permissions:
       artifact-metadata: write
       attestations: write
@@ -159,7 +162,7 @@ jobs:
           sbom-path: release/site.spdx.json
 
   deploy:
-    if: github.event_name == 'push'
+    if: github.ref == 'refs/heads/main'
     environment:
       name: production
       url: https://yusuke-hayashi.com
@@ -218,7 +221,7 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
   verify-deployment:
-    if: github.event_name == 'push'
+    if: github.ref == 'refs/heads/main'
     permissions:
       attestations: read
       contents: read
