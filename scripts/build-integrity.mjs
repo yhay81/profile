@@ -118,6 +118,30 @@ function pageContentSecurityPolicy(html, file) {
   return policy;
 }
 
+// Both policies forbid style and event-handler attributes outright
+// (style-src-attr and script-src-attr 'none'). Browsers discard such attributes
+// and report it only in the console, so fail the build rather than ship markup
+// that cannot work.
+function assertNoInlineAttributes(html, file) {
+  const markup = html
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/(<(script|style)\b[^>]*>)[\s\S]*?(<\/\2>)/gi, "$1$3");
+  for (const tag of markup.matchAll(
+    /<[a-z][a-z0-9-]*((?:[^>"']|"[^"]*"|'[^']*')*)>/gi,
+  )) {
+    for (const attribute of tag[1].matchAll(
+      /([^\s"'>/=]+)(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s"'=<>`]+))?/g,
+    )) {
+      const name = attribute[1].toLowerCase();
+      if (name === "style" || /^on[a-z]+$/.test(name)) {
+        throw new Error(
+          `${file} has a ${name} attribute, which its CSP blocks`,
+        );
+      }
+    }
+  }
+}
+
 async function generatePerformanceReport({ commit, checkedAt }) {
   const allFiles = await walk(DIST);
   const htmlFiles = allFiles.filter((file) => file.endsWith(".html"));
@@ -229,6 +253,7 @@ async function generateContentSecurityPolicy() {
   for (const file of htmlFiles) {
     const html = await readFile(join(DIST, file), "utf8");
     const pagePolicy = pageContentSecurityPolicy(html, file);
+    assertNoInlineAttributes(html, file);
     for (const match of html.matchAll(
       /<script\b([^>]*)>([\s\S]*?)<\/script>/gi,
     )) {

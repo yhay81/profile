@@ -11,22 +11,22 @@ const { currentPath } = Astro.props;
 <header class="header">
   <nav class="nav" aria-label="Primary">
     <a aria-label={`${PROFILE_NAME} — home`} class="brand" href="/">
-      <span aria-hidden="true" class="prompt">❯</span>
+      <span aria-hidden="true" class="prompt">
+        ❯
+      </span>
       <span class="name">{PROFILE_NAME}</span>
     </a>
     <ul class="links">
-      {
-        NAV_LINKS.map((link) => (
-          <li>
-            <a
-              aria-current={currentPath === link.href ? "page" : undefined}
-              href={link.href}
-            >
-              {link.label}
-            </a>
-          </li>
-        ))
-      }
+      {NAV_LINKS.map((link) => (
+        <li>
+          <a
+            aria-current={currentPath === link.href ? "page" : undefined}
+            href={link.href}
+          >
+            {link.label}
+          </a>
+        </li>
+      ))}
     </ul>
   </nav>
 </header>

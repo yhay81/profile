@@ -182,28 +182,30 @@ node verify-identity.mjs`;
 
       <TrustGraph />
 
-      <h2 class="heading" id="identity-proofs">The proofs</h2>
+      <h2 class="heading" id="identity-proofs">
+        The proofs
+      </h2>
 
       <div class="cards">
-        {
-          PROOF_CARDS.map((card) => (
-            <article class="card reveal">
-              <h3 class="cardPair">{card.pair}</h3>
-              <p class="cardMethod">{card.method}</p>
-              <a
-                class="cardLink"
-                href={card.href}
-                rel={card.external ? "noreferrer" : undefined}
-                target={card.external ? "_blank" : undefined}
-              >
-                {card.linkText} ↗
-              </a>
-            </article>
-          ))
-        }
+        {PROOF_CARDS.map((card) => (
+          <article class="card reveal">
+            <h3 class="cardPair">{card.pair}</h3>
+            <p class="cardMethod">{card.method}</p>
+            <a
+              class="cardLink"
+              href={card.href}
+              rel={card.external ? "noreferrer" : undefined}
+              target={card.external ? "_blank" : undefined}
+            >
+              {card.linkText} ↗
+            </a>
+          </article>
+        ))}
       </div>
 
-      <h2 class="heading" id="humanity-status">Humanity status</h2>
+      <h2 class="heading" id="humanity-status">
+        Humanity status
+      </h2>
 
       <aside
         class="humanityStatus reveal"
@@ -226,15 +228,17 @@ node verify-identity.mjs`;
         </p>
         <div class="statusLinks">
           <a href="/.well-known/attestations/index.json">public registry ↗</a>
-          <a href="/.well-known/attestations/policy.json"
-            >verification policy ↗</a
-          >
+          <a href="/.well-known/attestations/policy.json">
+            verification policy ↗
+          </a>
         </div>
       </aside>
 
       <ReleaseIntegrity />
 
-      <h2 class="heading" id="verify-it-yourself">Verify it yourself</h2>
+      <h2 class="heading" id="verify-it-yourself">
+        Verify it yourself
+      </h2>
 
       <p class="bodyText">
         Start from the pinned release policy: OIDC issuer, repository, workflow,
@@ -252,10 +256,9 @@ node verify-identity.mjs`;
 
       <p class="bodyText">
         Once those independent inputs are pinned, the remaining checks take
-        about two minutes. Details live on{" "}
-        <a href="/keys">/keys</a> and <a href="/proofs">/proofs</a>; the{" "}
-        <a href="/siwe">SIWE demo</a> shows the same Ethereum signature scheme working
-        live in your browser.
+        about two minutes. Details live on <a href="/keys">/keys</a> and{" "}
+        <a href="/proofs">/proofs</a>; the <a href="/siwe">SIWE demo</a> shows
+        the same Ethereum signature scheme working live in your browser.
       </p>
 
       <CodeBlock
@@ -268,9 +271,7 @@ node verify-identity.mjs`;
       <h2 class="heading">Machine-readable identity</h2>
 
       <p class="bodyText">
-        The signed <a href="/.well-known/identity.json">identity manifest</a>{
-          " "
-        }
+        The signed <a href="/.well-known/identity.json">identity manifest</a>{" "}
         pins every public identifier, the hash of its{" "}
         <a href="/.well-known/identity-history.json">append-only history</a>,
         and the exact verifier bundle. A scheduled health check uses the same
@@ -278,8 +279,8 @@ node verify-identity.mjs`;
         GitHub Actions also packages the manifest, schemas, policy, verifier,
         keys, and history into a deterministic identity release and attests both
         the manifest and archive with Sigstore/SLSA. The{" "}
-        <a href="#release-integrity">release ledger above</a> separately binds every
-        deployed byte to its source commit.
+        <a href="#release-integrity">release ledger above</a> separately binds
+        every deployed byte to its source commit.
       </p>
 
       <CodeBlock
@@ -299,11 +300,12 @@ node verify-identity.mjs`;
       </p>
 
       <p class="updated">
-        <a href={`https://app.ens.domains/${ENS_NAME}`}>{ENS_NAME}</a> resolves to
-        this identity account in both directions. Its contenthash names an{" "}
+        <a href={`https://app.ens.domains/${ENS_NAME}`}>{ENS_NAME}</a> resolves
+        to this identity account in both directions. Its contenthash names an{" "}
         <a href={IPFS_IDENTITY_GATEWAY} rel="noreferrer" target="_blank">
           immutable IPFS capsule
-        </a>, while the signed HTTPS manifest remains the current revocation and
+        </a>
+        , while the signed HTTPS manifest remains the current revocation and
         monitoring surface. ENS remains an optional naming adapter rather than
         the root of trust.
       </p>

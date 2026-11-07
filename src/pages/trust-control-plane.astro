@@ -92,7 +92,6 @@ gh attestation verify identity.json \\
     slot="head"
     type="application/ld+json"
   />
-
   <main>
     <article>
       <section>
@@ -137,13 +136,11 @@ gh attestation verify identity.json \\
         <nav class="articleToc" aria-label="On this page">
           <p class="tocLabel">On this page</p>
           <ol>
-            {
-              TABLE_OF_CONTENTS.map((item) => (
-                <li>
-                  <a href={`#${item.id}`}>{item.label}</a>
-                </li>
-              ))
-            }
+            {TABLE_OF_CONTENTS.map((item) => (
+              <li>
+                <a href={`#${item.id}`}>{item.label}</a>
+              </li>
+            ))}
           </ol>
         </nav>
 
@@ -151,19 +148,19 @@ gh attestation verify identity.json \\
           <summary>On this page</summary>
           <nav aria-label="On this page">
             <ol>
-              {
-                TABLE_OF_CONTENTS.map((item) => (
-                  <li>
-                    <a href={`#${item.id}`}>{item.label}</a>
-                  </li>
-                ))
-              }
+              {TABLE_OF_CONTENTS.map((item) => (
+                <li>
+                  <a href={`#${item.id}`}>{item.label}</a>
+                </li>
+              ))}
             </ol>
           </nav>
         </details>
 
         <h2 class="heading" id="trust-problem">
-          <a class="headingLink" href="#trust-problem">The trust problem</a>
+          <a class="headingLink" href="#trust-problem">
+            The trust problem
+          </a>
         </h2>
 
         <p class="bodyText">
@@ -239,19 +236,21 @@ gh attestation verify identity.json \\
 
         <ul class="itemList">
           <li>
-            <a href="/.well-known/identity.json"
-              ><code class="inlineCode">/.well-known/identity.json</code></a
-            > names the current identifiers, validity window, verifier hash, audit-history
-            hash, and proof registry.
+            <a href="/.well-known/identity.json">
+              <code class="inlineCode">/.well-known/identity.json</code>
+            </a>{" "}
+            names the current identifiers, validity window, verifier hash,
+            audit-history hash, and proof registry.
           </li>
           <li>
             The deterministic identity archive packages the exact public
             materials required for independent verification.
           </li>
           <li>
-            <a href="/.well-known/release.json"
-              ><code class="inlineCode">/.well-known/release.json</code></a
-            > names the deployed source commit.
+            <a href="/.well-known/release.json">
+              <code class="inlineCode">/.well-known/release.json</code>
+            </a>{" "}
+            names the deployed source commit.
           </li>
           <li>
             The manifest also carries an OpenPGP detached signature for WKD,
@@ -314,7 +313,9 @@ gh attestation verify identity.json \\
         </p>
 
         <h2 class="heading" id="monitoring">
-          <a class="headingLink" href="#monitoring">Monitoring</a>
+          <a class="headingLink" href="#monitoring">
+            Monitoring
+          </a>
         </h2>
 
         <p class="bodyText">
@@ -376,8 +377,8 @@ gh attestation verify identity.json \\
         </ol>
 
         <p class="bodyText">
-          The <a href="/identity">identity page</a> links the public verifier, release
-          archive, trust-bootstrap procedure, and recovery status.
+          The <a href="/identity">identity page</a> links the public verifier,
+          release archive, trust-bootstrap procedure, and recovery status.
         </p>
 
         <footer class="articleFooter">

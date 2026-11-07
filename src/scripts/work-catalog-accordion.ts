@@ -1,20 +1,25 @@
+// The site navigates with native cross-document View Transitions rather than
+// Astro's client router, so this module runs once per document load. Astro's
+// router events such as `astro:page-load` are never dispatched here.
 const ROOT_SELECTOR = "[data-work-catalog]";
 const GROUP_SELECTOR = "details.catalogGroup";
 
 function hashTarget(root: HTMLElement) {
-  const hash = decodeURIComponent(window.location.hash.slice(1));
-  const target = hash ? document.getElementById(hash) : null;
+  let id: string;
+  try {
+    id = decodeURIComponent(window.location.hash.slice(1));
+  } catch {
+    // Malformed percent-encoding cannot name an element.
+    return null;
+  }
 
+  const target = id ? document.getElementById(id) : null;
   return target && root.contains(target) ? target : null;
 }
 
-function groupForTarget(target: HTMLElement) {
-  return target.matches(GROUP_SELECTOR)
-    ? (target as HTMLDetailsElement)
-    : target.closest<HTMLDetailsElement>(GROUP_SELECTOR);
-}
-
 function alignTarget(target: HTMLElement) {
+  // Align after the opened collection has been laid out. Browsers that reveal
+  // fragment targets inside closed <details> natively still skip this scroll.
   window.requestAnimationFrame(() => {
     window.requestAnimationFrame(() => {
       target.scrollIntoView({ block: "start" });
@@ -23,51 +28,37 @@ function alignTarget(target: HTMLElement) {
 }
 
 function enhanceWorkCatalog(root: HTMLElement) {
-  if (root.dataset.workCatalogReady === "true") return;
-
-  const groups = [...root.querySelectorAll<HTMLDetailsElement>(GROUP_SELECTOR)];
+  const groups = root.querySelectorAll<HTMLDetailsElement>(GROUP_SELECTOR);
   if (groups.length === 0) return;
-
-  const hashOpenedGroups = new WeakSet<HTMLDetailsElement>();
 
   const revealHashTarget = () => {
     const target = hashTarget(root);
     if (!target) return;
 
-    const group = groupForTarget(target);
-    if (group && !group.open) {
-      hashOpenedGroups.add(group);
-      group.open = true;
-    }
+    const group = target.closest<HTMLDetailsElement>(GROUP_SELECTOR);
+    if (group) group.open = true;
 
     alignTarget(target);
   };
 
-  groups.forEach((group) => {
+  for (const group of groups) {
     group.addEventListener("toggle", () => {
-      if (hashOpenedGroups.delete(group) || !group.open) return;
+      if (!group.open) return;
+
+      // Keep a fragment that already points into this collection, including
+      // one the browser revealed natively. Otherwise make the opened
+      // collection shareable without adding a history entry.
+      const target = hashTarget(root);
+      if (target && group.contains(target)) return;
+
       window.history.replaceState(null, "", `#${group.id}`);
     });
-  });
+  }
 
-  const abortController = new AbortController();
-  window.addEventListener("hashchange", revealHashTarget, {
-    signal: abortController.signal,
-  });
-  document.addEventListener(
-    "astro:before-swap",
-    () => abortController.abort(),
-    { once: true, signal: abortController.signal },
-  );
-
-  root.dataset.workCatalogReady = "true";
+  window.addEventListener("hashchange", revealHashTarget);
   revealHashTarget();
 }
 
-function enhanceWorkCatalogs() {
-  document.querySelectorAll<HTMLElement>(ROOT_SELECTOR).forEach((root) => {
-    enhanceWorkCatalog(root);
-  });
+for (const root of document.querySelectorAll<HTMLElement>(ROOT_SELECTOR)) {
+  enhanceWorkCatalog(root);
 }
-
-document.addEventListener("astro:page-load", enhanceWorkCatalogs);

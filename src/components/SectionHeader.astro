@@ -26,17 +26,15 @@ const {
   <span class="no">{no}</span>
   <span class="text">{label}</span>
 </p>
-{
-  level === 1 ? (
-    <h1 class="title" data-view-transition-name={transitionName}>
-      {title}
-    </h1>
-  ) : (
-    <h2 class="title" data-view-transition-name={transitionName}>
-      {title}
-    </h2>
-  )
-}
+{level === 1 ? (
+  <h1 class="title" data-view-transition-name={transitionName}>
+    {title}
+  </h1>
+) : (
+  <h2 class="title" data-view-transition-name={transitionName}>
+    {title}
+  </h2>
+)}
 
 <style>
   .sectionLabel {

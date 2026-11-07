@@ -35,16 +35,16 @@ const TOKEN_CLASSES: Readonly<Record<CodeTokenKind, string>> = {
 
 <figure class="codeFrame">
   <figcaption class="codeHeader">
-    <span aria-hidden="true" class="codePrompt">❯</span>
+    <span aria-hidden="true" class="codePrompt">
+      ❯
+    </span>
     <span>{label}</span>
     <span class="codeLanguage">{language}</span>
   </figcaption>
   <pre
     aria-label={`${label} (${language})`}
-    class:list={[
-      "codeBlock",
-      { wrap },
-    ]}><code>{
+    class:list={["codeBlock", { wrap }]}
+  ><code>{
         highlightedCode.map((token) =>
           token.kind ? (
             <span class={TOKEN_CLASSES[token.kind]}>{token.value}</span>
