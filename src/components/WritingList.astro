@@ -13,26 +13,24 @@ const { entries } = Astro.props;
 
 <div class="writingRegion">
   <ol class="writingList">
-    {
-      entries.map((entry) => (
-        <li class="item">
-          <time class="date" datetime={entry.date}>
-            {entry.date}
-          </time>
-          <a
-            class="link"
-            data-view-transition-name={entry.transitionName}
-            href={entry.url}
-            lang={entry.language}
-            rel={entry.external ? "noreferrer" : undefined}
-            target={entry.external ? "_blank" : undefined}
-          >
-            {entry.title}
-            {entry.external && " ↗"}
-          </a>
-        </li>
-      ))
-    }
+    {entries.map((entry) => (
+      <li class="item">
+        <time class="date" datetime={entry.date}>
+          {entry.date}
+        </time>
+        <a
+          class="link"
+          data-view-transition-name={entry.transitionName}
+          href={entry.url}
+          lang={entry.language}
+          rel={entry.external ? "noreferrer" : undefined}
+          target={entry.external ? "_blank" : undefined}
+        >
+          {entry.title}
+          {entry.external && " ↗"}
+        </a>
+      </li>
+    ))}
   </ol>
 </div>
 

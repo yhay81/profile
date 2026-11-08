@@ -32,9 +32,19 @@ const {
 const canonical = new URL(path, PROFILE_URL).href;
 const ogImageAbs = new URL(ogImage, PROFILE_URL).href;
 
-// Prerender internal links on hover. Browsers without Speculation Rules ignore it.
+// Prerender internal page links on hover. Pages have extensionless paths, so a
+// path with a dot is a file such as a key, proof, manifest or feed, which
+// prerendering would only fetch in vain. Browsers without Speculation Rules
+// ignore the script.
 const speculationRules = JSON.stringify({
-  prerender: [{ where: { href_matches: "/*" }, eagerness: "moderate" }],
+  prerender: [
+    {
+      where: {
+        and: [{ href_matches: "/*" }, { not: { href_matches: "/*.*" } }],
+      },
+      eagerness: "moderate",
+    },
+  ],
 });
 const firstVisitScript = `
       if (!sessionStorage.getItem("visited")) {
@@ -83,26 +93,23 @@ Astro.csp?.insertScriptHash({
     <meta content={ogType} property="og:type" />
     <meta content="en_US" property="og:locale" />
     <meta content={ogImageAbs} property="og:image" />
-    {
-      ogType === "article" && (
-        <>
-          {author && <meta content={author} property="article:author" />}
-          {datePublished && (
-            <meta content={datePublished} property="article:published_time" />
-          )}
-          {dateModified && (
-            <meta content={dateModified} property="article:modified_time" />
-          )}
-        </>
-      )
-    }
+    {ogType === "article" && (
+      <>
+        {author && <meta content={author} property="article:author" />}
+        {datePublished && (
+          <meta content={datePublished} property="article:published_time" />
+        )}
+        {dateModified && (
+          <meta content={dateModified} property="article:modified_time" />
+        )}
+      </>
+    )}
     <meta content="summary_large_image" name="twitter:card" />
     <meta content={title} name="twitter:title" />
     <meta content={description} name="twitter:description" />
     <meta content={ogImageAbs} name="twitter:image" />
 
     <script is:inline set:html={speculationRules} type="speculationrules" />
-
     <slot name="head" />
   </head>
   <body>

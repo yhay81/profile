@@ -35,22 +35,20 @@ import { PROFILE_EMAIL, SOCIAL_LINKS } from "@/lib/site";
   <p aria-atomic="true" aria-live="polite" class="copyStatus" role="status"></p>
 
   <div class="links">
-    {
-      SOCIAL_LINKS.map((link) => (
-        <a
-          class="link"
-          href={link.url}
-          rel={link.external ? "noopener noreferrer" : undefined}
-          target={link.external ? "_blank" : undefined}
-        >
-          <Icon name={link.icon} title={link.name} />
-          <span class="linkText">
-            <span class="linkName">{link.name}</span>
-            <span class="linkDescription">{link.description}</span>
-          </span>
-        </a>
-      ))
-    }
+    {SOCIAL_LINKS.map((link) => (
+      <a
+        class="link"
+        href={link.url}
+        rel={link.external ? "noopener noreferrer" : undefined}
+        target={link.external ? "_blank" : undefined}
+      >
+        <Icon name={link.icon} title={link.name} />
+        <span class="linkText">
+          <span class="linkName">{link.name}</span>
+          <span class="linkDescription">{link.description}</span>
+        </span>
+      </a>
+    ))}
   </div>
 </section>
 

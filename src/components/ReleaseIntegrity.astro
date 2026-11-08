@@ -45,25 +45,34 @@ const CHECKS = [
       <a
         class="value code"
         href="https://github.com/yhay81/profile/commits/main"
-        id="commit-link">—</a
+        id="commit-link"
       >
+        —
+      </a>
     </div>
     <div class="ledgerRow">
       <span class="key">assetSet.sha256</span>
-      <code class="value digest" id="asset-digest">—</code>
+      <code class="value digest" id="asset-digest">
+        —
+      </code>
     </div>
     <div class="ledgerRow">
       <span class="key">deployed.assets</span>
-      <span class="value" id="asset-count">—</span>
+      <span class="value" id="asset-count">
+        —
+      </span>
     </div>
     <div class="ledgerRow">
       <span class="key">assetSet.scope</span>
-      <span class="value">exact assets + source-preserving edge transforms</span
-      >
+      <span class="value">
+        exact assets + source-preserving edge transforms
+      </span>
     </div>
     <div class="ledgerRow">
       <span class="key">edge.transforms</span>
-      <span class="value" id="edge-transforms">—</span>
+      <span class="value" id="edge-transforms">
+        —
+      </span>
     </div>
     <div class="ledgerRow">
       <span class="key">build.provenance</span>
@@ -71,8 +80,10 @@ const CHECKS = [
         class="value"
         href="https://github.com/yhay81/profile/attestations"
         rel="noreferrer"
-        target="_blank">SLSA v1 + Sigstore/Rekor ↗</a
+        target="_blank"
       >
+        SLSA v1 + Sigstore/Rekor ↗
+      </a>
     </div>
     <div class="ledgerRow">
       <span class="key">runtime.code</span>
@@ -89,22 +100,21 @@ const CHECKS = [
 
   <div class="contract">
     <div class="contractHeader" aria-hidden="true">
-      <span>route</span><span>HTML gzip</span><span>JS gzip</span><span
-        >result</span
-      >
+      <span>route</span>
+      <span>HTML gzip</span>
+      <span>JS gzip</span>
+      <span>result</span>
     </div>
-    {
-      ["/", "/identity", "/siwe"].map((path) => (
-        <div class="contractRow" data-route={path}>
-          <code>{path}</code>
-          <span data-metric="html">—</span>
-          <span data-metric="js">—</span>
-          <span class="result" data-metric="status">
-            pending
-          </span>
-        </div>
-      ))
-    }
+    {["/", "/identity", "/siwe"].map((path) => (
+      <div class="contractRow" data-route={path}>
+        <code>{path}</code>
+        <span data-metric="html">—</span>
+        <span data-metric="js">—</span>
+        <span class="result" data-metric="status">
+          pending
+        </span>
+      </div>
+    ))}
   </div>
   <p class="zeroContract" id="zero-contract">
     0 third parties · 0 fonts · 0 RUM
@@ -133,20 +143,18 @@ const CHECKS = [
   </div>
 
   <ol class="checks" id="verification-checks">
-    {
-      CHECKS.map(([id, label], index) => (
-        <li data-check={id} data-status="idle">
-          <span class="checkIndex">{String(index + 1).padStart(2, "0")}</span>
-          <span class="checkBody">
-            <strong>{label}</strong>
-            <span class="checkDetail">waiting</span>
-          </span>
-          <span aria-hidden="true" class="checkMark">
-            ·
-          </span>
-        </li>
-      ))
-    }
+    {CHECKS.map(([id, label], index) => (
+      <li data-check={id} data-status="idle">
+        <span class="checkIndex">{String(index + 1).padStart(2, "0")}</span>
+        <span class="checkBody">
+          <strong>{label}</strong>
+          <span class="checkDetail">waiting</span>
+        </span>
+        <span aria-hidden="true" class="checkMark">
+          ·
+        </span>
+      </li>
+    ))}
   </ol>
 
   <details class="manual" open>
@@ -168,8 +176,10 @@ const CHECKS = [
     <a
       href="https://github.com/yhay81/profile/actions"
       rel="noreferrer"
-      target="_blank">build logs ↗</a
+      target="_blank"
     >
+      build logs ↗
+    </a>
   </nav>
 </section>
 

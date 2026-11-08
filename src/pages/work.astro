@@ -1,6 +1,7 @@
 ---
 import { WORK_CATALOG, WORK_CATALOG_COUNT } from "@/data/work-catalog";
 import Base from "@/layouts/Base.astro";
+import { sha256CspHash } from "@/lib/csp";
 
 const FEATURED_PROJECTS = [
   {
@@ -90,6 +91,27 @@ function workMark(id: string, name: string) {
 
   return (words[0] ?? name).slice(0, 2).toUpperCase();
 }
+
+// Each visual signature places its mark from the item's position in the
+// index. The CSP forbids style attributes, so the coordinates ship as one
+// hashed style element rather than as per-element inline styles.
+const visualPositionCss = WORK_CATALOG.flatMap((group, groupIndex) =>
+  group.items.map((item, itemIndex) => {
+    const x = 18 + ((itemIndex * 17 + groupIndex * 11) % 64);
+    const y = 24 + ((itemIndex * 13 + groupIndex * 7) % 52);
+    return `[id="${item.id}"]>.catalogItemVisual{--visual-x:${x}%;--visual-y:${y}%}`;
+  }),
+).join("");
+
+Astro.csp?.insertStyleHash({
+  hash: sha256CspHash(visualPositionCss),
+  kind: "element",
+});
+
+// Built here rather than as an empty <style set:html> in the template, which
+// Stylelint would report as an empty stylesheet. Linting the generated rules
+// adds nothing, and the CSP hash above covers the element's exact text.
+const visualPositionStyle = `<style>${visualPositionCss}</style>`;
 ---
 
 <Base
@@ -97,12 +119,18 @@ function workMark(id: string, name: string) {
   path="/work"
   title="Selected Work | Yusuke Hayashi"
 >
+  <Fragment set:html={visualPositionStyle} slot="head" />
+
   <main class="workMain">
     <section aria-labelledby="work-title" class="workHero">
       <div class="heroCopy">
-        <p class="eyebrow"><span>00</span> Products &amp; open source</p>
+        <p class="eyebrow">
+          <span>00</span> Products &amp; open source
+        </p>
         <h1 data-view-transition-name="page-title" id="work-title">
-          Selected<br />Work
+          Selected
+          <br />
+          Work
         </h1>
         <p class="heroSummary">
           I turn ambiguous problems into production systems — AI products,
@@ -112,20 +140,18 @@ function workMark(id: string, name: string) {
 
       <nav aria-label="Featured projects" class="projectIndex">
         <ol>
-          {
-            FEATURED_PROJECTS.map((project) => (
-              <li>
-                <a href={`#${project.id}`}>
-                  <span class="indexNo">{project.index}</span>
-                  <span class="indexName">{project.name}</span>
-                  <span class="indexField">{project.field}</span>
-                  <span aria-hidden="true" class="indexArrow">
-                    ↘
-                  </span>
-                </a>
-              </li>
-            ))
-          }
+          {FEATURED_PROJECTS.map((project) => (
+            <li>
+              <a href={`#${project.id}`}>
+                <span class="indexNo">{project.index}</span>
+                <span class="indexName">{project.name}</span>
+                <span class="indexField">{project.field}</span>
+                <span aria-hidden="true" class="indexArrow">
+                  ↘
+                </span>
+              </a>
+            </li>
+          ))}
         </ol>
       </nav>
     </section>
@@ -170,7 +196,8 @@ function workMark(id: string, name: string) {
           </span>
           <span class="wasmStage">
             <span class="wasmHeadline">
-              The assistant<br />
+              The assistant
+              <br />
               that <strong>does</strong> the work.
             </span>
             <span class="wasmChat">
@@ -179,8 +206,7 @@ function workMark(id: string, name: string) {
                 Turn this outline into a finished launch brief.
               </span>
               <span class="chatAction">
-                <span aria-hidden="true">✓</span>
-                6 visible edits ready to review
+                <span aria-hidden="true">✓</span>6 visible edits ready to review
               </span>
             </span>
           </span>
@@ -189,7 +215,9 @@ function workMark(id: string, name: string) {
 
       <article class="project reveal" id="pylopdf">
         <div class="projectCopy">
-          <p class="projectLabel"><span>02</span> Python + Rust</p>
+          <p class="projectLabel">
+            <span>02</span> Python + Rust
+          </p>
           <h2>pylopdf</h2>
           <p class="projectRole">Creator and maintainer · MIT</p>
           <p class="projectSummary">
@@ -219,14 +247,17 @@ function workMark(id: string, name: string) {
           href="https://yhay81.github.io/pylopdf/"
         >
           <span class="pylopdfNav">
-            <span class="pyLogo">py<span>lo</span>pdf</span>
+            <span class="pyLogo">
+              py<span>lo</span>pdf
+            </span>
             <span>Docs</span>
             <span>API</span>
             <span>GitHub ↗</span>
           </span>
           <span class="pylopdfStage">
             <span class="pylopdfHeadline">
-              PDFs, with Python<br />
+              PDFs, with Python
+              <br />
               ergonomics and a<br />
               <em>Rust core.</em>
             </span>
@@ -243,7 +274,9 @@ function workMark(id: string, name: string) {
 
       <article class="project reveal" id="hayate">
         <div class="projectCopy">
-          <p class="projectLabel"><span>03</span> Web standards</p>
+          <p class="projectLabel">
+            <span>03</span> Web standards
+          </p>
           <h2>hayate</h2>
           <p class="projectRole">Creator and maintainer · MIT</p>
           <p class="projectSummary">
@@ -289,15 +322,21 @@ function workMark(id: string, name: string) {
             </span>
             <span class="docsContent">
               <span class="docsOverline">QUICK START</span>
-              <span class="docsTitle"
-                >Web standards,<br />native to Python.</span
-              >
+              <span class="docsTitle">
+                Web standards,
+                <br />
+                native to Python.
+              </span>
               <span class="docsText"> One request model. Every runtime. </span>
               <span class="codePanel">
-                <span><i>from</i> hayate <i>import</i> Hayate</span>
+                <span>
+                  <i>from</i> hayate <i>import</i> Hayate
+                </span>
                 <span>&nbsp;</span>
                 <span>app = Hayate()</span>
-                <span><b>@app.get</b>(<q>"/hello"</q>)</span>
+                <span>
+                  <b>@app.get</b>(<q>"/hello"</q>)
+                </span>
               </span>
             </span>
           </span>
@@ -306,7 +345,9 @@ function workMark(id: string, name: string) {
 
       <article class="project reveal" id="prooflock">
         <div class="projectCopy">
-          <p class="projectLabel"><span>04</span> PR verification integrity</p>
+          <p class="projectLabel">
+            <span>04</span> PR verification integrity
+          </p>
           <h2>ProofLock</h2>
           <p class="projectRole">Lead builder · Haya Inc. · Live GitHub App</p>
           <p class="projectSummary">
@@ -344,7 +385,8 @@ function workMark(id: string, name: string) {
           <span class="proofStage">
             <span class="proofKicker">PR VERIFICATION INTEGRITY</span>
             <span class="proofHeadline">
-              Protect the proof,<br />
+              Protect the proof,
+              <br />
               <strong>before merge.</strong>
             </span>
             <span class="proofPanel">
@@ -387,94 +429,91 @@ function workMark(id: string, name: string) {
       </header>
 
       <div class="catalogGroups" data-work-catalog>
-        {
-          WORK_CATALOG.map((group, groupIndex) => (
-            <details
-              class="catalogGroup"
-              id={`catalog-${group.id}`}
-              name="work-catalog"
-            >
-              <summary>
-                <span class="catalogGroupIndex">
-                  {String(groupIndex + 1).padStart(2, "0")}
-                </span>
-                <span class="catalogGroupHeading">
-                  <small>{group.label}</small>
-                  <b>{group.title}</b>
-                </span>
-                <span class="catalogGroupDescription">{group.description}</span>
-                <span class="catalogGroupAction">
-                  <small class="catalogGroupClosed">
-                    View {String(group.items.length).padStart(2, "0")} works
-                  </small>
-                  <small class="catalogGroupOpened">Close collection</small>
-                </span>
-                <i aria-hidden="true" class="catalogGroupToggle" />
-              </summary>
+        {WORK_CATALOG.map((group, groupIndex) => (
+          <details
+            class="catalogGroup"
+            id={`catalog-${group.id}`}
+            name="work-catalog"
+          >
+            <summary>
+              <span class="catalogGroupIndex">
+                {String(groupIndex + 1).padStart(2, "0")}
+              </span>
+              <span class="catalogGroupHeading">
+                <small>{group.label}</small>
+                <b>{group.title}</b>
+              </span>
+              <span class="catalogGroupDescription">{group.description}</span>
+              <span class="catalogGroupAction">
+                <small class="catalogGroupClosed">
+                  View {String(group.items.length).padStart(2, "0")} works
+                </small>
+                <small class="catalogGroupOpened">Close collection</small>
+              </span>
+              <i aria-hidden="true" class="catalogGroupToggle" />
+            </summary>
 
-              <div class="catalogItems">
-                {group.items.map((item, itemIndex) => (
-                  <article
-                    class:list={["catalogItem", { catalogItemLead: item.lead }]}
-                    id={item.id}
+            <div class="catalogItems">
+              {group.items.map((item, itemIndex) => (
+                <article
+                  class:list={["catalogItem", { catalogItemLead: item.lead }]}
+                  id={item.id}
+                >
+                  <div
+                    aria-hidden="true"
+                    class="catalogItemVisual"
+                    data-family={String(groupIndex + 1)}
                   >
-                    <div
-                      aria-hidden="true"
-                      class="catalogItemVisual"
-                      data-family={String(groupIndex + 1)}
-                      style={`--visual-x: ${
-                        18 + ((itemIndex * 17 + groupIndex * 11) % 64)
-                      }%; --visual-y: ${
-                        24 + ((itemIndex * 13 + groupIndex * 7) % 52)
-                      }%;`}
-                    >
-                      <span class="catalogVisualChrome">
-                        <i />
-                        <i />
-                        <i />
-                        <b>
-                          {String(groupIndex + 1).padStart(2, "0")}—
-                          {String(itemIndex + 1).padStart(2, "0")}
-                        </b>
-                      </span>
-                      <strong>{workMark(item.id, item.name)}</strong>
-                      <span class="catalogVisualTrace">
-                        <i />
-                        <b />
-                      </span>
-                    </div>
-                    <div class="catalogItemHeading">
-                      <p class="catalogItemMeta">
-                        {String(groupIndex + 1).padStart(2, "0")}.
+                    <span class="catalogVisualChrome">
+                      <i />
+                      <i />
+                      <i />
+                      <b>
+                        {String(groupIndex + 1).padStart(2, "0")}—
                         {String(itemIndex + 1).padStart(2, "0")}
-                        <span>·</span>
-                        {item.field}
-                      </p>
-                      <h3>{item.name}</h3>
-                    </div>
-                    <p class="catalogItemDescription">{item.description}</p>
-                    <p class="catalogItemSignal">{item.signal}</p>
-                    <div class="catalogItemLinks">
-                      {item.links.map((link) => (
-                        <a href={link.href}>{link.label} ↗</a>
-                      ))}
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </details>
-          ))
-        }
+                      </b>
+                    </span>
+                    <strong>{workMark(item.id, item.name)}</strong>
+                    <span class="catalogVisualTrace">
+                      <i />
+                      <b />
+                    </span>
+                  </div>
+                  <div class="catalogItemHeading">
+                    <p class="catalogItemMeta">
+                      {String(groupIndex + 1).padStart(2, "0")}.
+                      {String(itemIndex + 1).padStart(2, "0")}
+                      <span>·</span>
+                      {item.field}
+                    </p>
+                    <h3>{item.name}</h3>
+                  </div>
+                  <p class="catalogItemDescription">{item.description}</p>
+                  <p class="catalogItemSignal">{item.signal}</p>
+                  <div class="catalogItemLinks">
+                    {item.links.map((link) => (
+                      <a href={link.href}>{link.label} ↗</a>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </details>
+        ))}
       </div>
     </section>
 
     <section aria-labelledby="work-contact-title" class="workContact reveal">
-      <p class="eyebrow"><span>Next</span> Build with me</p>
+      <p class="eyebrow">
+        <span>Next</span> Build with me
+      </p>
       <h2 id="work-contact-title">
         Have a difficult workflow that should become a useful product?
       </h2>
       <div class="contactLinks">
-        <a class="contactPrimary" href="/#contact">Start a conversation</a>
+        <a class="contactPrimary" href="/#contact">
+          Start a conversation
+        </a>
         <a href="https://github.com/yhay81">See all repositories ↗</a>
       </div>
     </section>

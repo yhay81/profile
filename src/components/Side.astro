@@ -5,21 +5,19 @@ import { PROFILE_EMAIL, SOCIAL_LINKS } from "@/lib/site";
 
 <aside class="side">
   <ul class="socialList">
-    {
-      SOCIAL_LINKS.filter((link) => link.showInSide !== false).map((link) => (
-        <li>
-          <a
-            class="socialLink"
-            href={link.url}
-            rel={link.external ? "noopener noreferrer" : undefined}
-            target={link.external ? "_blank" : undefined}
-          >
-            <Icon name={link.icon} title={link.name} />
-            <span class="socialLabel">{link.name}</span>
-          </a>
-        </li>
-      ))
-    }
+    {SOCIAL_LINKS.filter((link) => link.showInSide !== false).map((link) => (
+      <li>
+        <a
+          class="socialLink"
+          href={link.url}
+          rel={link.external ? "noopener noreferrer" : undefined}
+          target={link.external ? "_blank" : undefined}
+        >
+          <Icon name={link.icon} title={link.name} />
+          <span class="socialLabel">{link.name}</span>
+        </a>
+      </li>
+    ))}
   </ul>
   <div class="linkWrapper">
     <a class="emailLink" href={`mailto:${PROFILE_EMAIL}`}>

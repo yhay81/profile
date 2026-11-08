@@ -49,7 +49,9 @@ The machine-readable
 are generated deterministically on every build. The same build derives the CSP
 hashes for inline scripts and styles, preventing unregistered inline code from
 running in production. Astro also emits a page-level CSP with Trusted Types
-enforcement and separate element/attribute directives.
+enforcement and separate element/attribute directives. Both policies forbid
+`style` and event-handler attributes. Browsers discard them and report it only
+in the console, so the build fails on any page that still contains one.
 
 ## Technical approach
 
@@ -59,13 +61,16 @@ purpose-specific client scripts. Web-platform features are preferred over
 application-level reimplementations:
 
 - **Selected work:** `/work` presents four detailed product and open-source
-  case studies plus two supporting projects. The product-window illustrations
-  are semantic HTML and CSS, so the page has no screenshot or image-download
-  cost.
+  case studies, then indexes every public project in five collections. The
+  collections form an exclusive `<details name>` accordion: opening one records
+  it in the URL fragment, and a fragment that names a project opens its
+  collection. The product-window illustrations are semantic HTML and CSS, so
+  the page has no screenshot or image-download cost.
 - **Navigation:** CSS-only cross-document View Transitions (`@view-transition`)
   keep the site shell stable, sequence page-content replacement, and share
   local article titles across list/detail views. The Speculation Rules API
-  prerenders internal links; there is no SPA router.
+  prerenders internal page links, skipping file links such as keys, proofs,
+  and feeds; there is no SPA router.
 - **Motion:** Scroll-driven Animations (`animation-timeline: view()`) for
   reveals and a CSS `steps()` typewriter effect. All motion is disabled under
   `prefers-reduced-motion`.
@@ -85,13 +90,17 @@ application-level reimplementations:
 - **Security headers:** The build derives a hash-based CSP. Cloudflare adds
   HSTS, COOP/CORP, Permissions Policy, `nosniff`, and clickjacking protection at
   the edge.
-- **Dependency security:** pnpm holds new releases for 24 hours, fails closed
-  when registry publication metadata is missing, audits moderate-and-higher
-  advisories, rejects publish-trust downgrades, and verifies registry
-  signatures in CI. A single version-specific exception covers
-  `@astrojs/check`'s pre-provenance `chokidar@4.0.3` dependency. Peer
-  dependencies are strict, with one package-scoped compatibility declaration
-  for `eslint-plugin-jsx-a11y@6.10.2` on the tested ESLint 10 toolchain.
+- **Dependency security:** pnpm 12 pins its own release binaries by integrity
+  in the lockfile and checks the lockfile against the supply-chain policies on
+  every install. It holds new releases for 24 hours, fails closed when registry
+  publication metadata is missing, and rejects publish-trust downgrades with no
+  exceptions; CI also audits moderate-and-higher advisories and verifies
+  registry signatures. Peer dependencies are strict with no exceptions: the
+  accessibility rules come from `eslint-plugin-jsx-a11y-x`, the maintained fork
+  that declares ESLint 10 support. One override moves the lint toolchain to
+  minimatch 11, the only line with a fix for GHSA-g3hv-75wg-m249, and one
+  package extension declares the `@emnapi/runtime` release that
+  `@astrojs/astro2tsx` 0.1.3 omits.
 - **TypeScript transition:** Native TypeScript 7 performs project-wide CLI type
   checking, while the official TypeScript 6 compatibility package supplies the
   stable Compiler API still required by Astro and typescript-eslint. Both paths
@@ -126,6 +135,9 @@ Astro optimizes the profile image at build time.
 
 ## Development
 
+Use Node.js 26 LTS, the version CI runs. `packageManager` pins pnpm, and pnpm 11
+or later switches to that release automatically.
+
 ```sh
 pnpm install
 pnpm dev                 # Start the local server at http://localhost:4321
@@ -149,6 +161,14 @@ checks and a dependency audit, verifies two reproducible builds, issues SLSA
 artifact and SPDX SBOM attestations, and deploys directly to Cloudflare Workers
 Static Assets. No Worker code runs on requests.
 
+Pull requests run only the checks and builds, and merging deploys nothing. A
+release is a manual run of the workflow from `main`, which repeats the checks
+for the merged commit and then attests and deploys exactly what it built:
+
+```sh
+gh workflow run cloudflare.yml --ref main
+```
+
 `build.format: "file"` and
 `assets.html_handling: "drop-trailing-slash"` preserve extensionless URLs such
 as `/keys` without redirects. The sitemap is a static endpoint at
@@ -163,11 +183,11 @@ standard revalidation behavior.
 
 After deployment, CI verifies every asset in the release manifest, the
 published identity CLI, security headers, and the absence of RUM. A separate
-daily workflow monitors the deployed bytes and identity claims, including DNS.
+weekly workflow monitors the deployed bytes and identity claims, including DNS.
 
 Hash verification proves that the published bytes are the built bytes. It says
 nothing about whether the destinations those bytes name still exist, so the
-same daily workflow requests every external link as an independent job. A
+same weekly workflow requests every external link as an independent job. A
 third party that is merely unreachable therefore cannot mask an integrity
 failure, and neither failure can go unread: a failing schedule opens a tracking
 issue instead of only turning a check red.
