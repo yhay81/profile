@@ -6,6 +6,13 @@ minimumReleaseAgeIgnoreMissingTime: false
 trustPolicy: no-downgrade
 
 strictPeerDependencies: true
+peerDependencyRules:
+  allowedVersions:
+    # Upstream PRs widening peerDependencies for Stylelint 18 are still open.
+    # Both plugins use only createPlugin/utils APIs unchanged in 18 and are
+    # exercised by pnpm check.
+    "stylelint-declaration-block-no-ignored-properties@3.0.0>stylelint": "18"
+    "stylelint-high-performance-animation@2.0.0>stylelint": "18"
 
 # Explicit build-script policy in pnpm's allowBuilds format.
 allowBuilds:
@@ -15,18 +22,10 @@ allowBuilds:
   unrs-resolver: false
   workerd: true
 
-# @astrojs/astro2tsx 0.1.3 pins @emnapi/core but leaves @emnapi/runtime, a peer
-# of its wasm runtime, undeclared. Declare the matching release so pnpm does not
-# reuse the 2.0 beta pinned by rolldown's wasm binding, which crashes astro check.
-packageExtensions:
-  "@astrojs/astro2tsx@0.1.3":
-    dependencies:
-      "@emnapi/runtime": "1.11.3"
-
 # Pin vulnerable transitive dependencies to their patched releases as well.
 overrides:
   # GHSA-g3hv-75wg-m249 is fixed only in minimatch 11. ESLint, its config
   # array, typescript-estree and jsx-a11y-x call only minimatch() and
   # Minimatch#match(), which 11 keeps; its removed APIs (makeRe, regexp, AST)
   # are unused here.
-  "minimatch@>=7.0.0 <11.0.1": "11.0.5"
+  "minimatch@>=7.0.0 <11.0.8": "11.0.8"

@@ -1,19 +1,22 @@
 import type { APIRoute } from "astro";
 
 import { PROFILE_URL } from "@/lib/site";
+import { WRITING } from "@/lib/writing";
+
+const latestWritingDate = WRITING.at(0)?.date ?? "2026-07-25";
 
 // Emit this static endpoint at the /sitemap.xml URL referenced by robots.txt.
 const PAGES = [
-  { path: "/", lastmod: "2026-07-21", changefreq: "monthly", priority: "1.0" },
+  { path: "/", lastmod: "2026-11-12", changefreq: "monthly", priority: "1.0" },
   {
     path: "/work",
-    lastmod: "2026-07-26",
+    lastmod: "2026-11-12",
     changefreq: "monthly",
     priority: "0.9",
   },
   {
     path: "/writing",
-    lastmod: "2026-07-25",
+    lastmod: latestWritingDate,
     changefreq: "monthly",
     priority: "0.7",
   },
@@ -25,7 +28,7 @@ const PAGES = [
   },
   {
     path: "/identity",
-    lastmod: "2026-07-26",
+    lastmod: "2026-11-12",
     changefreq: "weekly",
     priority: "0.8",
   },

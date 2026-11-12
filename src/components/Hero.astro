@@ -169,8 +169,6 @@ const HERO_STATS = [
     overflow: hidden;
     white-space: nowrap;
     max-width: 100%;
-
-    /* stylelint-disable-next-line plugin/no-low-performance-animation-properties -- Discrete typewriter steps on one inline element only. */
     animation: line-typing var(--duration) steps(var(--n)) var(--delay) forwards;
 
     /* Keep the cursor hidden by default and animate it only while its line is
@@ -302,8 +300,6 @@ const HERO_STATS = [
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
     box-shadow: inset 0 1px 0 var(--surface-raised);
-
-    /* stylelint-disable-next-line plugin/no-unsupported-browser-features */
     backdrop-filter: blur(8px);
   }
 

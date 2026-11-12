@@ -1,5 +1,7 @@
 export default {
   extends: ["stylelint-config-standard"],
+  referenceFiles: ["src/styles/tokens.css"],
+  reportNeedlessDisables: true,
   plugins: [
     "stylelint-declaration-block-no-ignored-properties",
     "stylelint-declaration-strict-value",
