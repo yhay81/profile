@@ -11,8 +11,14 @@ const USER_AGENT = "yhay81-profile-link-check/1.0";
 
 // Hosts that answer automated requests with a bot-defence status instead of the
 // resource. Their reachability cannot be established from CI, so they are
-// reported separately rather than counted as broken.
-const UNVERIFIABLE_HOSTS = new Set(["www.linkedin.com", "linkedin.com"]);
+// reported separately rather than counted as broken unless they return a
+// definitive gone/not-found status.
+const UNVERIFIABLE_HOSTS = new Set([
+  "linkedin.com",
+  "scholar.google.com",
+  "www.linkedin.com",
+  "x.com",
+]);
 
 const toPosix = (value) => value.split(sep).join("/");
 
@@ -157,16 +163,18 @@ async function checkLink(link) {
   }
 
   if (status !== undefined && status < 400) {
-    return { ...link, state: "ok", detail: String(status) };
+    return { ...link, state: "ok", detail: `HTTP ${status}` };
   }
-  if (UNVERIFIABLE_HOSTS.has(host)) {
+  const failureDetail =
+    status !== undefined ? `HTTP ${status}` : String(error ?? "request failed");
+  if (UNVERIFIABLE_HOSTS.has(host) && status !== 404 && status !== 410) {
     return {
       ...link,
       state: "unverifiable",
-      detail: `${status ?? error} (host blocks automated requests)`,
+      detail: `${failureDetail} (host blocks automated requests)`,
     };
   }
-  return { ...link, state: "broken", detail: String(status ?? error) };
+  return { ...link, state: "broken", detail: failureDetail };
 }
 
 async function checkInParallel(links) {
@@ -209,7 +217,7 @@ async function main() {
   }
   for (const result of broken) {
     process.stdout.write(
-      `BROKEN  ${result.url} — HTTP ${result.detail}\n` +
+      `BROKEN  ${result.url} — ${result.detail}\n` +
         `        referenced by: ${result.pages.join(", ")}\n`,
     );
   }

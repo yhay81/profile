@@ -1,4 +1,4 @@
-/* global Buffer, fetch, process, URL */
+/* global AbortSignal, Buffer, fetch, process, URL */
 
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
@@ -6,6 +6,8 @@ import { join, resolve } from "node:path";
 import { parseArgs } from "node:util";
 
 const DEFAULT_BASE_URL = "https://yusuke-hayashi.com";
+const CONCURRENCY = 8;
+const TIMEOUT_MS = 15_000;
 const LEGACY_INTEGRITY_PATH = "/integrity";
 const CANONICAL_INTEGRITY_PATH = "/identity#release-integrity";
 
@@ -45,6 +47,7 @@ async function remoteBytes(baseUrl, path) {
     new URL(path, `${baseUrl.replace(/\/$/, "")}/`),
     {
       headers: { "Cache-Control": "no-cache" },
+      signal: AbortSignal.timeout(TIMEOUT_MS),
     },
   );
   const allowed404 = path === "/404" && response.status === 404;
@@ -52,6 +55,26 @@ async function remoteBytes(baseUrl, path) {
     throw new Error(`${path} returned HTTP ${response.status}`);
   }
   return Buffer.from(await response.arrayBuffer());
+}
+
+async function verifyEntries(entries, loadFile) {
+  const pending = [...entries];
+  const workers = Array.from(
+    { length: Math.min(CONCURRENCY, pending.length) },
+    async () => {
+      for (let entry = pending.shift(); entry; entry = pending.shift()) {
+        const bytes = await loadFile(entry.file, entry.path);
+        if (bytes.byteLength !== entry.bytes) {
+          throw new Error(`${entry.path} byte length mismatch`);
+        }
+        if (sha256(bytes) !== entry.sha256) {
+          throw new Error(`${entry.path} SHA-256 mismatch`);
+        }
+      }
+    },
+  );
+  await Promise.all(workers);
+  return entries;
 }
 
 async function verifyIntegrityRedirect({ artifactDir, baseUrl }) {
@@ -72,6 +95,7 @@ async function verifyIntegrityRedirect({ artifactDir, baseUrl }) {
   const response = await fetch(new URL(LEGACY_INTEGRITY_PATH, origin), {
     headers: { "Cache-Control": "no-cache" },
     redirect: "manual",
+    signal: AbortSignal.timeout(TIMEOUT_MS),
   });
   if (response.status !== 301) {
     throw new Error(
@@ -131,17 +155,7 @@ async function main() {
     );
   }
 
-  const verified = [];
-  for (const entry of manifest.assetSet.entries) {
-    const bytes = await loadFile(entry.file, entry.path);
-    if (bytes.byteLength !== entry.bytes) {
-      throw new Error(`${entry.path} byte length mismatch`);
-    }
-    if (sha256(bytes) !== entry.sha256) {
-      throw new Error(`${entry.path} SHA-256 mismatch`);
-    }
-    verified.push(entry);
-  }
+  const verified = await verifyEntries(manifest.assetSet.entries, loadFile);
   const canonical = verified
     .map((entry) => `${entry.sha256} ${entry.bytes} ${entry.path}\n`)
     .join("");
