@@ -1,6 +1,6 @@
 .astro
+.husky/_
 .vscode
 dist
-out
 public
 pnpm-lock.yaml

@@ -1,25 +1,26 @@
-export type WorkCatalogLink = Readonly<{
-  label: string;
-  href: string;
-}>;
+export interface WorkCatalogLink {
+  readonly label: string;
+  readonly href: string;
+}
 
-export type WorkCatalogItem = Readonly<{
-  id: string;
-  field: string;
-  name: string;
-  description: string;
-  signal: string;
-  links: readonly WorkCatalogLink[];
-  lead?: boolean;
-}>;
+export interface WorkCatalogItem {
+  readonly id: string;
+  readonly mark: string;
+  readonly field: string;
+  readonly name: string;
+  readonly description: string;
+  readonly signal: string;
+  readonly links: readonly WorkCatalogLink[];
+  readonly lead?: boolean;
+}
 
-export type WorkCatalogGroup = Readonly<{
-  id: string;
-  label: string;
-  title: string;
-  description: string;
-  items: readonly WorkCatalogItem[];
-}>;
+export interface WorkCatalogGroup {
+  readonly id: string;
+  readonly label: string;
+  readonly title: string;
+  readonly description: string;
+  readonly items: readonly WorkCatalogItem[];
+}
 
 export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
   {
@@ -31,6 +32,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
     items: [
       {
         id: "prooflock-index",
+        mark: "PL",
         field: "PR verification integrity",
         name: "ProofLock",
         description:
@@ -50,6 +52,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "deban",
+        mark: "DE",
         field: "Opportunity discovery",
         name: "DEBAN / 出番",
         description:
@@ -64,6 +67,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "civic-contribution-catalog",
+        mark: "CC",
         field: "Civic contribution platform",
         name: "Civic Contribution Catalog",
         description:
@@ -78,6 +82,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "ai-partners",
+        mark: "AP",
         field: "AI adoption directory",
         name: "AI伴走パートナーズ",
         description:
@@ -92,6 +97,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "ai-demand",
+        mark: "AD",
         field: "AI opportunity index",
         name: "AI Demand",
         description:
@@ -106,6 +112,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "haya-inc",
+        mark: "HI",
         field: "Company platform",
         name: "haya株式会社",
         description:
@@ -120,6 +127,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "wiki-shindanshi",
+        mark: "診",
         field: "Learning system",
         name: "中小企業診断士 wiki",
         description:
@@ -138,6 +146,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "wasmhatch-index",
+        mark: "WH",
         field: "Browser-native AI",
         name: "WasmHatch",
         description:
@@ -156,6 +165,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "hayasend",
+        mark: "HS",
         field: "Email infrastructure",
         name: "HayaSend",
         description:
@@ -170,6 +180,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "clawsembly",
+        mark: "CL",
         field: "Browser agent runtime",
         name: "Clawsembly",
         description:
@@ -188,6 +199,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "clawsembly-kernel",
+        mark: "CK",
         field: "Browser execution kernel",
         name: "Clawsembly Kernel",
         description:
@@ -211,6 +223,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
     items: [
       {
         id: "engineering-bootcamp",
+        mark: "EB",
         field: "Engineering education",
         name: "Engineering Bootcamp",
         description:
@@ -225,6 +238,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "wiki-kit",
+        mark: "WK",
         field: "Repository-native knowledge",
         name: "Wiki Kit",
         description:
@@ -239,6 +253,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "create-wiki-kit",
+        mark: "CW",
         field: "Project scaffolding",
         name: "create-wiki-kit",
         description:
@@ -253,6 +268,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "knowledge-kit",
+        mark: "KK",
         field: "Structured knowledge",
         name: "Knowledge Kit",
         description:
@@ -267,6 +283,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "create-knowledge-kit",
+        mark: "C·K",
         field: "Project scaffolding",
         name: "create-knowledge-kit",
         description:
@@ -281,6 +298,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "discovery-kit",
+        mark: "DK",
         field: "Evidence-led discovery",
         name: "Discovery Kit",
         description:
@@ -295,6 +313,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "create-discovery-kit",
+        mark: "CD",
         field: "Project scaffolding",
         name: "create-discovery-kit",
         description:
@@ -318,6 +337,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
     items: [
       {
         id: "hayate-index",
+        mark: "HY",
         field: "Python web framework",
         name: "hayate",
         description:
@@ -332,6 +352,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "hayate-auth",
+        mark: "HA",
         field: "Authentication",
         name: "hayate-auth",
         description:
@@ -346,6 +367,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "hayate-mcp",
+        mark: "HM",
         field: "Model Context Protocol",
         name: "hayate-mcp",
         description:
@@ -360,6 +382,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "hayate-openapi",
+        mark: "HO",
         field: "API contracts",
         name: "hayate-openapi",
         description:
@@ -374,6 +397,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "hayate-admin",
+        mark: "AD",
         field: "Operational administration",
         name: "hayate-admin",
         description:
@@ -388,6 +412,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "hayate-htmx",
+        mark: "HX",
         field: "Full-stack hypermedia",
         name: "hayate-htmx",
         description:
@@ -402,6 +427,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "hayate-fetch",
+        mark: "HF",
         field: "Web-standard client",
         name: "hayate-fetch",
         description:
@@ -416,6 +442,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "create-hayate",
+        mark: "CH",
         field: "Project scaffolding",
         name: "create-hayate",
         description:
@@ -439,6 +466,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
     items: [
       {
         id: "firsthand",
+        mark: "FH",
         field: "Evidence-backed job platform",
         name: "Firsthand",
         description:
@@ -453,6 +481,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "public-data-catalog-index",
+        mark: "PD",
         field: "Verifiable public data",
         name: "Public Data Catalog",
         description:
@@ -471,6 +500,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "socialname",
+        mark: "SN",
         field: "Identity observability",
         name: "SocialName",
         description:
@@ -485,6 +515,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "bounded-cli-suite",
+        mark: "8×",
         field: "Bounded agent tooling",
         name: "Bounded CLI suite",
         description:
@@ -527,6 +558,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "tool-shelf",
+        mark: "TS",
         field: "Public web tools",
         name: "Tool Shelf",
         description:
@@ -545,6 +577,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "pylopdf-index",
+        mark: "PY",
         field: "Python + Rust",
         name: "pylopdf",
         description:
@@ -563,6 +596,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "foliomcp",
+        mark: "FM",
         field: "Semantic document platform",
         name: "FolioMCP",
         description:
@@ -577,6 +611,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "gh-freshclone",
+        mark: "GF",
         field: "Developer infrastructure",
         name: "gh-freshclone",
         description:
@@ -591,6 +626,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "ja-translation-todo",
+        mark: "JT",
         field: "Translation infrastructure",
         name: "ja-translation-todo",
         description:
@@ -609,6 +645,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "gaslacker",
+        mark: "GA",
         field: "Google Apps Script",
         name: "GASlacker",
         description:
@@ -627,6 +664,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "code-sortings",
+        mark: "CS",
         field: "Interactive experiment",
         name: "Code Sortings",
         description:
@@ -645,6 +683,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "yomiage-kun",
+        mark: "YK",
         field: "Local-first desktop",
         name: "Yomiage-kun",
         description:
@@ -663,6 +702,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "profile-site",
+        mark: "YH",
         field: "Verifiable publishing",
         name: "This site",
         description:
@@ -686,6 +726,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
     items: [
       {
         id: "github-issues-wasm",
+        mark: "GI",
         field: "2023 · Browser experiment",
         name: "GitHub Issues × Rust WebAssembly",
         description:
@@ -700,6 +741,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "pythonic-peano-arithmetic",
+        mark: "PP",
         field: "2018–2025 · Mathematics",
         name: "Pythonic Peano Arithmetic",
         description:
@@ -714,6 +756,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "frontend-handbook-ja",
+        mark: "FE",
         field: "2018 · Translation",
         name: "Front-end Interview Handbook · Japanese",
         description:
@@ -728,6 +771,7 @@ export const WORK_CATALOG: readonly WorkCatalogGroup[] = [
       },
       {
         id: "sesforwader",
+        mark: "SF",
         field: "2018 · Email utility",
         name: "sesforwader",
         description:

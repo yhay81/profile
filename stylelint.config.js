@@ -83,5 +83,5 @@ export default {
     "selector-class-pattern": "^([a-z][a-z0-9]+)+([A-Z][a-z0-9]+)*$",
     "selector-max-type": 2,
   },
-  ignoreFiles: ["node_modules/**", "dist/**", "out/**", "public/**"],
+  ignoreFiles: ["node_modules/**", "dist/**", "public/**"],
 };

@@ -197,7 +197,7 @@ node verify-identity.mjs`;
               rel={card.external ? "noreferrer" : undefined}
               target={card.external ? "_blank" : undefined}
             >
-              {card.linkText} ↗
+              {card.linkText} {card.external ? "↗" : "→"}
             </a>
           </article>
         ))}
@@ -300,8 +300,15 @@ node verify-identity.mjs`;
       </p>
 
       <p class="updated">
-        <a href={`https://app.ens.domains/${ENS_NAME}`}>{ENS_NAME}</a> resolves
-        to this identity account in both directions. Its contenthash names an{" "}
+        <a
+          href={`https://app.ens.domains/${ENS_NAME}`}
+          rel="noreferrer"
+          target="_blank"
+        >
+          {ENS_NAME}
+        </a>{" "}
+        resolves to this identity account in both directions. Its contenthash
+        names an{" "}
         <a href={IPFS_IDENTITY_GATEWAY} rel="noreferrer" target="_blank">
           immutable IPFS capsule
         </a>

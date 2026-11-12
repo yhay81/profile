@@ -20,7 +20,7 @@ import { PROFILE_EMAIL, SOCIAL_LINKS } from "@/lib/site";
 
   <div class="emailBlock">
     <a class="emailCard" href={`mailto:${PROFILE_EMAIL}`}>
-      <Icon name="mail" title="Email" />
+      <Icon name="mail" />
       <span class="emailText">
         <span class="emailAddress">{PROFILE_EMAIL}</span>
         <span class="emailLabel">Preferred: first contact by email</span>
@@ -39,10 +39,10 @@ import { PROFILE_EMAIL, SOCIAL_LINKS } from "@/lib/site";
       <a
         class="link"
         href={link.url}
-        rel={link.external ? "noopener noreferrer" : undefined}
+        rel={link.external ? "noreferrer" : undefined}
         target={link.external ? "_blank" : undefined}
       >
-        <Icon name={link.icon} title={link.name} />
+        <Icon name={link.icon} />
         <span class="linkText">
           <span class="linkName">{link.name}</span>
           <span class="linkDescription">{link.description}</span>
@@ -53,7 +53,6 @@ import { PROFILE_EMAIL, SOCIAL_LINKS } from "@/lib/site";
 </section>
 
 <script>
-  // Email copying is the site's only client-side JavaScript outside the SIWE demo.
   const button = document.querySelector<HTMLButtonElement>(".copyButton");
   const status = document.querySelector<HTMLParagraphElement>(".copyStatus");
   const RESET_DELAY_MS = 1600;

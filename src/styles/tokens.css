@@ -4,12 +4,6 @@
  * with color-mix() so no raw rgb()/hex literals appear in components.
  */
 
-@property --gradient-angle {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 170deg;
-}
-
 :root {
   /* ---- Color primitives (oklch) ---- */
   --color-bg: oklch(25.78% 0.0704 252.05deg); /* deep navy */
@@ -91,16 +85,6 @@
   --text-2xl: clamp(1.8rem, 1.55rem + 1.25vw, 2.5rem);
   --text-display: clamp(2.4rem, 1.8rem + 3vw, 4.2rem);
 
-  /* ---- Spacing scale ---- */
-  --space-3xs: 0.25rem;
-  --space-2xs: 0.5rem;
-  --space-xs: 0.75rem;
-  --space-sm: 1rem;
-  --space-md: 1.5rem;
-  --space-lg: 2.5rem;
-  --space-xl: 4rem;
-  --space-2xl: 6rem;
-
   /* ---- Radii ---- */
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -108,7 +92,6 @@
 
   /* ---- Layout ---- */
   --page-padding: clamp(24px, 8vw, 150px);
-  --content-max: 900px;
   --nav-height: 60px;
 
   /* ---- Motion ---- */

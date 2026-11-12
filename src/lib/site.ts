@@ -7,6 +7,7 @@ export const ORCID_URL = `https://orcid.org/${ORCID_ID}`;
 export const GOOGLE_SCHOLAR_URL =
   "https://scholar.google.com/citations?user=A3mvIIUAAAAJ";
 export const COPYRIGHT_START_YEAR = 2022;
+export const HOME_DATE_MODIFIED = "2026-11-12";
 export const MAIN_COLOR = "#04ffaa";
 
 export const PGP_FINGERPRINT_SPACED =
@@ -16,7 +17,7 @@ export const ETH_ADDRESS = "0x1C049D25D368bFD50c74df68c919a12aDc48C079";
 export const ENS_NAME = "yhay81.eth";
 export const IPFS_IDENTITY_CID =
   "bafybeia7ayng6ol5j2e7uzqub4httj6mqbx2jel7zflwhfn7gaslzetwmu";
-export const IPFS_IDENTITY_GATEWAY = `https://ipfs.io/ipfs/${IPFS_IDENTITY_CID}/`;
+export const IPFS_IDENTITY_GATEWAY = `https://${ENS_NAME}.limo/`;
 export const KEYOXIDE_URL = `https://keyoxide.org/${PGP_FINGERPRINT_HEX}`;
 
 export type IconName =
@@ -59,7 +60,7 @@ export const SOCIAL_LINKS: readonly SocialLink[] = [
   },
   {
     id: "social-linkedin",
-    name: "Linkedin",
+    name: "LinkedIn",
     icon: "linkedin",
     url: "https://www.linkedin.com/in/yhay81",
     description: "Professional profile",

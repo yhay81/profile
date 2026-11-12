@@ -44,6 +44,7 @@ jobs:
           grep --ignore-case --quiet '^content-security-policy:' response-headers.txt
           grep --ignore-case --quiet '^strict-transport-security:' response-headers.txt
           grep --ignore-case --quiet '^x-content-type-options: nosniff' response-headers.txt
+          grep --ignore-case --quiet '^x-frame-options: DENY' response-headers.txt
           ! grep --quiet 'static.cloudflareinsights.com\|data-cf-beacon\|/cdn-cgi/rum' response-body.html
       - name: Upload signed-identity health report
         if: always() && hashFiles('identity-health.json') != ''
@@ -104,7 +105,7 @@ jobs:
           fi
 
           {
-            echo 'The daily production integrity schedule failed.'
+            echo 'The weekly production integrity schedule failed.'
             echo
             echo '| Job | Result |'
             echo '| --- | --- |'

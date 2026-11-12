@@ -26,9 +26,7 @@ const description =
         signature entirely client-side — this site is static; there is no
         backend to trust. After verification, a primary ENS name is resolved
         through the wallet and forward-confirmed on Ethereum mainnet. Nothing is
-        sent to an additional RPC service. This page is also the only one on
-        this site that ships JavaScript beyond a few lines for the email-copy
-        button.
+        sent to an additional RPC service.
       </p>
 
       <button
@@ -41,11 +39,11 @@ const description =
         Sign in with Ethereum
       </button>
 
-      <p class="error" hidden id="siwe-error"></p>
+      <p class="error" hidden id="siwe-error" role="alert"></p>
 
       <pre class="messageBlock" hidden id="siwe-message"></pre>
 
-      <div hidden id="siwe-result">
+      <div aria-live="polite" hidden id="siwe-result">
         <p class="verified">✓ Signature verified</p>
         <ul class="itemList">
           <li>

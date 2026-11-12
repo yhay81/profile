@@ -1,13 +1,19 @@
 import type { APIRoute } from "astro";
 
-import { PROFILE_URL } from "@/lib/site";
+import { TRUST_CONTROL_PLANE_ARTICLE } from "@/lib/articles";
+import { HOME_DATE_MODIFIED, PROFILE_URL } from "@/lib/site";
 import { WRITING } from "@/lib/writing";
 
 const latestWritingDate = WRITING.at(0)?.date ?? "2026-07-25";
 
 // Emit this static endpoint at the /sitemap.xml URL referenced by robots.txt.
 const PAGES = [
-  { path: "/", lastmod: "2026-11-12", changefreq: "monthly", priority: "1.0" },
+  {
+    path: "/",
+    lastmod: HOME_DATE_MODIFIED,
+    changefreq: "monthly",
+    priority: "1.0",
+  },
   {
     path: "/work",
     lastmod: "2026-11-12",
@@ -22,7 +28,7 @@ const PAGES = [
   },
   {
     path: "/trust-control-plane",
-    lastmod: "2026-07-25",
+    lastmod: TRUST_CONTROL_PLANE_ARTICLE.dateModified.slice(0, 10),
     changefreq: "yearly",
     priority: "0.7",
   },
@@ -46,7 +52,7 @@ const PAGES = [
   },
   {
     path: "/siwe",
-    lastmod: "2026-07-14",
+    lastmod: "2026-11-12",
     changefreq: "yearly",
     priority: "0.5",
   },

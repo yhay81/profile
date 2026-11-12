@@ -87,6 +87,16 @@ async function verifyInParallel(
   await Promise.all(workers);
 }
 
+async function assertSignatureVerified(
+  signatures: readonly { verified: Promise<boolean> }[],
+) {
+  const firstSignature = signatures[0];
+  if (!firstSignature) {
+    throw new Error("missing OpenPGP signature");
+  }
+  await firstSignature.verified;
+}
+
 async function requireOpenPgpSignature(
   armoredMessage: string,
   publicKey: Awaited<
@@ -98,7 +108,7 @@ async function requireOpenPgpSignature(
     cleartextMessage: armoredMessage,
   });
   const result = await verify({ message, verificationKeys: publicKey });
-  await result.signatures[0]?.verified;
+  await assertSignatureVerified(result.signatures);
   return message.getText();
 }
 
@@ -196,7 +206,7 @@ export async function runIntegrityVerification(
     return "budgets pass · 0 fonts · 0 third parties · 0 RUM";
   });
 
-  await check("identity", "Identity manifest signature", async () => {
+  await check("identity", "Identity compatibility signature", async () => {
     const [manifestText, signatureText, keyText] = await Promise.all([
       fetchText("/.well-known/identity.json"),
       fetchText("/.well-known/identity.json.asc"),
@@ -225,7 +235,7 @@ export async function runIntegrityVerification(
       signature,
       verificationKeys: publicKey,
     });
-    await result.signatures[0]?.verified;
+    await assertSignatureVerified(result.signatures);
     return `OpenPGP ${fingerprint.slice(-16).toUpperCase()} · not expired`;
   });
 
