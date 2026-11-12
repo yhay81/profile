@@ -2,13 +2,11 @@
 
 /* ---- Cross-document View Transitions (progressive MPA enhancement) ---- */
 
-/* stylelint-disable-next-line at-rule-no-unknown */
 @view-transition {
   navigation: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /* stylelint-disable-next-line at-rule-no-unknown */
   @view-transition {
     navigation: none;
   }
@@ -110,7 +108,6 @@
       data-view-transition-name type(<custom-ident>),
       none
     );
-    /* stylelint-disable-next-line plugin/no-unsupported-browser-features */
     view-transition-class: contenttitle;
   }
 
@@ -150,13 +147,10 @@
   }
 }
 
-/* stylelint-disable-next-line plugin/no-unsupported-browser-features */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .reveal {
       animation: reveal-in linear both;
-
-      /* stylelint-disable-next-line plugin/no-unsupported-browser-features */
       animation-timeline: view();
       animation-range: entry 0% entry 18%;
     }

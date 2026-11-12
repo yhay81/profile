@@ -95,12 +95,12 @@ application-level reimplementations:
   every install. It holds new releases for 24 hours, fails closed when registry
   publication metadata is missing, and rejects publish-trust downgrades with no
   exceptions; CI also audits moderate-and-higher advisories and verifies
-  registry signatures. Peer dependencies are strict with no exceptions: the
-  accessibility rules come from `eslint-plugin-jsx-a11y-x`, the maintained fork
-  that declares ESLint 10 support. One override moves the lint toolchain to
-  minimatch 11, the only line with a fix for GHSA-g3hv-75wg-m249, and one
-  package extension declares the `@emnapi/runtime` release that
-  `@astrojs/astro2tsx` 0.1.3 omits.
+  registry signatures. Peer dependencies are strict: the accessibility rules
+  come from `eslint-plugin-jsx-a11y-x`, the maintained fork that declares ESLint
+  10 support, and two package-scoped compatibility declarations cover Stylelint
+  plugins whose upstream Stylelint 18 peer updates are still open. One override
+  moves the lint toolchain to minimatch 11, the only line with a fix for
+  GHSA-g3hv-75wg-m249.
 - **TypeScript transition:** Native TypeScript 7 performs project-wide CLI type
   checking, while the official TypeScript 6 compatibility package supplies the
   stable Compiler API still required by Astro and typescript-eslint. Both paths
