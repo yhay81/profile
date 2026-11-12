@@ -6,14 +6,7 @@ import simpleImportSort from "eslint-plugin-simple-import-sort";
 import tseslint from "typescript-eslint";
 
 export default defineConfig(
-  globalIgnores([
-    "dist/",
-    "out/",
-    ".astro/",
-    ".wrangler/",
-    "node_modules/",
-    "public/",
-  ]),
+  globalIgnores(["dist/", ".astro/", ".wrangler/", "node_modules/", "public/"]),
   js.configs.recommended,
   tseslint.configs.strict,
   tseslint.configs.stylistic,

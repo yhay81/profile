@@ -46,12 +46,8 @@ const speculationRules = JSON.stringify({
     },
   ],
 });
-const firstVisitScript = `
-      if (!sessionStorage.getItem("visited")) {
-        document.documentElement.dataset.firstVisit = "";
-        sessionStorage.setItem("visited", "1");
-      }
-    `;
+const firstVisitScript =
+  'try{if(!sessionStorage.getItem("visited")){document.documentElement.dataset.firstVisit="";sessionStorage.setItem("visited","1")}}catch{}';
 
 Astro.csp?.insertScriptHash({
   hash: sha256CspHash(firstVisitScript),
@@ -64,12 +60,7 @@ Astro.csp?.insertScriptHash({
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <script is:inline>
-      if (!sessionStorage.getItem("visited")) {
-        document.documentElement.dataset.firstVisit = "";
-        sessionStorage.setItem("visited", "1");
-      }
-    </script>
+    <script is:inline set:html={firstVisitScript} />
     <title>{title}</title>
     <meta content={description} name="description" />
     {author && <meta content={author} name="author" />}

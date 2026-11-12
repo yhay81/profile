@@ -260,11 +260,11 @@ jobs:
               && node scripts/verify-release.mjs \
                   --base-url https://yusuke-hayashi.com \
                   --expected-commit "$GITHUB_SHA" \
-              && revision="$(node -e "fetch('https://yusuke-hayashi.com/.well-known/identity.json',{headers:{'Cache-Control':'no-cache'}}).then(r=>{if(!r.ok)throw new Error(String(r.status));return r.json()}).then(m=>process.stdout.write(String(m.releaseRevision)))")" \
               && curl --fail --silent --show-error \
                 --header 'Cache-Control: no-cache' \
                 "https://yusuke-hayashi.com/.well-known/identity.json" \
                 --output identity.json \
+              && revision="$(node -p 'JSON.parse(require("node:fs").readFileSync("identity.json", "utf8")).releaseRevision')" \
               && curl --fail --silent --show-error \
                 --header 'Cache-Control: no-cache' \
                 "https://yusuke-hayashi.com/.well-known/releases/identity-release-r${revision}.tar.gz" \
@@ -273,13 +273,13 @@ jobs:
               && verify_attestation "identity-release-r${revision}.tar.gz"
           }
 
-          for attempt in {1..12}; do
+          for attempt in {1..5}; do
             if verify_once; then
               exit 0
             fi
 
-            if [[ "$attempt" -lt 12 ]]; then
-              sleep 10
+            if [[ "$attempt" -lt 5 ]]; then
+              sleep 5
             fi
           done
 

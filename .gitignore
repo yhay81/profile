@@ -7,10 +7,6 @@
 /.ipfs/
 /.wrangler/
 
-# Legacy Next.js build artifacts, if present locally
-/out/
-/.next/
-
 # testing
 /coverage
 

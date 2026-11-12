@@ -10,10 +10,10 @@ import { PROFILE_EMAIL, SOCIAL_LINKS } from "@/lib/site";
         <a
           class="socialLink"
           href={link.url}
-          rel={link.external ? "noopener noreferrer" : undefined}
+          rel={link.external ? "noreferrer" : undefined}
           target={link.external ? "_blank" : undefined}
         >
-          <Icon name={link.icon} title={link.name} />
+          <Icon name={link.icon} />
           <span class="socialLabel">{link.name}</span>
         </a>
       </li>

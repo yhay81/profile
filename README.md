@@ -79,11 +79,11 @@ application-level reimplementations:
   `declaration-strict-value` rule rejects raw RGB and hex color literals.
 - **Typography:** `system-ui` and `ui-monospace` only, avoiding font downloads,
   preloads, and render delays.
-- **JavaScript:** Limited to the SIWE demo (with `viem` imported on demand),
-  email copying, first-visit motion state, and the `/identity` verifier.
-  Cryptographic code, including OpenPGP and `viem`, is not imported until
-  verification starts. The site uses no framework runtime, analytics, or
-  third-party scripts.
+- **JavaScript:** Limited to the SIWE demo (with `viem` and ENS normalization
+  imported on demand), email copying, `/work` collection fragment navigation,
+  first-visit motion state, and the `/identity` verifier. Cryptographic code,
+  including OpenPGP and `viem`, is not imported until verification starts. The
+  site uses no framework runtime, analytics, or third-party scripts.
 - **Performance contract:** The build enforces compressed HTML and initial
   JavaScript budgets for key routes, with zero third-party requests, web fonts,
   or RUM beacons.
@@ -113,9 +113,10 @@ application-level reimplementations:
 - `src/components/` — Reusable UI including `SectionHeader`, `CodeBlock`, and
   `TrustGraph`.
 - `src/pages/` — `/` (Hero, About, Writing, and Contact), `/work` (selected
-  products and open source), `/identity` (trust graph, release ledger, and
-  browser verifier), `/keys`, `/proofs`, `/siwe`, and static feed/sitemap
-  endpoints.
+  products and open source), `/writing` (complete writing archive),
+  `/trust-control-plane` (clearsigned architecture article), `/identity` (trust
+  graph, release ledger, and browser verifier), `/keys`, `/proofs`, `/siwe`, and
+  static feed/sitemap endpoints.
 - `src/lib/site.ts` — Shared profile metadata, social links, and key
   fingerprints.
 - `public/` — **Stable, externally referenced assets. Do not rename or move

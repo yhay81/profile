@@ -30,68 +30,6 @@ const FEATURED_PROJECTS = [
   },
 ] as const;
 
-const WORK_MARKS: Readonly<Record<string, string>> = {
-  "prooflock-index": "PL",
-  deban: "DE",
-  "civic-contribution-catalog": "CC",
-  "ai-partners": "AP",
-  "ai-demand": "AD",
-  "haya-inc": "HI",
-  "wiki-shindanshi": "診",
-  "wasmhatch-index": "WH",
-  hayasend: "HS",
-  clawsembly: "CL",
-  "clawsembly-kernel": "CK",
-  "engineering-bootcamp": "EB",
-  "wiki-kit": "WK",
-  "create-wiki-kit": "CW",
-  "knowledge-kit": "KK",
-  "create-knowledge-kit": "C·K",
-  "discovery-kit": "DK",
-  "create-discovery-kit": "CD",
-  "hayate-index": "HY",
-  "hayate-auth": "HA",
-  "hayate-mcp": "HM",
-  "hayate-openapi": "HO",
-  "hayate-admin": "AD",
-  "hayate-htmx": "HX",
-  "hayate-fetch": "HF",
-  "create-hayate": "CH",
-  firsthand: "FH",
-  "public-data-catalog-index": "PD",
-  socialname: "SN",
-  "bounded-cli-suite": "8×",
-  "tool-shelf": "TS",
-  "pylopdf-index": "PY",
-  foliomcp: "FM",
-  "gh-freshclone": "GF",
-  "ja-translation-todo": "JT",
-  gaslacker: "GA",
-  "code-sortings": "CS",
-  "yomiage-kun": "YK",
-  "profile-site": "YH",
-  "github-issues-wasm": "GI",
-  "pythonic-peano-arithmetic": "PP",
-  "frontend-handbook-ja": "FE",
-  sesforwader: "SF",
-};
-
-function workMark(id: string, name: string) {
-  const explicitMark = WORK_MARKS[id];
-  if (explicitMark) return explicitMark;
-
-  const words = name
-    .replace(/([a-z\d])([A-Z])/g, "$1 $2")
-    .split(/[^A-Za-z0-9]+/)
-    .filter(Boolean);
-
-  if (words.length > 1) {
-    return `${words[0][0]}${words[1][0]}`.toUpperCase();
-  }
-
-  return (words[0] ?? name).slice(0, 2).toUpperCase();
-}
-
 // Each visual signature places its mark from the item's position in the
 // index. The CSP forbids style attributes, so the coordinates ship as one
 // hashed style element rather than as per-element inline styles.
@@ -473,7 +411,7 @@ const visualPositionStyle = `<style>${visualPositionCss}</style>`;
                         {String(itemIndex + 1).padStart(2, "0")}
                       </b>
                     </span>
-                    <strong>{workMark(item.id, item.name)}</strong>
+                    <strong>{item.mark}</strong>
                     <span class="catalogVisualTrace">
                       <i />
                       <b />
@@ -1933,5 +1871,5 @@ const visualPositionStyle = `<style>${visualPositionCss}</style>`;
 </style>
 
 <script>
-  import "../scripts/work-catalog-accordion";
+  import "@/scripts/work-catalog-accordion";
 </script>

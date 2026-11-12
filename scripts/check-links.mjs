@@ -5,7 +5,7 @@ import { join, relative, resolve, sep } from "node:path";
 import { parseArgs } from "node:util";
 
 const DEFAULT_BASE_URL = "https://yusuke-hayashi.com";
-const CONCURRENCY = 6;
+const CONCURRENCY = 8;
 const TIMEOUT_MS = 20_000;
 const USER_AGENT = "yhay81-profile-link-check/1.0";
 
@@ -119,13 +119,25 @@ function externalLinks(pages, siteOrigin) {
     .sort((left, right) => left.url.localeCompare(right.url));
 }
 
-async function requestOnce(url) {
+async function requestOnce(url, method) {
   const response = await fetch(url, {
+    method,
     redirect: "follow",
     headers: { "User-Agent": USER_AGENT, Accept: "*/*" },
     signal: AbortSignal.timeout(TIMEOUT_MS),
   });
+  await response.body?.cancel();
   return response.status;
+}
+
+async function probeUrl(url) {
+  try {
+    const headStatus = await requestOnce(url, "HEAD");
+    if (headStatus < 400) return headStatus;
+  } catch {
+    // Fall back to GET when an origin rejects or aborts HEAD requests.
+  }
+  return requestOnce(url, "GET");
 }
 
 async function checkLink(link) {
@@ -135,7 +147,7 @@ async function checkLink(link) {
 
   for (let attempt = 0; attempt < 2; attempt += 1) {
     try {
-      status = await requestOnce(link.url);
+      status = await probeUrl(link.url);
       error = undefined;
       if (status < 400) break;
     } catch (cause) {
