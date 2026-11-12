@@ -39,57 +39,60 @@ const CHECKS = [
     <strong id="release-status">loading manifest…</strong>
   </div>
 
-  <div class="ledger" aria-label="Current release">
+  <dl class="ledger">
     <div class="ledgerRow">
-      <span class="key">source.commit</span>
-      <a
-        class="value code"
-        href="https://github.com/yhay81/profile/commits/main"
-        id="commit-link"
-      >
+      <dt class="key">source.commit</dt>
+      <dd class="value">
+        <a
+          class="code"
+          href="https://github.com/yhay81/profile/commits/main"
+          id="commit-link"
+        >
+          —
+        </a>
+      </dd>
+    </div>
+    <div class="ledgerRow">
+      <dt class="key">assetSet.sha256</dt>
+      <dd class="value">
+        <code class="digest" id="asset-digest">
+          —
+        </code>
+      </dd>
+    </div>
+    <div class="ledgerRow">
+      <dt class="key">deployed.assets</dt>
+      <dd class="value" id="asset-count">
         —
-      </a>
+      </dd>
     </div>
     <div class="ledgerRow">
-      <span class="key">assetSet.sha256</span>
-      <code class="value digest" id="asset-digest">
+      <dt class="key">assetSet.scope</dt>
+      <dd class="value">exact assets + source-preserving edge transforms</dd>
+    </div>
+    <div class="ledgerRow">
+      <dt class="key">edge.transforms</dt>
+      <dd class="value" id="edge-transforms">
         —
-      </code>
+      </dd>
     </div>
     <div class="ledgerRow">
-      <span class="key">deployed.assets</span>
-      <span class="value" id="asset-count">
-        —
-      </span>
+      <dt class="key">build.provenance</dt>
+      <dd class="value">
+        <a
+          href="https://github.com/yhay81/profile/attestations"
+          rel="noreferrer"
+          target="_blank"
+        >
+          SLSA v1 + Sigstore/Rekor ↗
+        </a>
+      </dd>
     </div>
     <div class="ledgerRow">
-      <span class="key">assetSet.scope</span>
-      <span class="value">
-        exact assets + source-preserving edge transforms
-      </span>
+      <dt class="key">runtime.code</dt>
+      <dd class="value">none — Cloudflare Static Assets</dd>
     </div>
-    <div class="ledgerRow">
-      <span class="key">edge.transforms</span>
-      <span class="value" id="edge-transforms">
-        —
-      </span>
-    </div>
-    <div class="ledgerRow">
-      <span class="key">build.provenance</span>
-      <a
-        class="value"
-        href="https://github.com/yhay81/profile/attestations"
-        rel="noreferrer"
-        target="_blank"
-      >
-        SLSA v1 + Sigstore/Rekor ↗
-      </a>
-    </div>
-    <div class="ledgerRow">
-      <span class="key">runtime.code</span>
-      <span class="value">none — Cloudflare Static Assets</span>
-    </div>
-  </div>
+  </dl>
 
   <h3 class="heading">Performance contract</h3>
   <p class="bodyText">
@@ -98,23 +101,34 @@ const CHECKS = [
     Cloudflare RUM reference appears.
   </p>
 
-  <div class="contract">
-    <div class="contractHeader" aria-hidden="true">
-      <span>route</span>
-      <span>HTML gzip</span>
-      <span>JS gzip</span>
-      <span>result</span>
-    </div>
-    {["/", "/work", "/identity", "/siwe"].map((path) => (
-      <div class="contractRow" data-route={path}>
-        <code>{path}</code>
-        <span data-metric="html">—</span>
-        <span data-metric="js">—</span>
-        <span class="result" data-metric="status">
-          pending
-        </span>
-      </div>
-    ))}
+  <div class="contractWrap">
+    <table class="contract">
+      <caption class="visuallyHidden">
+        Route compressed size budgets and current metrics
+      </caption>
+      <thead class="contractHeader">
+        <tr>
+          <th scope="col">route</th>
+          <th scope="col">HTML gzip</th>
+          <th scope="col">JS gzip</th>
+          <th scope="col">result</th>
+        </tr>
+      </thead>
+      <tbody>
+        {["/", "/work", "/identity", "/siwe"].map((path) => (
+          <tr class="contractRow" data-route={path}>
+            <th scope="row">
+              <code>{path}</code>
+            </th>
+            <td data-metric="html">—</td>
+            <td data-metric="js">—</td>
+            <td class="result" data-metric="status">
+              pending
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   </div>
   <p class="zeroContract" id="zero-contract">
     0 third parties · 0 fonts · 0 RUM
@@ -124,8 +138,9 @@ const CHECKS = [
     <div>
       <h3 class="heading">Browser verification console</h3>
       <p class="bodyText">
-        Runs locally in this tab. Heavy cryptographic code is downloaded only
-        after you click.
+        Checks deployed byte hashes and compatibility signatures in this tab;
+        heavy cryptographic code loads only after you click. Use the terminal
+        commands below for origin-independent provenance.
       </p>
     </div>
     <button class="runButton" id="run-proofs" type="button">
@@ -274,8 +289,16 @@ const CHECKS = [
   runButton.addEventListener("click", async () => {
     runButton.disabled = true;
     const summary = byId("verification-summary");
+    delete summary.dataset.status;
     summary.setAttribute("aria-busy", "true");
     summary.textContent = "RUNNING · loading verifier on demand";
+    for (const row of document.querySelectorAll<HTMLElement>("[data-check]")) {
+      row.dataset.status = "idle";
+      const detail = row.querySelector<HTMLElement>(".checkDetail");
+      const mark = row.querySelector<HTMLElement>(".checkMark");
+      if (detail) detail.textContent = "waiting";
+      if (mark) mark.textContent = "·";
+    }
     try {
       const { runIntegrityVerification } =
         await import("@/lib/integrity-verifier");
@@ -386,7 +409,7 @@ const CHECKS = [
   }
 
   .ledger {
-    margin-top: 18px;
+    margin: 18px 0 0;
     border-top: 1px solid var(--border-subtle);
   }
 
@@ -420,23 +443,39 @@ const CHECKS = [
     overflow-wrap: anywhere;
   }
 
-  .contract {
+  .visuallyHidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .contractWrap {
     margin-top: 20px;
+    container-type: inline-size;
+  }
+
+  .contract {
+    width: 100%;
     font-family: var(--font-mono);
     font-size: var(--text-xs);
+    border-collapse: collapse;
     border-block: 1px solid var(--border-subtle);
   }
 
-  .contractHeader,
-  .contractRow {
-    display: grid;
-    grid-template-columns: 0.7fr 1.2fr 1.2fr 0.7fr;
-    gap: 12px;
-    align-items: center;
+  .contract th,
+  .contract td {
     padding: 10px 4px;
+    font-weight: 400;
+    text-align: left;
   }
 
-  .contractHeader {
+  .contractHeader th {
     color: var(--color-text-soft);
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -606,6 +645,51 @@ const CHECKS = [
     font-size: var(--text-xs);
   }
 
+  @container (width < 520px) {
+    .contract,
+    .contract tbody {
+      display: block;
+    }
+
+    .contractHeader {
+      display: none;
+    }
+
+    .contractRow {
+      display: grid;
+      gap: 6px;
+      padding: 12px 4px;
+    }
+
+    .contractRow:first-child {
+      border-top: 0;
+    }
+
+    .contract th,
+    .contract td {
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      padding: 0;
+    }
+
+    .contract td::before {
+      color: var(--color-text-soft);
+    }
+
+    .contract td:nth-child(2)::before {
+      content: "HTML gzip: ";
+    }
+
+    .contract td:nth-child(3)::before {
+      content: "JS gzip: ";
+    }
+
+    .contract td:nth-child(4)::before {
+      content: "result: ";
+    }
+  }
+
   @media (width <= 640px) {
     .releaseIntegrity {
       padding-top: 48px;
@@ -619,19 +703,6 @@ const CHECKS = [
     .ledgerRow {
       grid-template-columns: 1fr;
       gap: 2px;
-    }
-
-    .contractHeader {
-      display: none;
-    }
-
-    .contractRow {
-      grid-template-columns: 0.6fr 1.4fr;
-    }
-
-    .contractRow span:nth-child(3),
-    .contractRow span:nth-child(4) {
-      text-align: right;
     }
 
     .verifyHeading {

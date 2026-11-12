@@ -15,9 +15,11 @@ gpg --locate-keys yusuke@haya.company
 curl -sO https://yusuke-hayashi.com/proofs/statement.txt.asc
 gpg --verify statement.txt.asc`;
 
-const VERIFY_ETH = `# Recover the signer address from the signature (Foundry)
-curl -s https://yusuke-hayashi.com/proofs/eth-attestation.json | jq -r '.message, .signature'
-cast wallet verify --address ${ETH_ADDRESS} "<message>" "<signature>"`;
+const VERIFY_ETH = `# Recover the signer address from the signature (Foundry + jq)
+curl -fsSLO https://yusuke-hayashi.com/proofs/eth-attestation.json
+MESSAGE="$(jq -r .message eth-attestation.json)"
+SIGNATURE="$(jq -r .signature eth-attestation.json)"
+cast wallet verify --address ${ETH_ADDRESS} "$MESSAGE" "$SIGNATURE"`;
 ---
 
 <Base description={description} path="/proofs" title={title}>
