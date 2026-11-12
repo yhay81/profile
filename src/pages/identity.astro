@@ -8,7 +8,6 @@ import TrustGraph from "@/components/TrustGraph.astro";
 import Base from "@/layouts/Base.astro";
 import {
   ENS_NAME,
-  ETH_ADDRESS,
   IPFS_IDENTITY_GATEWAY,
   KEYOXIDE_URL,
   PROFILE_NAME,
@@ -29,16 +28,17 @@ interface ProofCard {
 const PROOF_CARDS: ProofCard[] = [
   {
     pair: "GitHub ⇄ PGP",
-    method: "Keyoxide proof (gist) + every commit signed",
+    method: "Keyoxide gist proof + enforced main-branch rules",
     href: KEYOXIDE_URL,
     linkText: "keyoxide.org",
     external: true,
   },
   {
     pair: "Domains ⇄ PGP",
-    method: "DNS TXT records (openpgp4fpr) on both domains",
+    method:
+      "DNS TXT records (openpgp4fpr) on yusuke-hayashi.com and haya-inc.co.jp",
     href: KEYOXIDE_URL,
-    linkText: "verify via Keyoxide",
+    linkText: "keyoxide.org",
     external: true,
   },
   {
@@ -79,8 +79,8 @@ const PROOF_CARDS: ProofCard[] = [
     external: false,
   },
   {
-    pair: "Nostr ⇄ this domain",
-    method: "NIP-05 mapping served from .well-known",
+    pair: "Nostr · Bluesky ⇄ domain",
+    method: "NIP-05 (.well-known) + AT Protocol DID (_atproto DNS TXT)",
     href: "/.well-known/nostr.json",
     linkText: "nostr.json",
     external: false,
@@ -103,43 +103,23 @@ const PROOF_CARDS: ProofCard[] = [
   },
 ];
 
-const VERIFY_QUICKSTART = `# 1. Fetch my key via WKD and check the Keyoxide proofs
-gpg --locate-keys yusuke@haya.company
-open ${KEYOXIDE_URL}
-
-# 2. Verify the PGP ⇄ Ethereum cross-attestation
-curl -sO https://yusuke-hayashi.com/proofs/statement.txt.asc
-gpg --verify statement.txt.asc
-cast wallet verify --address ${ETH_ADDRESS} "<message>" "<signature>"
-
-# 3. Verify ENS forward and primary reverse resolution
-cast resolve-name ${ENS_NAME}
-cast lookup-address ${ETH_ADDRESS}`;
-
-const VERIFY_BOOTSTRAP = `# Pin the accepted release authority before trusting site content
-OIDC_ISSUER=https://token.actions.githubusercontent.com
-REPOSITORY=yhay81/profile
-WORKFLOW=.github/workflows/cloudflare.yml
-SOURCE_REF=refs/heads/main
-
-# Independently obtain this compatibility fingerprint, then compare it locally
+const VERIFY_IDENTITY = `# 1. Compare the OpenPGP compatibility key against an out-of-band fingerprint
 EXPECTED_FINGERPRINT=B22B98ABB2D503307AB6A3160718EFA6506BB669
 gpg --locate-keys yusuke@haya.company
 ACTUAL_FINGERPRINT="$(gpg --with-colons --fingerprint yusuke@haya.company \\
   | awk -F: '$1 == "fpr" { print $10; exit }')"
-test "$ACTUAL_FINGERPRINT" = "$EXPECTED_FINGERPRINT"`;
+test "$ACTUAL_FINGERPRINT" = "$EXPECTED_FINGERPRINT"
 
-const VERIFY_MACHINE = `# Download the current manifest and deployed source commit
-curl -sO https://yusuke-hayashi.com/.well-known/release.json
-curl -sO https://yusuke-hayashi.com/.well-known/identity.json
-SOURCE_COMMIT="$(node -p 'JSON.parse(require("fs").readFileSync("release.json")).source.commit')"
+# 2. Fetch the deployed commit and compare it with current main on GitHub
+curl -fsSLO https://yusuke-hayashi.com/.well-known/release.json
+curl -fsSLO https://yusuke-hayashi.com/.well-known/identity.json
+curl -fsSLO https://yusuke-hayashi.com/.well-known/identity.json.asc
+SOURCE_COMMIT="$(node -p 'JSON.parse(require("node:fs").readFileSync("release.json", "utf8")).source.commit')"
+MAIN_COMMIT="$(gh api repos/yhay81/profile/commits/main --jq .sha)"
+echo "deployed: $SOURCE_COMMIT | main: $MAIN_COMMIT"
 
-# Verify the OpenPGP compatibility signature
-gpg --locate-keys yusuke@haya.company
-curl -sO https://yusuke-hayashi.com/.well-known/identity.json.asc
+# 3. Verify OpenPGP compatibility signature and Sigstore/SLSA provenance
 gpg --verify identity.json.asc identity.json
-
-# Verify GitHub Actions / Sigstore provenance against the deployed commit
 gh attestation verify identity.json \\
   --repo yhay81/profile \\
   --signer-workflow yhay81/profile/.github/workflows/cloudflare.yml \\
@@ -149,11 +129,14 @@ gh attestation verify identity.json \\
   --predicate-type https://slsa.dev/provenance/v1 \\
   --deny-self-hosted-runners
 
-# Verify the downloaded CLI hash before executing it (Node.js 22+)
-curl -sO https://yusuke-hayashi.com/.well-known/verify-identity.mjs
-EXPECTED_SHA256="$(node -p 'JSON.parse(require("fs").readFileSync("identity.json")).verifier.sha256')"
-ACTUAL_SHA256="$(shasum -a 256 verify-identity.mjs | awk '{ print $1 }')"
-test "$ACTUAL_SHA256" = "$EXPECTED_SHA256"
+# 4. Verify the CLI hash against the attested manifest before executing it
+curl -fsSLO https://yusuke-hayashi.com/.well-known/verify-identity.mjs
+node -e '
+  const crypto = require("node:crypto"), fs = require("node:fs");
+  const expected = JSON.parse(fs.readFileSync("identity.json", "utf8")).verifier.sha256;
+  const actual = crypto.createHash("sha256").update(fs.readFileSync("verify-identity.mjs")).digest("hex");
+  if (actual !== expected) process.exit(1);
+'
 node verify-identity.mjs`;
 ---
 
@@ -176,8 +159,10 @@ node verify-identity.mjs`;
 
       <nav aria-label="On this page" class="pageNav">
         <a href="#identity-proofs">Identity proofs</a>
+        <a href="#humanity-status">Humanity status</a>
         <a href="#release-integrity">Release integrity</a>
         <a href="#verify-it-yourself">Verify it yourself</a>
+        <a href="#design-notes">Design notes</a>
       </nav>
 
       <TrustGraph />
@@ -241,61 +226,39 @@ node verify-identity.mjs`;
       </h2>
 
       <p class="bodyText">
-        Start from the pinned release policy: OIDC issuer, repository, workflow,
-        source ref, and source commit. Then verify the OpenPGP compatibility
-        fingerprint through an independently obtained channel. No site can
-        establish trust merely by serving its own key and verifier.
+        No site can establish trust merely by serving its own key and verifier.
+        Compare the OpenPGP compatibility fingerprint through an independent
+        channel, check the deployed commit against GitHub, and verify Sigstore
+        provenance before running the hash-pinned CLI.
       </p>
 
       <CodeBlock
-        code={VERIFY_BOOTSTRAP}
-        label="Pin the release authority"
+        code={VERIFY_IDENTITY}
+        label="Bootstrap & verify (Node.js 22+, gh, gpg)"
         language="bash"
         wrap
       />
 
       <p class="bodyText">
-        Once those independent inputs are pinned, the remaining checks take
-        about two minutes. Details live on <a href="/keys">/keys</a> and{" "}
-        <a href="/proofs">/proofs</a>; the <a href="/siwe">SIWE demo</a> shows
-        the same Ethereum signature scheme working live in your browser.
-      </p>
-
-      <CodeBlock
-        code={VERIFY_QUICKSTART}
-        label="Two-minute verification"
-        language="bash"
-        wrap
-      />
-
-      <h2 class="heading">Machine-readable identity</h2>
-
-      <p class="bodyText">
-        The signed <a href="/.well-known/identity.json">identity manifest</a>{" "}
-        pins every public identifier, the hash of its{" "}
+        The <a href="/.well-known/identity.json">identity manifest</a> pins
+        every public identifier, its{" "}
         <a href="/.well-known/identity-history.json">append-only history</a>,
-        and the exact verifier bundle. A scheduled health check uses the same
-        verifier to detect broken signatures, DNS/ENS drift, and expired proofs.
-        GitHub Actions also packages the manifest, schemas, policy, verifier,
-        keys, and history into a deterministic identity release and attests both
-        the manifest and archive with Sigstore/SLSA. The{" "}
-        <a href="#release-integrity">release ledger above</a> separately binds
-        every deployed byte to its source commit.
+        and the verifier bundle; a scheduled health check runs the same checks
+        against DNS, WKD, ENS, and proof expiry. Standalone walkthroughs live on{" "}
+        <a href="/keys">/keys</a>, <a href="/proofs">/proofs</a>, and the{" "}
+        <a href="/siwe">SIWE demo</a>.
       </p>
 
-      <CodeBlock
-        code={VERIFY_MACHINE}
-        label="Machine verification"
-        language="bash"
-        wrap
-      />
-
-      <h2 class="heading">Design notes</h2>
+      <h2 class="heading" id="design-notes">
+        Design notes
+      </h2>
 
       <p class="bodyText">
-        The current release policy, trust-bootstrap rules, recovery boundary,
-        and AI delegation policy are described in{" "}
-        <a href="/trust-control-plane">A Personal Trust Control Plane</a>{" "}
+        Routine releases are attested with GitHub Actions OIDC and Sigstore; the
+        manifest currently uses the OpenPGP compatibility root (schema v4) while
+        the separate 2-of-3 hardware authority root remains unconfigured. The
+        release policy, recovery boundary, and AI delegation rules are described
+        in <a href="/trust-control-plane">A Personal Trust Control Plane</a>{" "}
         (clearsigned).
       </p>
 
@@ -344,12 +307,6 @@ node verify-identity.mjs`;
         color: var(--color-accent);
       }
     }
-  }
-
-  :global(#identity-proofs),
-  :global(#humanity-status),
-  :global(#verify-it-yourself) {
-    scroll-margin-top: 88px;
   }
 
   .cards {

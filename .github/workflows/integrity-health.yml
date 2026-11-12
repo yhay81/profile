@@ -10,6 +10,9 @@ permissions:
 
 jobs:
   verify-production:
+    permissions:
+      attestations: read
+      contents: read
     timeout-minutes: 1
     runs-on: ubuntu-latest
     steps:
@@ -19,19 +22,49 @@ jobs:
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: "26"
-      - name: Verify release manifest and every deployed asset
-        run: node scripts/verify-release.mjs --base-url https://yusuke-hayashi.com
+      - name: Verify release provenance and every deployed asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error \
+            --header 'Cache-Control: no-cache' \
+            'https://yusuke-hayashi.com/.well-known/release.json' \
+            --output release.json
+          curl --fail --silent --show-error \
+            --header 'Cache-Control: no-cache' \
+            'https://yusuke-hayashi.com/.well-known/identity.json' \
+            --output identity.json
+          deployed_commit="$(node -p 'JSON.parse(require("node:fs").readFileSync("release.json", "utf8")).source.commit')"
+          revision="$(node -p 'JSON.parse(require("node:fs").readFileSync("identity.json", "utf8")).releaseRevision')"
+          curl --fail --silent --show-error \
+            --header 'Cache-Control: no-cache' \
+            "https://yusuke-hayashi.com/.well-known/releases/identity-release-r${revision}.tar.gz" \
+            --output "identity-release-r${revision}.tar.gz"
+
+          verify_attestation() {
+            gh attestation verify "$1" \
+              --repo yhay81/profile \
+              --signer-workflow yhay81/profile/.github/workflows/cloudflare.yml \
+              --cert-oidc-issuer https://token.actions.githubusercontent.com \
+              --source-ref refs/heads/main \
+              --source-digest "$deployed_commit" \
+              --predicate-type https://slsa.dev/provenance/v1 \
+              --deny-self-hosted-runners
+          }
+
+          verify_attestation identity.json
+          verify_attestation "identity-release-r${revision}.tar.gz"
+          tar -xzOf "identity-release-r${revision}.tar.gz" .well-known/release.json | cmp -s - release.json
+          node scripts/verify-release.mjs \
+            --base-url https://yusuke-hayashi.com \
+            --expected-commit "$deployed_commit"
       # Each verification below runs even when an earlier one fails. A single
       # failing claim must not hide the state of the remaining claims.
       - name: Verify identity signatures and public claims
         if: "!cancelled()"
-        shell: bash
-        run: |
-          curl --fail --silent --show-error \
-            --header 'Cache-Control: no-cache' \
-            'https://yusuke-hayashi.com/.well-known/verify-identity.mjs' \
-            --output verify-identity.mjs
-          node verify-identity.mjs --report identity-health.json
+        run: node public/.well-known/verify-identity.mjs --report identity-health.json
       - name: Verify security headers and RUM absence
         if: "!cancelled()"
         shell: bash
@@ -119,8 +152,7 @@ jobs:
             echo '```sh'
             echo 'node scripts/verify-release.mjs --base-url https://yusuke-hayashi.com'
             echo 'node scripts/check-links.mjs --base-url https://yusuke-hayashi.com'
-            echo 'curl -sO https://yusuke-hayashi.com/.well-known/verify-identity.mjs'
-            echo 'node verify-identity.mjs'
+            echo 'node public/.well-known/verify-identity.mjs'
             echo '```'
             echo
             echo 'One issue is opened per failure streak. Close it once the'
