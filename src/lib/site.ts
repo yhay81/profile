@@ -7,7 +7,7 @@ export const ORCID_URL = `https://orcid.org/${ORCID_ID}`;
 export const GOOGLE_SCHOLAR_URL =
   "https://scholar.google.com/citations?user=A3mvIIUAAAAJ";
 export const COPYRIGHT_START_YEAR = 2022;
-export const HOME_DATE_MODIFIED = "2026-11-21";
+export const HOME_DATE_MODIFIED = "2026-11-22";
 export const MAIN_COLOR = "#04ffaa";
 
 export const PGP_FINGERPRINT_SPACED =
