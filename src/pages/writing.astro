@@ -1,54 +1,447 @@
 ---
-import "@/styles/article.css";
-
-import SectionHeader from "@/components/SectionHeader.astro";
-import WritingList from "@/components/WritingList.astro";
+import SignedManuscript from "@/components/writing/SignedManuscript.astro";
 import Base from "@/layouts/Base.astro";
+import { TRUST_CONTROL_PLANE_ARTICLE as feature } from "@/lib/articles";
 import { PROFILE_NAME } from "@/lib/site";
-import { WRITING } from "@/lib/writing";
+import { WRITING, type WritingEntry } from "@/lib/writing";
 
-const title = `Writing | ${PROFILE_NAME}`;
-const description =
-  "All articles and notes — verifiable identity and engineering practice on this site, web development notes on Zenn.";
+const years = new Map<string, WritingEntry[]>();
+for (const entry of WRITING) {
+  if (entry.url === feature.url) continue;
+  const year = entry.date.slice(0, 4);
+  const entries = years.get(year);
+  if (entries) entries.push(entry);
+  else years.set(year, [entry]);
+}
+
+const dayAndMonth = new Intl.DateTimeFormat("en-GB", {
+  day: "2-digit",
+  month: "short",
+  timeZone: "UTC",
+});
+const featuredDate = feature.datePublished.slice(0, 10);
 ---
 
-<Base description={description} path="/writing" title={title}>
-  <main>
-    <section>
-      <SectionHeader
-        label="Writing"
-        no="00"
-        title="Writing"
-        transitionName="page-title"
-      />
+<Base
+  title={`Writing | ${PROFILE_NAME}`}
+  path="/writing"
+  themeColor="#f2f2fc"
+  description="Technical essays and books by Yusuke Hayashi on software engineering, AI systems, web development, and public identity."
+>
+  <main class="journal">
+    <header class="masthead">
+      <h1 data-view-transition-name="page-title">Writing</h1>
+      <div class="about">
+        <p>
+          Essays and books on software engineering, AI systems, and public
+          identity.
+        </p>
+        <nav class="sources" aria-label="Publishing links">
+          <a href="/feed.xml">
+            RSS feed <span aria-hidden="true">↗</span>
+          </a>
+          <a href="https://zenn.dev/yhay81" rel="noreferrer" target="_blank">
+            Zenn profile <span aria-hidden="true">↗</span>
+          </a>
+        </nav>
+      </div>
+    </header>
 
-      <p class="lead">
-        Everything I have published, newest first. Long-form articles live on
-        this site; Japanese notes on web development and engineering practice
-        are on{" "}
-        <a href="https://zenn.dev/yhay81" rel="noreferrer" target="_blank">
-          Zenn ↗
-        </a>
-        .
-      </p>
+    <article class="feature" aria-labelledby="featured-title">
+      <div class="featureCopy">
+        <p class="kicker">Featured essay</p>
+        <h2 class="featureTitle" id="featured-title">
+          <a
+            data-view-transition-name={feature.transitionName}
+            href={feature.url}
+          >
+            {feature.title}
+          </a>
+        </h2>
+        <p class="deck">{feature.description}</p>
+        <div class="featureFoot">
+          <p class="metadata">
+            <time datetime={featuredDate}>{featuredDate}</time>{" "}
+            <span> · This site</span>
+          </p>
+          <span aria-hidden="true" class="featureArrow">
+            →
+          </span>
+        </div>
+      </div>
+      <SignedManuscript />
+    </article>
 
-      <p class="writingFeed">
-        <a href="/feed.xml">Subscribe to the combined RSS feed ↗</a>
-      </p>
-
-      <WritingList entries={WRITING} />
+    <section class="archive" aria-labelledby="archive-heading">
+      <header class="archiveHead">
+        <h2 id="archive-heading">Archive</h2>
+        <nav class="years" aria-label="Browse by publication year">
+          {Array.from(years.keys()).map((year) => (
+            <a href={`#writing-${year}`}>{year}</a>
+          ))}
+        </nav>
+      </header>
+      {Array.from(years, ([year, entries]) => (
+        <section
+          class="yearGroup"
+          id={`writing-${year}`}
+          aria-labelledby={`year-${year}`}
+        >
+          <h3 class="year" id={`year-${year}`}>
+            {year}
+          </h3>
+          <ol class="entries">
+            {entries.map((entry) => (
+              <li class="entry">
+                <time class="date" datetime={entry.date}>
+                  {dayAndMonth.format(new Date(entry.date))}
+                </time>
+                <a
+                  class="entryTitle"
+                  data-view-transition-name={entry.transitionName}
+                  href={entry.url}
+                  lang={entry.language}
+                  rel={entry.external ? "noreferrer" : undefined}
+                  target={entry.external ? "_blank" : undefined}
+                >
+                  {entry.title}
+                </a>
+                <span class="publisher">
+                  {entry.external
+                    ? entry.url.includes("/books/")
+                      ? "Zenn book"
+                      : "Zenn"
+                    : "This site"}
+                  <span aria-hidden="true">{entry.external ? "↗" : "→"}</span>
+                </span>
+              </li>
+            ))}
+          </ol>
+        </section>
+      ))}
     </section>
   </main>
 </Base>
 
 <style>
-  .writingFeed {
-    margin: -4px 0 20px;
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
+  :global(html:has(.journal)) {
+    --journal-paper: #f2f2fc;
 
-    & a {
-      color: var(--color-text-soft);
+    color-scheme: light;
+    background: var(--journal-paper);
+  }
+
+  :global(body:has(.journal)) {
+    --press-ink: oklch(25.6% 0.093 272deg);
+    --editor-ink: oklch(40% 0.063 275deg);
+    --print-paper: oklch(81% 0.091 279deg);
+    --ruling: oklch(79% 0.032 278deg);
+    --journal-accent: oklch(46% 0.159 271deg);
+    --color-text-strong: var(--press-ink);
+    --color-text-soft: var(--editor-ink);
+    --color-text: var(--editor-ink);
+    --color-accent: var(--journal-accent);
+    --scrim: color-mix(in oklab, var(--journal-paper) 95%, transparent);
+    --border-subtle: var(--ruling);
+    --surface-raised: color-mix(
+      in oklab,
+      var(--press-ink) 6%,
+      var(--journal-paper)
+    );
+
+    color-scheme: light;
+    background: var(--journal-paper);
+  }
+
+  .journal {
+    max-width: 1360px;
+    padding-top: var(--nav-height);
+    padding-bottom: clamp(32px, 5vw, 75px);
+  }
+
+  .masthead {
+    display: flex;
+    gap: 24px;
+    align-items: end;
+    justify-content: space-between;
+    padding: clamp(32px, 4.8vw, 70px) 0 clamp(24px, 3.4vw, 50px);
+  }
+
+  .masthead h1 {
+    font-family: "Helvetica Neue", var(--font-sans);
+    font-size: clamp(4.8rem, 10.4vw, 9rem);
+    font-weight: 720;
+    line-height: 0.86;
+    letter-spacing: -0.058em;
+  }
+
+  .about {
+    max-width: 30ch;
+    padding-bottom: 2px;
+    font-size: clamp(0.94rem, 1.2vw, 1.09rem);
+    line-height: 1.5;
+    color: var(--press-ink);
+  }
+
+  .sources,
+  .years {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.77rem;
+  }
+
+  .sources {
+    margin-top: 12px;
+
+    a {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+  }
+
+  .feature {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
+    color: var(--journal-paper);
+    background: var(--press-ink);
+  }
+
+  .featureCopy {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    padding: clamp(26px, 4.2vw, 58px);
+  }
+
+  .kicker,
+  .metadata,
+  .date,
+  .publisher {
+    font-family: var(--font-mono);
+    font-size: clamp(0.72rem, 0.92vw, 0.82rem);
+    line-height: 1.4;
+  }
+
+  .kicker {
+    color: var(--print-paper);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+
+  .featureTitle {
+    max-width: 13ch;
+    margin: 15px 0;
+    font-family: Baskerville, Georgia, serif;
+    font-size: clamp(2.8rem, 5.2vw, 4.9rem);
+    font-weight: 500;
+    line-height: 0.99;
+    color: var(--journal-paper);
+    letter-spacing: -0.047em;
+  }
+
+  .featureTitle a {
+    position: static;
+    outline-offset: 8px;
+
+    &::after {
+      position: absolute;
+      z-index: 1;
+      inset: 0;
+      content: "";
+    }
+
+    &:hover,
+    &:focus-visible {
+      color: var(--print-paper);
+    }
+  }
+
+  .deck {
+    max-width: 41ch;
+    font-family: var(--font-sans);
+    font-size: clamp(0.92rem, 1.28vw, 1.1rem);
+    line-height: 1.5;
+    color: color-mix(in oklab, var(--journal-paper) 85%, var(--print-paper));
+  }
+
+  .featureFoot {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 18px;
+    margin-top: clamp(22px, 2.4vw, 34px);
+    border-top: 1px solid
+      color-mix(in oklab, var(--print-paper) 42%, transparent);
+  }
+
+  .metadata {
+    color: var(--print-paper);
+  }
+
+  .featureArrow {
+    font-size: 1.4rem;
+    line-height: 1;
+  }
+
+  .archive,
+  .yearGroup {
+    max-width: none;
+    padding: 0;
+  }
+
+  .archive {
+    margin-top: clamp(40px, 5.5vw, 80px);
+  }
+
+  .archiveHead {
+    display: flex;
+    gap: 16px;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--press-ink);
+  }
+
+  .archiveHead h2 {
+    font-size: clamp(1.8rem, 3vw, 2.65rem);
+    letter-spacing: -0.055em;
+  }
+
+  .years {
+    gap: 2px 16px;
+  }
+
+  .years a {
+    padding: 4px 0;
+  }
+
+  .yearGroup {
+    display: grid;
+    grid-template-columns: minmax(82px, 0.9fr) minmax(0, 6fr);
+    gap: 20px;
+    border-bottom: 1px solid var(--press-ink);
+  }
+
+  .year {
+    margin-top: 20px;
+    font-family: Baskerville, Georgia, serif;
+    font-size: clamp(1.7rem, 3.5vw, 2.9rem);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.065em;
+  }
+
+  .entries {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .entry {
+    position: relative;
+    display: grid;
+    grid-template-columns: 54px minmax(0, 1fr) 86px;
+    gap: 8px clamp(12px, 2.1vw, 30px);
+    align-items: baseline;
+    padding: 21px 0;
+  }
+
+  .entry + .entry {
+    border-top: 1px solid var(--ruling);
+  }
+
+  .entryTitle {
+    position: static;
+    font-family: Georgia, "Hiragino Mincho ProN", "Yu Mincho", YuMincho, serif;
+    font-size: clamp(1.08rem, 1.65vw, 1.45rem);
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--press-ink);
+    overflow-wrap: anywhere;
+    line-break: strict;
+
+    &::after {
+      position: absolute;
+      inset: 0;
+      content: "";
+    }
+
+    &:hover,
+    &:focus-visible {
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 4px;
+    }
+  }
+
+  .date,
+  .publisher {
+    color: var(--editor-ink);
+  }
+
+  .publisher {
+    justify-self: end;
+    white-space: nowrap;
+  }
+
+  @media (width <= 680px) {
+    .masthead {
+      flex-direction: column;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .about {
+      max-width: 36ch;
+    }
+
+    .feature {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .featureCopy {
+      padding: 24px;
+    }
+
+    .featureTitle {
+      max-width: 14ch;
+    }
+
+    .archiveHead {
+      flex-wrap: wrap;
+      padding-bottom: 10px;
+    }
+
+    .yearGroup {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+
+    .year {
+      margin-top: 17px;
+    }
+
+    .entry {
+      grid-template-columns: auto 1fr;
+      gap: 6px 12px;
+      padding: 16px 0;
+    }
+
+    .publisher {
+      grid-row: 1;
+      grid-column: 2;
+      justify-self: start;
+    }
+
+    .entryTitle {
+      grid-column: 1 / -1;
     }
   }
 </style>

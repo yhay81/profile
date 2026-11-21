@@ -24,8 +24,6 @@ const ROUTE_BUDGETS = [
   {
     path: "/work",
     file: "work.html",
-    // Native details keep the complete index usable without JavaScript. A
-    // small inline enhancement opens and aligns fragment-linked collections.
     documentGzipBytes: 22_000,
     initialJsGzipBytes: 0,
   },

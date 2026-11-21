@@ -3,13 +3,14 @@ import "@/styles/article.css";
 
 import CodeBlock from "@/components/CodeBlock.astro";
 import ReleaseIntegrity from "@/components/ReleaseIntegrity.astro";
-import SectionHeader from "@/components/SectionHeader.astro";
 import TrustGraph from "@/components/TrustGraph.astro";
 import Base from "@/layouts/Base.astro";
 import {
   ENS_NAME,
   IPFS_IDENTITY_GATEWAY,
   KEYOXIDE_URL,
+  PGP_FINGERPRINT_HEX,
+  PGP_FINGERPRINT_SPACED,
   PROFILE_NAME,
 } from "@/lib/site";
 
@@ -103,8 +104,15 @@ const PROOF_CARDS: ProofCard[] = [
   },
 ];
 
+// Each of the 40 sectors is a hexadecimal digit, with one ring per bit.
+const fingerprintRings = [8, 4, 2, 1].map((bit) =>
+  Array.from(PGP_FINGERPRINT_HEX, (digit) =>
+    Number.parseInt(digit, 16) & bit ? "1.65 .35" : "0 2",
+  ).join(" "),
+);
+
 const VERIFY_IDENTITY = `# 1. Compare the OpenPGP compatibility key against an out-of-band fingerprint
-EXPECTED_FINGERPRINT=B22B98ABB2D503307AB6A3160718EFA6506BB669
+EXPECTED_FINGERPRINT=${PGP_FINGERPRINT_HEX.toUpperCase()}
 gpg --locate-keys yusuke@haya.company
 ACTUAL_FINGERPRINT="$(gpg --with-colons --fingerprint yusuke@haya.company \\
   | awk -F: '$1 == "fpr" { print $10; exit }')"
@@ -140,22 +148,81 @@ node -e '
 node verify-identity.mjs`;
 ---
 
-<Base description={description} path="/identity" title={title}>
-  <main>
-    <section>
-      <SectionHeader
-        label="Identity & integrity"
-        no="00"
-        title="Verifiable Identity"
-        transitionName="page-title"
-      />
-
-      <p class="lead">
-        Anyone can claim a name. This page shows the cryptographic links — DNS
-        records, signed statements, and key notations — that let you verify this
-        site, my code, and my on-chain account all belong to the same person,
-        then binds the deployed bytes back to their source.
-      </p>
+<Base
+  description={description}
+  path="/identity"
+  themeColor="#0d2219"
+  title={title}
+>
+  <main class="identityMain">
+    <section class="record" aria-labelledby="identity-title">
+      <header class="identityHero">
+        <div class="intro">
+          <p class="registerLabel">{PROFILE_NAME} · Public record</p>
+          <h1 data-view-transition-name="page-title" id="identity-title">
+            Verifiable Identity
+          </h1>
+          <p class="lead">
+            DNS records, signed statements, and key notations connect my site,
+            code, and Ethereum account. Release attestations trace the files
+            served here back to their source.
+          </p>
+          <a class="manifestLink" href="/.well-known/identity.json">
+            Read the identity manifest <span aria-hidden="true">→</span>
+          </a>
+        </div>
+        <div class="keyPlate">
+          <div class="plateHeader">
+            <span>OpenPGP public key</span>
+            <a href="/pgp-key.asc">
+              pgp-key.asc <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+          <div class="plateBody">
+            <svg
+              aria-hidden="true"
+              class="keySeal"
+              viewBox="0 0 112 112"
+              fill="none"
+            >
+              <g stroke="currentColor" transform="rotate(-90 56 56)">
+                <circle cx="56" cy="56" r="55" stroke-width=".7" />
+                <circle
+                  cx="56"
+                  cy="56"
+                  r="51"
+                  pathLength="80"
+                  stroke-dasharray=".24 1.76"
+                  stroke-width="4"
+                />
+                {fingerprintRings.map((dashes, i) => (
+                  <circle
+                    cx="56"
+                    cy="56"
+                    r={45 - i * 5.25}
+                    pathLength="80"
+                    stroke-dasharray={dashes}
+                    stroke-width="4.4"
+                  />
+                ))}
+                <circle cx="56" cy="56" r="25" stroke-width=".9" />
+              </g>
+              <text fill="currentColor" x="56" y="59" text-anchor="middle">
+                PGP
+              </text>
+            </svg>
+            <div class="plateSubject">
+              <span>Key holder</span>
+              <strong>{PROFILE_NAME}</strong>
+              <a href={`https://app.ens.domains/${ENS_NAME}`}>{ENS_NAME}</a>
+            </div>
+          </div>
+          <div class="platePrint">
+            <span>Fingerprint</span>
+            <code>{PGP_FINGERPRINT_SPACED}</code>
+          </div>
+        </div>
+      </header>
 
       <nav aria-label="On this page" class="pageNav">
         <a href="#identity-proofs">Identity proofs</a>
@@ -165,11 +232,10 @@ node verify-identity.mjs`;
         <a href="#design-notes">Design notes</a>
       </nav>
 
-      <TrustGraph />
-
       <h2 class="heading" id="identity-proofs">
-        The proofs
+        Identity proofs
       </h2>
+      <TrustGraph />
 
       <div class="cards">
         {PROOF_CARDS.map((card) => (
@@ -284,131 +350,296 @@ node verify-identity.mjs`;
 </Base>
 
 <style>
+  :global(html:has(.identityMain)) {
+    --identity-field: oklch(23% 0.032 163deg);
+
+    background-color: var(--identity-field);
+  }
+
+  :global(body:has(.identityMain)) {
+    --color-bg-deep: oklch(19% 0.028 162deg);
+    --color-bg: var(--identity-field);
+    --color-text-strong: oklch(94% 0.021 154deg);
+    --color-text-soft: oklch(84% 0.036 154deg);
+    --color-text: oklch(78% 0.032 159deg);
+    --color-accent: oklch(86% 0.101 150deg);
+    --border-subtle: oklch(43% 0.043 158deg);
+    --border-strong: oklch(57% 0.061 157deg);
+    --border-accent: var(--border-strong);
+    --surface-card: oklch(26% 0.034 166deg);
+    --surface-raised: oklch(30% 0.043 163deg);
+    --scrim: color-mix(in oklab, var(--color-bg-deep) 96%, transparent);
+
+    background: var(--color-bg);
+  }
+
+  .record {
+    max-width: 1120px;
+    padding-top: calc(var(--nav-height) + clamp(40px, 5vw, 74px));
+  }
+
+  .identityHero {
+    display: grid;
+    grid-template-columns: 1.1fr minmax(0, 0.9fr);
+    gap: clamp(28px, 5vw, 78px);
+    align-items: center;
+  }
+
+  .registerLabel,
+  .plateHeader,
+  .plateSubject span,
+  .platePrint span {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    text-transform: uppercase;
+    letter-spacing: 0.105em;
+  }
+
+  .registerLabel {
+    color: var(--color-accent);
+  }
+
+  .intro h1,
+  .record > .heading,
+  .plateSubject strong {
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 400;
+  }
+
+  .intro h1 {
+    max-width: 9ch;
+    margin: 16px 0 22px;
+    font-size: clamp(3.5rem, 7.5vw, 7.75rem);
+    line-height: 0.91;
+    letter-spacing: -0.065em;
+  }
+
+  .intro .lead {
+    max-width: 44ch;
+    font-size: var(--text-base);
+  }
+
+  .manifestLink,
+  .cardLink,
+  .statusLinks a {
+    font-size: var(--text-sm);
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .manifestLink {
+    margin-top: 8px;
+  }
+
+  .keyPlate {
+    --plate: oklch(88% 0.058 149deg);
+    --printed: oklch(26% 0.051 160deg);
+    --hairline: color-mix(in oklab, var(--printed) 48%, var(--plate));
+
+    padding: clamp(16px, 2.3vw, 30px);
+    color: var(--printed);
+    background: var(--plate);
+    outline: 1px solid var(--hairline);
+    outline-offset: -6px;
+  }
+
+  .plateHeader,
+  .plateBody {
+    display: flex;
+    align-items: center;
+  }
+
+  .plateHeader {
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .keyPlate a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .plateHeader a,
+  .plateSubject a {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    text-transform: none;
+    letter-spacing: normal;
+  }
+
+  .plateBody {
+    gap: clamp(15px, 2vw, 30px);
+    padding: clamp(12px, 2vw, 26px) 0;
+  }
+
+  .keySeal {
+    flex: 0 0 auto;
+    width: 32%;
+    max-width: 130px;
+    color: var(--printed);
+  }
+
+  .keySeal text {
+    font: 10px var(--font-mono);
+    letter-spacing: 1px;
+  }
+
+  .plateSubject {
+    display: grid;
+    justify-items: start;
+  }
+
+  .plateSubject strong {
+    margin-block: 3px;
+    font-size: clamp(1.4rem, 2.4vw, 2.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.045em;
+  }
+
+  .platePrint {
+    padding-top: 10px;
+    border-top: 1px solid var(--hairline);
+  }
+
+  .platePrint code {
+    display: block;
+    max-width: 25ch;
+    margin-top: 4px;
+    font-size: clamp(0.96rem, 1.65vw, 1.45rem);
+    font-weight: 600;
+    line-height: 1.45;
+  }
+
   .pageNav {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px 24px;
-    padding-block: 14px;
-    margin-top: 28px;
+    gap: 2px 25px;
+    padding-block: 9px;
+    margin-top: clamp(28px, 4vw, 58px);
     font-family: var(--font-mono);
     font-size: var(--text-xs);
-    border-block: 1px solid var(--border-subtle);
+    border-block: 1px solid var(--border-strong);
+  }
 
-    a {
-      color: var(--color-text-strong);
+  .pageNav a {
+    padding-block: 5px;
+    color: var(--color-text-strong);
+  }
 
-      &::before {
-        color: var(--color-accent);
-        content: "↳ ";
-      }
+  .pageNav a::after {
+    margin-left: 0.4em;
+    color: var(--color-accent);
+    content: "↓";
+  }
 
-      &:hover,
-      &:focus-visible {
-        color: var(--color-accent);
-      }
-    }
+  .record > .heading {
+    margin: clamp(40px, 6vw, 80px) 0 22px;
+    font-size: clamp(2.05rem, 4vw, 3.8rem);
+    letter-spacing: -0.045em;
   }
 
   .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
-    gap: 12px;
-    margin-top: 8px;
+    margin-top: 26px;
+    border-top: 1px solid var(--border-strong);
   }
 
   .card {
     display: grid;
-    gap: 8px;
-    align-content: start;
-    padding: 16px 18px;
-    background: var(--surface-card);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    box-shadow: inset 0 1px 0 var(--surface-raised);
+    grid-template-columns: minmax(150px, 0.8fr) minmax(0, 1.5fr) minmax(
+        128px,
+        0.6fr
+      );
+    gap: 18px;
+    align-items: baseline;
+    padding-block: 16px;
+    border-bottom: 1px solid var(--border-subtle);
   }
 
   .cardPair {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--color-accent);
-    letter-spacing: 0.04em;
+    font-size: var(--text-base);
   }
 
-  .cardMethod {
+  .cardMethod,
+  .humanityStatus p {
     margin: 0;
     font-size: var(--text-sm);
-    line-height: 1.6;
-    color: var(--color-text);
   }
 
   .cardLink {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-text-strong);
-
-    &:hover,
-    &:focus-visible {
-      color: var(--color-accent);
-    }
+    justify-self: end;
   }
 
   .humanityStatus {
     display: grid;
     gap: 12px;
-    padding: 20px;
+    padding: clamp(20px, 3vw, 34px);
     background: var(--surface-card);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius-md);
-    box-shadow: inset 0 1px 0 var(--surface-raised);
-
-    p {
-      margin: 0;
-      font-size: var(--text-sm);
-      line-height: 1.7;
-      color: var(--color-text);
-    }
+    border-left: 3px solid var(--color-accent);
   }
 
-  .statusHeading {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 16px;
-    align-items: center;
-    justify-content: space-between;
-
-    h3 {
-      margin: 0;
-      font-family: var(--font-mono);
-      font-size: var(--text-sm);
-      color: var(--color-text-strong);
-      letter-spacing: 0.03em;
-    }
+  .humanityStatus p {
+    max-width: 80ch;
   }
 
-  .statusBadge {
-    padding: 4px 8px;
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-accent);
-    border: 1px solid color-mix(in oklab, var(--color-accent) 45%, transparent);
-    border-radius: 999px;
-  }
-
+  .statusHeading,
   .statusLinks {
     display: flex;
     flex-wrap: wrap;
     gap: 8px 18px;
+    align-items: baseline;
+  }
 
-    a {
-      font-family: var(--font-mono);
-      font-size: var(--text-xs);
-      color: var(--color-text-strong);
+  .statusHeading {
+    justify-content: space-between;
+  }
 
-      &:hover,
-      &:focus-visible {
-        color: var(--color-accent);
-      }
+  .statusBadge {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-accent);
+  }
+
+  .keyPlate a:focus-visible {
+    outline-color: var(--printed);
+  }
+
+  @media (width <= 760px) {
+    .identityHero {
+      grid-template-columns: 1fr;
+    }
+
+    .intro h1 {
+      max-width: none;
+    }
+
+    .keyPlate {
+      max-width: 480px;
+    }
+
+    .card {
+      grid-template-columns: 1fr auto;
+      gap: 5px 12px;
+    }
+
+    .cardMethod {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+  }
+
+  @media (width <= 480px) {
+    .card {
+      grid-template-columns: 1fr;
+    }
+
+    .cardLink {
+      justify-self: start;
     }
   }
 </style>

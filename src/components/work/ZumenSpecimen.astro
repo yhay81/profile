@@ -1,0 +1,204 @@
+---
+import layers from "@/assets/work/zumen-office-layers.webp";
+import model from "@/assets/work/zumen-office-model.webp";
+import plan from "@/assets/work/zumen-office-plan.webp";
+
+// The views use the Forestry Agency's architectural IFC in zumen's
+// samples/ifc/rinya. The plan is a horizontal section at z = 1.2 metres.
+---
+
+<figure class="drawing">
+  <div class="sheetHead">
+    <span>Timber office</span>
+    <span>
+      IFC / <span class="projection">Axonometric</span>
+      <span class="planLabel">First floor</span>
+    </span>
+  </div>
+  <div class="viewport">
+    <img
+      alt="The three floors and roof of the timber office separated vertically to reveal the interior walls."
+      class="layersImage"
+      fetchpriority="high"
+      height={layers.height}
+      src={layers.src}
+      width={layers.width}
+    />
+    <img
+      alt="The same three-storey office assembled, showing its long facade and flat roof."
+      class="modelImage"
+      height={model.height}
+      src={model.src}
+      width={model.width}
+    />
+    <img
+      alt="First-floor plan cut from the same model, with overall dimensions of 49.52 by 17.65 metres."
+      class="planImage"
+      height={plan.height}
+      src={plan.src}
+      width={plan.width}
+    />
+  </div>
+  <figcaption>
+    <fieldset>
+      <legend class="visuallyHidden">Timber office view</legend>
+      <label>
+        <input type="radio" name="office-view" value="layers" checked />
+        <span>Exploded</span>
+      </label>
+      <label>
+        <input type="radio" name="office-view" value="model" />
+        <span>Assembled</span>
+      </label>
+      <label>
+        <input type="radio" name="office-view" value="plan" />
+        <span>Floor plan</span>
+      </label>
+    </fieldset>
+    <a class="credit" href="https://www.rinya.maff.go.jp/j/mokusan/bim.html">
+      Model by the Forestry Agency <span aria-hidden="true">↗</span>
+    </a>
+  </figcaption>
+</figure>
+
+<style>
+  .drawing {
+    --line: oklch(93% 0.035 240deg / 25%);
+    --tick: oklch(95% 0.024 240deg / 68%);
+    --blue: oklch(34% 0.066 254deg);
+    --board-ink: oklch(97% 0.012 85deg);
+
+    position: relative;
+    display: grid;
+    grid-area: drawing;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    align-self: stretch;
+    min-width: 0;
+    padding: clamp(16px, 2.1vw, 30px);
+    margin: 0;
+    color: var(--board-ink);
+    background:
+      linear-gradient(90deg, var(--line) 1px, transparent 1px) 50% / 29px 29px,
+      linear-gradient(var(--line) 1px, transparent 1px) 50% / 29px 29px,
+      radial-gradient(ellipse at 46% 45%, oklch(44% 0.071 253deg), var(--blue));
+    background-blend-mode: soft-light, soft-light, normal;
+  }
+
+  .sheetHead,
+  figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: clamp(0.62rem, 0.82vw, 0.74rem);
+    line-height: 1.3;
+  }
+
+  .sheetHead {
+    padding-bottom: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.11em;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .viewport {
+    position: relative;
+    display: grid;
+    height: clamp(235px, 23vw, 362px);
+    place-items: center;
+    margin-block: 10px;
+    background:
+      linear-gradient(var(--tick), var(--tick)) left top / 7px 1px,
+      linear-gradient(var(--tick), var(--tick)) left top / 1px 7px,
+      linear-gradient(var(--tick), var(--tick)) right bottom / 7px 1px,
+      linear-gradient(var(--tick), var(--tick)) right bottom / 1px 7px;
+    background-repeat: no-repeat;
+  }
+
+  .viewport img {
+    display: block;
+    grid-area: 1 / 1;
+    width: 97%;
+    height: 100%;
+    min-height: 0;
+    object-fit: contain;
+  }
+
+  .drawing .modelImage,
+  .drawing .planImage,
+  .planLabel,
+  .drawing:has(input[value="plan"]:checked) .projection,
+  .drawing:has(input:not([value="layers"]):checked) .layersImage {
+    display: none;
+  }
+
+  .drawing:has(input[value="model"]:checked) .modelImage,
+  .drawing:has(input[value="plan"]:checked) .planImage {
+    display: block;
+  }
+
+  .drawing:has(input[value="plan"]:checked) .planLabel {
+    display: inline;
+  }
+
+  figcaption {
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+  }
+
+  fieldset {
+    display: inline-flex;
+    min-width: 0;
+    padding: 2px;
+    margin: 0;
+    background: var(--board);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+  }
+
+  label {
+    position: relative;
+    display: grid;
+    cursor: pointer;
+  }
+
+  .visuallyHidden,
+  input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  label span {
+    padding: 7px 9px;
+    border-radius: 2px;
+  }
+
+  input:checked + span {
+    color: var(--board);
+    background: var(--board-ink);
+  }
+
+  input:focus-visible + span {
+    outline: 2px solid oklch(85% 0.13 75deg);
+    outline-offset: 2px;
+  }
+
+  .credit {
+    margin-left: auto;
+    color: var(--board-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--line);
+    text-underline-offset: 3px;
+  }
+
+  @media (width <= 768px) {
+    .viewport {
+      height: clamp(196px, 51vw, 305px);
+    }
+  }
+</style>

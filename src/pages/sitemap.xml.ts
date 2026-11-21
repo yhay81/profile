@@ -4,7 +4,8 @@ import { TRUST_CONTROL_PLANE_ARTICLE } from "@/lib/articles";
 import { HOME_DATE_MODIFIED, PROFILE_URL } from "@/lib/site";
 import { WRITING } from "@/lib/writing";
 
-const latestWritingDate = WRITING.at(0)?.date ?? "2026-07-25";
+const writingDesignDate = "2026-11-21";
+const latestWritingDate = WRITING.at(0)?.date ?? writingDesignDate;
 
 // Emit this static endpoint at the /sitemap.xml URL referenced by robots.txt.
 const PAGES = [
@@ -16,13 +17,16 @@ const PAGES = [
   },
   {
     path: "/work",
-    lastmod: "2026-11-12",
+    lastmod: "2026-11-21",
     changefreq: "monthly",
     priority: "0.9",
   },
   {
     path: "/writing",
-    lastmod: latestWritingDate,
+    lastmod:
+      latestWritingDate > writingDesignDate
+        ? latestWritingDate
+        : writingDesignDate,
     changefreq: "monthly",
     priority: "0.7",
   },
@@ -34,7 +38,7 @@ const PAGES = [
   },
   {
     path: "/identity",
-    lastmod: "2026-11-12",
+    lastmod: "2026-11-21",
     changefreq: "weekly",
     priority: "0.8",
   },
