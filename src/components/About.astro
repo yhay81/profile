@@ -6,8 +6,8 @@ import SectionHeader from "@/components/SectionHeader.astro";
 
 const EXPERIENCE = [
   {
-    period: "1 Dec 2026 – 1 Dec 2027",
-    periodStartIso: "2026-12-01",
+    period: "2026-",
+    periodIso: "2026",
     role: "Senior Technical Lead",
     company: "Prodapt Japan",
     description:
@@ -15,15 +15,15 @@ const EXPERIENCE = [
   },
   {
     period: "2025–present",
-    periodStartIso: "2025",
+    periodIso: "2025",
     role: "Founder / AI Adoption Consultant",
     company: "haya Inc.",
     description:
       "Leading AI adoption for teams and founders — planning, piloting, and scaling GenAI solutions that survive contact with production.",
   },
   {
-    period: "2021–2026",
-    periodStartIso: "2021-01",
+    period: "-2026",
+    periodIso: "2026",
     role: "Freelance Software Engineer",
     engagements: [
       {
@@ -45,7 +45,7 @@ const EXPERIENCE = [
   },
   {
     period: "2018–2021",
-    periodStartIso: "2018-09",
+    periodIso: "2018-09",
     role: "Software Engineer",
     company: "Sony / SIE",
     description:
@@ -53,7 +53,7 @@ const EXPERIENCE = [
   },
   {
     period: "Feb 2016 – Jun 2017",
-    periodStartIso: "2016-02",
+    periodIso: "2016-02",
     role: "Senior Specialist",
     company: "National Astronomical Observatory of Japan",
     description:
@@ -121,7 +121,7 @@ const SKILLS = [
       <ol class="timeline">
         {EXPERIENCE.map((item) => (
           <li class="timelineItem reveal">
-            <time class="timelinePeriod" datetime={item.periodStartIso}>
+            <time class="timelinePeriod" datetime={item.periodIso}>
               {item.period}
             </time>
             <div class="timelineContent">
