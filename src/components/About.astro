@@ -6,44 +6,58 @@ import SectionHeader from "@/components/SectionHeader.astro";
 
 const EXPERIENCE = [
   {
-    period: "2025~",
-    periodStartIso: "2025-01-01",
+    period: "1 Dec 2026 – 1 Dec 2027",
+    periodStartIso: "2026-12-01",
+    role: "Senior Technical Lead",
+    company: "Prodapt Japan",
+    description:
+      "Accepted a fixed-term offer to join as a Forward Deployed Engineer.",
+  },
+  {
+    period: "2025–present",
+    periodStartIso: "2025",
     role: "Founder / AI Adoption Consultant",
     company: "haya Inc.",
     description:
       "Leading AI adoption for teams and founders — planning, piloting, and scaling GenAI solutions that survive contact with production.",
   },
   {
-    period: "2025~2026",
-    periodStartIso: "2025-01-01",
-    role: "Contract Engineer",
-    company: "GenerativeX",
-    description:
-      "Engineering execution for AI-adoption consulting engagements — turning rollout plans into working software.",
+    period: "2021–2026",
+    periodStartIso: "2021-01",
+    role: "Freelance Software Engineer",
+    engagements: [
+      {
+        client: "GenerativeX",
+        years: "2025–2026",
+        work: "Built and evaluated generative AI prototypes for enterprise clients.",
+      },
+      {
+        client: "LayerX",
+        years: "2024–2025",
+        work: "Led development of the first version of an AI agent application.",
+      },
+      {
+        client: "QuickWork",
+        years: "2021–2022",
+        work: "Led five Scrum teams building a company information platform.",
+      },
+    ],
   },
   {
-    period: "2024~2025",
-    periodStartIso: "2024-01-01",
-    role: "Contract Engineer",
-    company: "LayerX",
-    description:
-      "Delivered GenAI features with production-safe rollout practices and measurable quality metrics.",
-  },
-  {
-    period: "2021~2022",
-    periodStartIso: "2021-01-01",
-    role: "Executive Dev Manager",
-    company: "QuickWork",
-    description:
-      "Led feature prioritization, delivery quality, and cloud-native architecture alignment.",
-  },
-  {
-    period: "2018~2021",
-    periodStartIso: "2018-01-01",
+    period: "2018–2021",
+    periodStartIso: "2018-09",
     role: "Software Engineer",
     company: "Sony / SIE",
     description:
       "Designed and maintained scalable services with a strong emphasis on reliability and user value.",
+  },
+  {
+    period: "Feb 2016 – Jun 2017",
+    periodStartIso: "2016-02",
+    role: "Senior Specialist",
+    company: "National Astronomical Observatory of Japan",
+    description:
+      "Designed and operated a terabyte-scale PostgreSQL database for the Hyper Suprime-Cam Subaru Strategic Program. Built Python tools to publish catalogs of objects detected in the survey images.",
   },
 ];
 
@@ -102,7 +116,7 @@ const SKILLS = [
         enablement — and I keep shipping code myself.
       </p>
 
-      <h3>Experiences</h3>
+      <h3>Experience</h3>
 
       <ol class="timeline">
         {EXPERIENCE.map((item) => (
@@ -112,9 +126,19 @@ const SKILLS = [
             </time>
             <div class="timelineContent">
               <h4 class="timelineRole">
-                {item.role} <span>@ {item.company}</span>
+                {item.role} {item.company && <span>@ {item.company}</span>}
               </h4>
-              <p class="timelineText">{item.description}</p>
+              {item.engagements ? (
+                <ul class="engagements timelineText">
+                  {item.engagements.map(({ client, years, work }) => (
+                    <li>
+                      <strong>{client}</strong> ({years}) — {work}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p class="timelineText">{item.description}</p>
+              )}
             </div>
           </li>
         ))}
@@ -255,6 +279,17 @@ const SKILLS = [
     font-size: var(--text-sm);
     line-height: 1.6;
     color: var(--color-text);
+  }
+
+  .engagements {
+    display: grid;
+    gap: 6px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .engagements strong {
+    color: var(--color-text-soft);
   }
 
   .chipList {
