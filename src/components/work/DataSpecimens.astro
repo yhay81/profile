@@ -1,0 +1,254 @@
+---
+interface Props {
+  kind: "vastgrid" | "sqrail";
+}
+const { kind } = Astro.props;
+
+// Rows from the public, seeded million-row sample.
+const orders = [
+  ["724801", "Tokyo", "Chair", "10", "189.66"],
+  ["724802", "Hiroshima", "Keyboard", "2", "226.07"],
+  ["724803", "Hiroshima", "Notebook", "20", "388.57"],
+  ["724804", "Nagoya", "Monitor", "3", "364.60"],
+];
+---
+
+{kind === "vastgrid" ? (
+  <div
+    aria-label="VastGrid showing rows 724801 to 724804 of the million-row CSV sample, with a unit price selected for editing."
+    class="specimen sheet"
+    role="img"
+  >
+    <div class="sheetWindow">
+      <div class="sheetHeader">
+        <b>sample-1000000.csv</b>
+        <span>1,000,000 rows</span>
+      </div>
+      <table aria-hidden="true">
+        <thead>
+          <tr>
+            {["id", "region", "product", "quantity", "unit_price"].map(
+              (column) => (
+                <th>{column}</th>
+              ),
+            )}
+          </tr>
+        </thead>
+        <tbody>
+          {orders.map(([id, region, product, quantity, price]) => (
+            <tr>
+              <td>{id}</td>
+              <td>{region}</td>
+              <td>{product}</td>
+              <td>{quantity}</td>
+              <td class:list={[{ editing: id === "724803" }]}>{price}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+) : (
+  <div
+    aria-label="sqrail command joining sales.csv and drugs.parquet. It prints one JSON object per drug, with totals of 25 for Alphazol and 20 for Betamab."
+    class="specimen terminal"
+    role="img"
+  >
+    <div class="input">
+      <div class="command">
+        <span>$</span> sqrail run -t s=sales.csv -t d=drugs.parquet \
+      </div>
+      <div class="query">
+        <div>
+          '<b>SELECT</b> d.name, sum(amount) <b>AS</b> total
+        </div>
+        <div>
+          <b>FROM</b> s <b>JOIN</b> d <b>USING</b> (drug_id)
+        </div>
+        <div>
+          <b>GROUP BY</b> d.name <b>ORDER BY</b> total <b>DESC</b>'
+        </div>
+      </div>
+    </div>
+    <div class="output">
+      <span class="stream">stdout · JSONL</span>
+      {[
+        { name: "Alphazol", total: 25 },
+        { name: "Betamab", total: 20 },
+      ].map(({ name, total }) => (
+        <div>
+          {'{"name":'}
+          <b>{JSON.stringify(name)}</b>
+          {',"total":'}
+          <em>{total}</em>
+          {"}"}
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
+<style>
+  .specimen {
+    container-type: inline-size;
+    display: grid;
+    width: 100%;
+    aspect-ratio: 2.24;
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sheet {
+    --ink: oklch(28% 0.05 173deg);
+    --rule: oklch(74% 0.047 163deg);
+    --active: oklch(47% 0.12 161deg);
+    --paper: oklch(96% 0.015 159deg);
+
+    align-items: center;
+    color: var(--ink);
+    background:
+      radial-gradient(circle, oklch(64% 0.08 160deg) 0.6px, transparent 0.9px) 0
+        0 / 8px 8px,
+      linear-gradient(132deg, oklch(89% 0.075 158deg), oklch(76% 0.105 171deg));
+  }
+
+  .sheetWindow {
+    margin: 0 4.5cqi;
+    overflow: hidden;
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 1.2cqi;
+    box-shadow: 0.85cqi 0.95cqi oklch(45% 0.075 163deg / 24%);
+  }
+
+  .sheetHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 1.8cqi 2.1cqi;
+    font-size: 2.7cqi;
+    color: var(--paper);
+    background: var(--ink);
+  }
+
+  .sheetHeader span {
+    font-size: 2.1cqi;
+  }
+
+  .sheet table {
+    width: 100%;
+    border-spacing: 0;
+    font-size: 2.8cqi;
+    line-height: 1.35;
+  }
+
+  .sheet :is(td, th) {
+    padding: 1.05cqi 1.5cqi;
+    text-align: start;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .sheet th {
+    font-weight: 600;
+    background: oklch(86% 0.052 164deg);
+  }
+
+  .sheet :is(td, th):nth-last-child(-n + 2) {
+    text-align: end;
+  }
+
+  .sheet :is(td, th):last-child {
+    border-right: 0;
+  }
+
+  .sheet td:first-child {
+    color: oklch(44% 0.046 169deg);
+    background: oklch(91% 0.028 160deg);
+  }
+
+  .sheet tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .sheet .editing {
+    position: relative;
+    font-weight: 700;
+    background: oklch(87% 0.105 162deg);
+    box-shadow: inset 0 0 0 0.5cqi var(--active);
+  }
+
+  .editing::after {
+    position: absolute;
+    top: 21%;
+    right: 1.1cqi;
+    bottom: 21%;
+    width: 1px;
+    background: var(--ink);
+    content: "";
+  }
+
+  .terminal {
+    --letters: oklch(93% 0.025 321deg);
+    --amber: oklch(87% 0.128 78deg);
+    --lilac: oklch(84% 0.108 309deg);
+
+    grid-template-rows: 1.4fr 1fr;
+    color: var(--letters);
+    background: linear-gradient(
+      119deg,
+      oklch(26% 0.049 302deg),
+      oklch(33% 0.071 323deg)
+    );
+  }
+
+  .input,
+  .output {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 4.2cqi;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  .command {
+    margin-bottom: 1.1cqi;
+    font-size: 2.87cqi;
+  }
+
+  .command span,
+  .output b {
+    font-weight: 600;
+    color: var(--amber);
+  }
+
+  .query {
+    padding-left: 3.4cqi;
+    font-size: 2.8cqi;
+  }
+
+  .query b,
+  .output em {
+    font-weight: 600;
+    color: var(--lilac);
+  }
+
+  .output {
+    font-size: 3cqi;
+    background: oklch(19% 0.033 304deg / 78%);
+    border-top: 1px solid oklch(76% 0.099 302deg / 38%);
+  }
+
+  .output em {
+    font-style: normal;
+  }
+
+  .stream {
+    margin-bottom: 0.6cqi;
+    font-size: 2.05cqi;
+    color: var(--lilac);
+    letter-spacing: 0.08em;
+  }
+</style>

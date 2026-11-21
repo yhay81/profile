@@ -1,0 +1,219 @@
+---
+interface Props {
+  kind:
+    | "pdf-translation-viewer"
+    | "markdown-translation-preview"
+    | "pptx-live-viewer";
+}
+
+const { kind } = Astro.props;
+---
+
+<svg
+  class="specimen"
+  data-editor={kind}
+  viewBox="0 0 360 170"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+  focusable="false"
+>
+  {kind === "pdf-translation-viewer" && (
+    <>
+      {[
+        { x: 45, title: "Wave motion" },
+        { x: 199, title: "波の運動" },
+      ].map(({ x, title }) => (
+        <g transform={`translate(${x} 12)`}>
+          <rect x="3" y="3" width="116" height="145" fill="var(--shade)" />
+          <rect width="116" height="145" class="page" />
+          <text
+            x="12"
+            y="24"
+            font-family="Georgia, serif"
+            font-weight="bold"
+            font-size="14"
+          >
+            {title}
+          </text>
+          <path d="M12 32h92" class="rule" />
+          <rect x="12" y="39" width="92" height="21" fill="var(--tint)" />
+          <path d="M17 46h78m-78 6h62" class="rule" />
+          <g transform="translate(13 69)">
+            <path d="M0 0v30h90M0 18h88" class="rule" />
+            <path
+              d="M0 18C8 18 10 3 20 3s14 26 24 26S57 3 67 3s13 15 21 15"
+              class="line"
+            />
+          </g>
+          <text
+            x="58"
+            y="116"
+            text-anchor="middle"
+            font-family="Georgia, serif"
+            font-style="italic"
+            font-size="10"
+          >
+            y = A sin(kx)
+          </text>
+          <path d="M12 126h41m9 0h42m-92 5h32m18 0h35" class="rule" />
+        </g>
+      ))}
+      <path d="M169 89h22m-18-3-4 3 4 3m14-6 4 3-4 3" class="line" />
+    </>
+  )}
+
+  {kind === "markdown-translation-preview" && (
+    <g transform="translate(28 16)">
+      <rect x="3" y="3" width="304" height="136" fill="var(--shade)" />
+      <rect width="304" height="136" class="page" />
+      <g font-family="var(--font-mono)" font-size="10">
+        <path d="M0 24h304" class="rule" />
+        <text x="13" y="16">
+          README.md
+        </text>
+        <text x="290" y="16" text-anchor="end">
+          EN → JA
+        </text>
+      </g>
+      <path d="M151 33v44m0 35v17" class="rule" />
+      <g font-size="14" font-weight="bold">
+        <text x="13" y="48">
+          Getting started
+        </text>
+        <text x="164" y="48">
+          はじめに
+        </text>
+      </g>
+      <g font-size="10">
+        <text x="13" y="69">
+          Install the CLI.
+        </text>
+        <text x="164" y="69">
+          CLI をインストールします。
+        </text>
+        <rect x="10" y="82" width="284" height="25" fill="var(--tint)" />
+        <text x="18" y="98" font-family="var(--font-mono)">
+          npm install --global acme-cli
+        </text>
+        <text x="13" y="123" text-decoration="underline">
+          Read the guide
+        </text>
+        <text x="164" y="123" text-decoration="underline">
+          ガイドを読む
+        </text>
+      </g>
+    </g>
+  )}
+
+  {kind === "pptx-live-viewer" && (
+    <g transform="translate(32 13)">
+      <rect x="3" y="3" width="296" height="142" fill="var(--shade)" />
+      <rect width="296" height="142" class="page" />
+      <path d="M0 24h296M53 24v118" class="rule" />
+      <g font-family="var(--font-mono)" font-size="10">
+        <text x="11" y="16">
+          report.pptx
+        </text>
+        <text x="280" y="16" text-anchor="end">
+          2 / 3
+        </text>
+      </g>
+      <g transform="translate(12 35)">
+        <rect width="29" height="17" fill="var(--tint)" />
+        <path d="M4 6h20m-20 4h12" class="rule" />
+        <rect
+          x="-3"
+          y="29"
+          width="35"
+          height="23"
+          fill="none"
+          stroke="var(--accent)"
+          stroke-width="1.6"
+        />
+        <rect y="32" width="29" height="17" fill="var(--tint)" />
+        <path
+          d="M5 44v-3m6 3v-6m6 6v-4m6 4v-9"
+          stroke="var(--accent)"
+          stroke-width="3"
+        />
+        <rect y="66" width="29" height="17" fill="var(--tint)" />
+        <path d="M4 71h20m-20 4h14" class="rule" />
+      </g>
+      <g transform="translate(68 33)">
+        <rect width="213" height="90" fill="var(--tint)" />
+        <text x="12" y="28" font-family="Georgia, serif" font-size="17">
+          Quarterly totals
+        </text>
+        <path d="M14 73h185" class="rule" />
+        <path
+          d="M29 72V57h20v15m22 0V48h20v24m22 0V53h20v19m22 0V35h20v37"
+          fill="var(--accent)"
+        />
+        <path
+          d="M155 49h20"
+          fill="none"
+          stroke="var(--surface)"
+          stroke-dasharray="3 2"
+        />
+      </g>
+      <g transform="translate(70 135)">
+        <path d="M8-5a4 4 0 1 0 0 4m0-7v3H5" class="line" />
+        <text x="15" y="0" font-family="var(--font-mono)" font-size="9">
+          build.py → report.pptx
+        </text>
+      </g>
+    </g>
+  )}
+</svg>
+
+<style>
+  .specimen {
+    --paper: #dee7eb;
+    --surface: #fbfaf4;
+    --ink: #243744;
+    --shade: #b4c3ca;
+    --tint: #dfe9ee;
+    --accent: #3f728d;
+
+    display: block;
+    width: 100%;
+    height: auto;
+    font-family: var(--font-sans);
+    background: var(--paper);
+    fill: var(--ink);
+
+    &[data-editor="markdown-translation-preview"] {
+      --paper: #e1e7d9;
+      --shade: #b7c2ab;
+      --tint: #e2eadc;
+    }
+
+    &[data-editor="pptx-live-viewer"] {
+      --paper: #efded9;
+      --shade: #cbb7b1;
+      --tint: #f1e6df;
+      --accent: #915448;
+    }
+  }
+
+  .page {
+    fill: var(--surface);
+    stroke: var(--ink);
+    stroke-width: 0.8;
+  }
+
+  .rule {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 0.8;
+    opacity: 0.5;
+  }
+
+  .line {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+</style>

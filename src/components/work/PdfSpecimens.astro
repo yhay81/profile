@@ -1,0 +1,169 @@
+---
+import patent from "@/assets/work/parapdf-patent.webp";
+import invoice from "@/assets/work/pyropdf-invoice.webp";
+
+interface Props {
+  kind: "pyropdf" | "parapdf";
+}
+
+const { kind } = Astro.props;
+---
+
+{kind === "pyropdf" ? (
+  <div
+    class="specimen invoiceDesk"
+    role="img"
+    aria-label="pyropdf’s example invoice with an approval stamp, the Python transaction that adds it, and a close-up of the approved signature field."
+  >
+    <img
+      alt=""
+      class="invoiceSheet"
+      decoding="async"
+      height={invoice.height}
+      src={invoice.src}
+      width={invoice.width}
+    />
+    <div aria-hidden="true" class="invoiceDetail">
+      <div class="codePanel">
+        <div class="fileName">stamp.py</div>
+        <code>
+          <span>
+            <b>with</b> doc.transaction(<i>"stamp"</i>):
+          </span>
+          <span class="indent">page.annotations.add(stamp)</span>
+        </code>
+      </div>
+      <div class="signature">
+        <img
+          alt=""
+          decoding="async"
+          height={invoice.height}
+          src={invoice.src}
+          width={invoice.width}
+        />
+      </div>
+    </div>
+  </div>
+) : (
+  <div class="specimen viewerDesk">
+    <img
+      alt="The live ParaPDF reader displays an enlarged drawing from Edison’s electric lamp patent beside a thumbnail of the full page."
+      class="reader"
+      decoding="async"
+      height={patent.height}
+      loading="lazy"
+      src={patent.src}
+      width={patent.width}
+    />
+  </div>
+)}
+
+<style>
+  .specimen {
+    position: relative;
+    display: grid;
+    width: 100%;
+    aspect-ratio: 2.25;
+    align-items: center;
+    overflow: hidden;
+    container-type: inline-size;
+  }
+
+  .invoiceDesk {
+    --paper: oklch(99% 0.008 73deg);
+    --ink: oklch(26% 0.025 49deg);
+    --shadow: oklch(30% 0.058 47deg / 20%);
+    --edge: oklch(64% 0.073 57deg / 48%);
+
+    grid-template-columns: 32% 57%;
+    gap: 6%;
+    justify-content: center;
+    background: linear-gradient(
+      119deg,
+      oklch(87% 0.073 54deg),
+      oklch(93% 0.046 72deg)
+    );
+  }
+
+  .invoiceSheet {
+    display: block;
+    width: 93%;
+    height: auto;
+    justify-self: end;
+    box-shadow: 0.55cqw 1.1cqw 2cqw var(--shadow);
+    transform: rotate(-4deg);
+  }
+
+  .invoiceDetail {
+    overflow: hidden;
+    border: 1px solid var(--edge);
+    border-radius: 0.85cqw;
+    box-shadow: 0.35cqw 0.8cqw 1.6cqw var(--shadow);
+  }
+
+  .codePanel {
+    padding: 2.25cqw 2.4cqw 2.7cqw;
+    font-family: var(--font-mono);
+    color: var(--paper);
+    background: var(--ink);
+  }
+
+  .fileName {
+    margin-bottom: 1.9cqw;
+    font-size: 2.2cqw;
+    color: oklch(84% 0.036 65deg);
+  }
+
+  .codePanel code {
+    display: grid;
+    font-family: inherit;
+    font-size: 2.38cqw;
+    line-height: 1.6;
+    white-space: nowrap;
+  }
+
+  .codePanel b {
+    font-weight: 600;
+    color: oklch(81% 0.109 50deg);
+  }
+
+  .codePanel i {
+    font-style: normal;
+    color: oklch(88% 0.089 96deg);
+  }
+
+  .indent {
+    margin-left: 2ch;
+  }
+
+  .signature {
+    aspect-ratio: 5.1;
+    background: var(--paper);
+  }
+
+  .signature img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 77%;
+  }
+
+  .viewerDesk {
+    justify-items: center;
+    background: linear-gradient(
+      127deg,
+      oklch(86% 0.049 246deg),
+      oklch(91% 0.027 249deg)
+    );
+  }
+
+  .reader {
+    display: block;
+    width: 88%;
+    height: auto;
+    border: 1px solid oklch(60% 0.055 248deg / 50%);
+    border-radius: 1.3cqw;
+    box-shadow: 0.25cqw 1.1cqw 2cqw oklch(35% 0.057 251deg / 18%);
+  }
+</style>

@@ -60,12 +60,8 @@ runtime, and its output is server-free HTML and CSS with a small set of
 purpose-specific client scripts. Web-platform features are preferred over
 application-level reimplementations:
 
-- **Selected work:** `/work` presents four detailed product and open-source
-  case studies, then indexes every public project in five collections. The
-  collections form an exclusive `<details name>` accordion: opening one records
-  it in the URL fragment, and a fragment that names a project opens its
-  collection. The product-window illustrations are semantic HTML and CSS, so
-  the page has no screenshot or image-download cost.
+- **Selected work:** `/work` lists eight projects for working with drawings,
+  documents, and data. Each project has a URL fragment for direct linking.
 - **Navigation:** CSS-only cross-document View Transitions (`@view-transition`)
   keep the site shell stable, sequence page-content replacement, and share
   local article titles across list/detail views. The Speculation Rules API
@@ -77,11 +73,12 @@ application-level reimplementations:
 - **Color:** OKLCH design tokens with `color-mix()`-derived variants.
   `src/styles/tokens.css` is the single source of truth; Stylelint's
   `declaration-strict-value` rule rejects raw RGB and hex color literals.
-- **Typography:** `system-ui` and `ui-monospace` only, avoiding font downloads,
-  preloads, and render delays.
+- **Typography:** System fonts throughout, with serif display type on the
+  gallery, writing archive, and identity ledger. All pages render without
+  downloading fonts.
 - **JavaScript:** Limited to the SIWE demo (with `viem` and ENS normalization
-  imported on demand), email copying, `/work` collection fragment navigation,
-  first-visit motion state, and the `/identity` verifier. Cryptographic code,
+  imported on demand), email copying, first-visit motion state, and the
+  `/identity` verifier. Cryptographic code,
   including OpenPGP and `viem`, is not imported until verification starts. The
   site uses no framework runtime, analytics, or third-party scripts.
 - **Performance contract:** The build enforces compressed HTML and initial

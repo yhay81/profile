@@ -1,197 +1,208 @@
----
-/**
- * Separate public-identifier evidence from release provenance.
- * Keep the identity manifest central and present Sigstore as its build path.
- */
----
-
 <figure class="graph">
-  <img
-    class="desktopGraph"
-    alt="The canonical identity manifest at the center, with Sigstore and SLSA as its release provenance and OpenPGP, public adapters, Ethereum, ENS, and humanity witnesses as separate evidence."
-    decoding="async"
-    height="520"
-    src="/trust-graph.svg"
-    width="760"
-  />
-
-  <div class="mobileGraph" role="img" aria-labelledby="mobile-graph-title">
-    <p class="visuallyHidden" id="mobile-graph-title">
-      Evidence graph of my public identity
-    </p>
-
-    <div class="mobilePlane">
-      <p class="planeLabel">Release provenance</p>
-      <p class="planeSource">GitHub Actions OIDC + pinned release policy</p>
-      <span class="connector" aria-hidden="true"></span>
-      <p class="planeNode">Sigstore + SLSA</p>
-      <p class="edgeNote">attests exact bytes</p>
+  <div class="flow">
+    <div class="release">
+      <p class="label">Release provenance</p>
+      <strong>Sigstore + SLSA</strong>
+      <span>GitHub Actions OIDC</span>
+      <span>Pinned repository, workflow and ref</span>
     </div>
 
-    <div class="mobileState">
-      <strong>Canonical identity state</strong>
-      <code>/.well-known/identity.json</code>
-      <span>claims + proof registry</span>
+    <div class="document">
+      <p class="label">Canonical manifest</p>
+      <a href="/.well-known/identity.json">
+        <small>/.well-known/</small>
+        identity.json
+      </a>
+      <span>Claims and proof registry</span>
     </div>
 
-    <div class="mobileEvidence">
-      <p class="planeLabel">Independent evidence bindings</p>
+    <div class="evidence">
+      <p class="label">Independent evidence</p>
       <ul>
-        <li>OpenPGP compatibility proofs</li>
-        <li>DNS · WKD · Nostr · Bluesky adapters</li>
-        <li>Ethereum · ENS cross-proofs</li>
-        <li>Humanity witness · 0 active records</li>
+        <li>
+          <strong>OpenPGP</strong> Compatibility signatures
+        </li>
+        <li>
+          <strong>Public adapters</strong> DNS, WKD, Nostr, Bluesky
+        </li>
+        <li>
+          <strong>Ethereum &amp; ENS</strong> Cross-proofs and name resolution
+        </li>
+        <li>
+          <strong>Humanity witness</strong> 0 active records
+        </li>
       </ul>
     </div>
   </div>
-
-  <figcaption class="caption">
-    The manifest names the current identity state. Sigstore proves how that
-    state was released; each identifier still requires its own evidence.
+  <figcaption>
+    The release attestation covers the exact manifest bytes. Each identifier has
+    its own evidence.
   </figcaption>
 </figure>
 
 <style>
   .graph {
-    max-width: 760px;
-    margin: 28px 0 0;
+    --map-paper: #e5e9ce;
+    --map-ink: #21372e;
+    --map-muted: #b8caba;
+    --map-wire: #829b89;
+    --map-rule: #4d6558;
+
+    container-type: inline-size;
+    margin: 0;
+    color: var(--map-paper);
+    background: #1c342b;
+    border: 1px solid var(--map-rule);
   }
 
-  .desktopGraph {
-    width: 100%;
-    height: auto;
+  .flow {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr) minmax(0, 1.18fr);
+    gap: 32px;
+    align-items: center;
+    padding: clamp(18px, 3%, 32px);
+    font-size: 0.84rem;
+    line-height: 1.45;
   }
 
-  .mobileGraph {
-    display: none;
+  .label {
+    margin: 0 0 9px;
+    font: 0.68rem/1.4 var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
   }
 
-  .caption {
-    max-width: 72ch;
-    margin-top: 10px;
-    font-family: var(--font-mono);
-    font-size: var(--text-2xs);
-    color: var(--color-text-soft);
-  }
+  .release,
+  .document {
+    position: relative;
 
-  .visuallyHidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-    border: 0;
-  }
-
-  @media (width <= 640px) {
-    .graph {
-      margin-top: 32px;
-    }
-
-    .desktopGraph {
-      display: none;
-    }
-
-    .mobileGraph {
-      display: grid;
-    }
-
-    .mobilePlane,
-    .mobileEvidence {
-      padding: 20px 0;
-      border-block: 1px solid var(--border-subtle);
-    }
-
-    .mobileEvidence {
-      border-top: 0;
-    }
-
-    .planeLabel {
-      margin: 0 0 9px;
-      font-family: var(--font-mono);
-      font-size: var(--text-2xs);
-      color: var(--color-accent);
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-    }
-
-    .planeSource,
-    .planeNode,
-    .edgeNote {
-      margin: 0;
-    }
-
-    .planeSource {
-      font-size: var(--text-sm);
-      color: var(--color-text-strong);
-    }
-
-    .connector {
+    & > span {
       display: block;
-      width: 1px;
-      height: 18px;
-      margin: 8px 0 8px 12px;
-      background: var(--border-accent);
     }
 
-    .planeNode {
-      font-family: var(--font-display);
-      font-weight: 600;
-      color: var(--color-text-strong);
+    &::after {
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      width: 29px;
+      height: 7px;
+      content: "";
+      background: var(--map-wire);
+      clip-path: polygon(
+        0 42%,
+        82% 42%,
+        82% 0,
+        100% 50%,
+        82% 100%,
+        82% 58%,
+        0 58%
+      );
+    }
+  }
+
+  .release {
+    color: var(--map-muted);
+
+    & strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 1rem;
+      color: var(--map-paper);
+    }
+  }
+
+  .document {
+    padding: 16px;
+    color: var(--map-ink);
+    background: var(--map-paper);
+    border: 4px double var(--map-ink);
+
+    &::after {
+      left: calc(100% + 4px);
     }
 
-    .edgeNote {
-      margin-top: 3px;
-      font-family: var(--font-mono);
-      font-size: var(--text-2xs);
-      color: var(--color-text-soft);
-    }
+    & a {
+      display: inline-block;
+      margin-bottom: 6px;
+      font:
+        1.75rem/1.2 Georgia,
+        serif;
+      color: inherit;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
 
-    .mobileState {
-      display: grid;
-      gap: 4px;
-      padding: 20px;
-      background: var(--accent-glow);
-      border-block: 1px solid var(--border-accent);
-
-      & strong {
-        font-family: var(--font-display);
-        color: var(--color-text-strong);
-      }
-
-      & code {
-        overflow-wrap: anywhere;
-        font-size: var(--text-xs);
-        color: var(--color-accent);
-      }
-
-      & span {
-        font-size: var(--text-sm);
-        color: var(--color-text-soft);
+      &:focus-visible {
+        outline-color: currentcolor;
       }
     }
 
-    .mobileEvidence ul {
-      display: grid;
-      gap: 8px;
-      padding: 0;
-      margin: 0;
-      list-style: none;
+    & small {
+      display: block;
+      font: 0.72rem/1.5 var(--font-mono);
+    }
+  }
 
-      & li {
-        padding-bottom: 8px;
-        font-size: var(--text-sm);
-        color: var(--color-text-soft);
-        border-bottom: 1px solid var(--border-subtle);
+  .evidence ul {
+    padding: 0 0 0 12px;
+    margin: 0;
+    list-style: none;
+    border-left: 1px solid var(--map-rule);
+  }
 
-        &:last-child {
-          padding-bottom: 0;
-          border-bottom: 0;
-        }
-      }
+  .evidence li {
+    position: relative;
+    margin-top: 6px;
+    font-size: 0.79rem;
+    color: var(--map-muted);
+
+    &::before {
+      position: absolute;
+      top: 0.7em;
+      left: -13px;
+      width: 7px;
+      content: "";
+      border-top: 1px solid var(--map-wire);
+    }
+
+    & strong {
+      display: block;
+      color: var(--map-paper);
+    }
+  }
+
+  figcaption {
+    padding: 10px clamp(18px, 3%, 32px);
+    font-size: 0.8rem;
+    color: var(--map-muted);
+    border-top: 1px solid var(--map-rule);
+  }
+
+  @container (width < 620px) {
+    .flow {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .release::after,
+    .document::after {
+      top: 100%;
+      left: 20px;
+      width: 7px;
+      height: 22px;
+      clip-path: polygon(
+        42% 0,
+        58% 0,
+        58% 77%,
+        100% 77%,
+        50% 100%,
+        0 77%,
+        42% 77%
+      );
+    }
+
+    .document::after {
+      top: calc(100% + 4px);
     }
   }
 </style>

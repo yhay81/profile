@@ -24,12 +24,10 @@ const CHECKS = [
   id="release-integrity"
 >
   <div class="sectionIntro">
-    <p class="sectionLabel">Release integrity</p>
-    <h2 id="release-integrity-title">Published bytes, verified</h2>
+    <h2 id="release-integrity-title">Release integrity</h2>
     <p class="bodyText">
-      Do not trust the badge. Recompute it. This ledger binds the live bytes to
-      a Git commit, strict Sigstore/SLSA provenance, a reproducible build, a
-      performance contract, and the identity evidence above.
+      Trace this deployment to its Git commit and Sigstore/SLSA provenance, then
+      check the published files and signatures in your browser.
     </p>
   </div>
 
@@ -37,6 +35,9 @@ const CHECKS = [
     <span aria-hidden="true" class="pulse"></span>
     <span class="releaseLabel">LIVE RELEASE</span>
     <strong id="release-status">loading manifest…</strong>
+    <a class="jumpLink" href="#browser-verification">
+      Go to browser checks ↓
+    </a>
   </div>
 
   <dl class="ledger">
@@ -94,6 +95,43 @@ const CHECKS = [
     </div>
   </dl>
 
+  <div class="console" id="browser-verification">
+    <div class="consoleIntro">
+      <h3>Browser verification console</h3>
+      <p class="bodyText">
+        Run eight checks against the live files. Your browser downloads the
+        verification code when you start. For independent provenance checks, use
+        the terminal commands below.
+      </p>
+      <button class="runButton" id="run-proofs" type="button">
+        <span aria-hidden="true">▶</span> Run all proofs
+      </button>
+
+      <div
+        aria-atomic="true"
+        aria-live="polite"
+        class="verificationSummary"
+        id="verification-summary"
+      >
+        IDLE · no verification has run in this tab
+      </div>
+    </div>
+    <ol class="checks" id="verification-checks">
+      {CHECKS.map(([id, label], index) => (
+        <li data-check={id} data-status="idle">
+          <span class="checkIndex">{String(index + 1).padStart(2, "0")}</span>
+          <span class="checkBody">
+            <strong>{label}</strong>
+            <span class="checkDetail">waiting</span>
+          </span>
+          <span aria-hidden="true" class="checkMark">
+            ·
+          </span>
+        </li>
+      ))}
+    </ol>
+  </div>
+
   <h3 class="heading">Performance contract</h3>
   <p class="bodyText">
     The build fails before deployment if any route crosses its compressed
@@ -131,46 +169,8 @@ const CHECKS = [
     </table>
   </div>
   <p class="zeroContract" id="zero-contract">
-    0 third parties · 0 fonts · 0 RUM
+    Loading performance report…
   </p>
-
-  <div class="verifyHeading">
-    <div>
-      <h3 class="heading">Browser verification console</h3>
-      <p class="bodyText">
-        Checks deployed byte hashes and compatibility signatures in this tab;
-        heavy cryptographic code loads only after you click. Use the terminal
-        commands below for origin-independent provenance.
-      </p>
-    </div>
-    <button class="runButton" id="run-proofs" type="button">
-      <span aria-hidden="true">▶</span> Run all proofs
-    </button>
-  </div>
-
-  <div
-    aria-atomic="true"
-    aria-live="polite"
-    class="verificationSummary"
-    id="verification-summary"
-  >
-    IDLE · no verification has run in this tab
-  </div>
-
-  <ol class="checks" id="verification-checks">
-    {CHECKS.map(([id, label], index) => (
-      <li data-check={id} data-status="idle">
-        <span class="checkIndex">{String(index + 1).padStart(2, "0")}</span>
-        <span class="checkBody">
-          <strong>{label}</strong>
-          <span class="checkDetail">waiting</span>
-        </span>
-        <span aria-hidden="true" class="checkMark">
-          ·
-        </span>
-      </li>
-    ))}
-  </ol>
 
   <details class="manual" open>
     <summary>Verify from a clean terminal</summary>
@@ -350,19 +350,11 @@ const CHECKS = [
     max-width: 72ch;
   }
 
-  .sectionLabel {
-    margin: 0 0 10px;
-    font-family: var(--font-mono);
-    font-size: var(--text-2xs);
-    color: var(--color-accent);
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-  }
-
   .sectionIntro h2 {
     margin: 0;
-    font-family: var(--font-display);
-    font-size: var(--text-2xl);
+    font-family: Georgia, serif;
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    font-weight: 400;
     line-height: 1.15;
     color: var(--color-text-strong);
   }
@@ -375,8 +367,9 @@ const CHECKS = [
     display: flex;
     gap: 10px;
     align-items: center;
-    padding: 10px 0;
-    margin-top: 32px;
+    flex-wrap: wrap;
+    padding: 13px 0;
+    margin-top: 24px;
     font-family: var(--font-mono);
     font-size: var(--text-xs);
     border-block: 1px solid var(--border-subtle);
@@ -391,7 +384,6 @@ const CHECKS = [
 
   .releaseStrip[data-status="pass"] .pulse {
     background: var(--color-accent);
-    box-shadow: 0 0 14px var(--color-accent);
   }
 
   .releaseStrip[data-status="fail"] .pulse {
@@ -408,9 +400,15 @@ const CHECKS = [
     color: var(--color-text-strong);
   }
 
+  .jumpLink {
+    margin-left: auto;
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
   .ledger {
-    margin: 18px 0 0;
-    border-top: 1px solid var(--border-subtle);
+    margin: 0;
   }
 
   .ledgerRow {
@@ -439,7 +437,9 @@ const CHECKS = [
     color: var(--color-text-strong);
   }
 
-  .digest {
+  .digest,
+  .code,
+  .checkDetail {
     overflow-wrap: anywhere;
   }
 
@@ -505,21 +505,29 @@ const CHECKS = [
     color: var(--color-accent);
   }
 
-  .verifyHeading {
-    display: flex;
-    gap: 24px;
-    align-items: end;
-    justify-content: space-between;
-    margin-top: 44px;
+  .console {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(24px, 4vw, 48px);
+    padding: clamp(20px, 3vw, 36px);
+    margin-block: clamp(28px, 4vw, 48px);
+    background: var(--surface-card);
+    border: 1px solid var(--border-strong);
+    scroll-margin-top: calc(var(--nav-height) + 18px);
   }
 
-  .verifyHeading .heading {
-    margin-top: 0;
+  .consoleIntro h3 {
+    margin: 0 0 12px;
+    font-size: var(--text-xl);
+  }
+
+  .consoleIntro .bodyText {
+    font-size: var(--text-sm);
   }
 
   .runButton {
-    flex: 0 0 auto;
     padding: 11px 16px;
+    margin-top: 18px;
     font: inherit;
     font-family: var(--font-mono);
     font-size: var(--text-xs);
@@ -548,12 +556,12 @@ const CHECKS = [
   }
 
   .verificationSummary {
-    padding: 10px 0;
-    margin-top: 18px;
+    padding: 12px 0 0;
+    margin-top: 16px;
     font-family: var(--font-mono);
     font-size: var(--text-xs);
     color: var(--color-text-soft);
-    border-block: 1px solid var(--border-subtle);
+    border-top: 1px solid var(--border-subtle);
   }
 
   .verificationSummary[data-status="pass"] {
@@ -572,10 +580,11 @@ const CHECKS = [
 
   .checks li {
     display: grid;
-    grid-template-columns: 34px minmax(0, 1fr) 24px;
+    grid-template-columns: 24px minmax(0, 1fr) 20px;
     gap: 10px;
     align-items: center;
-    min-height: 62px;
+    min-height: 52px;
+    padding-block: 8px;
     border-bottom: 1px solid var(--border-subtle);
   }
 
@@ -705,13 +714,12 @@ const CHECKS = [
       gap: 2px;
     }
 
-    .verifyHeading {
-      align-items: stretch;
-      flex-direction: column;
+    .console {
+      grid-template-columns: 1fr;
     }
 
-    .runButton {
-      align-self: flex-start;
+    .jumpLink {
+      margin-left: 0;
     }
   }
 

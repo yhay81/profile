@@ -1,0 +1,104 @@
+---
+import { readFileSync } from "node:fs";
+
+// Typeset a short passage from the downloadable signed edition.
+const manuscript = readFileSync("public/trust-control-plane.txt.asc", "utf8");
+const header = manuscript.split("\n\n")[0];
+const questions = manuscript.match(/^\d\. .*$/gm)?.slice(0, 4) ?? [];
+---
+
+<div class="plate" aria-hidden="true">
+  <div class="page">
+    <pre class="armor">{header}</pre>
+    <p class="passage">The trust problem</p>
+    <ol class="questions">
+      {questions.map((line) => (
+        <li>{line.replace(/^\d\. /, "")}</li>
+      ))}
+    </ol>
+  </div>
+</div>
+
+<style>
+  .plate {
+    --manuscript: oklch(97.3% 0.013 85deg);
+
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-width: 0;
+    min-height: 184px;
+    overflow: hidden;
+    color: var(--press-ink);
+    background: var(--print-paper);
+    container-type: inline-size;
+  }
+
+  .page {
+    position: absolute;
+    top: 13%;
+    left: 12%;
+    width: 78%;
+    min-height: 98%;
+    padding: 8% 7.5%;
+    background: var(--manuscript);
+    border: 1px solid color-mix(in oklab, var(--press-ink) 19%, transparent);
+    box-shadow:
+      1.1cqw 1.15cqw 0 var(--manuscript),
+      1.2cqw 1.3cqw 0 color-mix(in oklab, var(--press-ink) 40%, transparent),
+      2.3cqw 3cqw 4cqw color-mix(in oklab, var(--press-ink) 17%, transparent);
+    transform: rotate(5deg);
+  }
+
+  .armor {
+    padding: 0 0 4.5cqw;
+    margin: 0;
+    font-size: 2.28cqw;
+    line-height: 1.6;
+    color: var(--editor-ink);
+    border-bottom: 1px solid var(--press-ink);
+  }
+
+  .passage {
+    margin: 3.8cqw 0 3cqw;
+    font-family: Baskerville, Georgia, serif;
+    font-size: 8.2cqw;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.045em;
+  }
+
+  .questions {
+    display: grid;
+    gap: 2.1cqw;
+    padding-left: 3.7cqw;
+    margin: 0;
+    font-family: Baskerville, Georgia, serif;
+    font-size: 3.5cqw;
+    line-height: 1.27;
+    list-style-type: decimal;
+  }
+
+  @media (width <= 680px) {
+    .plate {
+      min-height: clamp(155px, 42vw, 210px);
+    }
+
+    .page {
+      top: 15%;
+      left: 13%;
+      width: 76%;
+      padding-top: 5%;
+    }
+
+    .armor {
+      padding-bottom: 2.5cqw;
+      font-size: 1.9cqw;
+    }
+
+    .passage {
+      margin-top: 2.8cqw;
+      font-size: 6.8cqw;
+    }
+  }
+</style>

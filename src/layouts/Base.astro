@@ -12,6 +12,7 @@ interface Props {
   title: string;
   description: string;
   path: string;
+  themeColor?: string;
   ogImage?: string;
   ogType?: "article" | "website";
   author?: string;
@@ -23,6 +24,7 @@ const {
   title,
   description,
   path,
+  themeColor = MAIN_COLOR,
   ogImage = "/og.png",
   ogType = "website",
   author,
@@ -71,7 +73,7 @@ Astro.csp?.insertScriptHash({
       title="Yusuke Hayashi — Writing"
       type="application/rss+xml"
     />
-    <meta content={MAIN_COLOR} name="theme-color" />
+    <meta content={themeColor} name="theme-color" />
     <meta content={Astro.generator} name="generator" />
 
     <link href="/favicon.ico" rel="icon" sizes="32x32" />
